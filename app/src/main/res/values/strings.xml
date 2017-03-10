@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Passkeyper</string>
+
+    <string name="nav_bar_account">Profile</string>
+    <string name="nav_bar_alerts">Alerts</string>
+    <string name="nav_bar_server">Server</string>
+    <string name="nav_drawer_security">Security</string>
+    <string name="nav_bar_settings">Settings</string>
+
+    <string name="nav_drawer_open">Open navigation drawer</string>
+    <string name="nav_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Log Out</string>
+</resources>
