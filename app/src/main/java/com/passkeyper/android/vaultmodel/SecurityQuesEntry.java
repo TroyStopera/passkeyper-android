@@ -22,8 +22,11 @@ public class SecurityQuesEntry extends VaultModel {
         }
     };
 
-    /* The question and answer */
-    private String question, answer;
+    /* Data structure that holds all 'answer' strings for security reasons */
+    private static final SecureStringData strings = new SecureStringData();
+
+    /* The question */
+    private String question;
     /* The record this security question data corresponds to */
     private final EntryRecord record;
 
@@ -40,7 +43,6 @@ public class SecurityQuesEntry extends VaultModel {
     private SecurityQuesEntry(Parcel in) {
         record = in.readParcelable(EntryRecord.class.getClassLoader());
         question = in.readString();
-        answer = in.readString();
     }
 
     public EntryRecord getRecord() {
@@ -55,19 +57,28 @@ public class SecurityQuesEntry extends VaultModel {
         this.question = question;
     }
 
-    public String getAnswer() {
-        return answer;
+    public char[] getAnswer() {
+        if (strings.contains(getId()))
+            return strings.get(getId());
+        else
+            throw new IllegalStateException("SecurityQuesEntry answer has been accessed after it has been erased from memory");
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswer(char[] answer) {
+        strings.put(answer, getId());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(record, i);
         parcel.writeString(question);
-        parcel.writeString(answer);
+    }
+
+    /**
+     * Erases all of the char[]'s in memory that contain sensitive data.
+     */
+    public static void eraseSecureMemory() {
+        strings.eraseAll();
     }
 
 }

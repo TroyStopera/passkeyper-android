@@ -23,8 +23,11 @@ public class SensitiveEntry extends VaultModel {
         }
     };
 
-    /* The 'name' of the sensitive data and the value of it */
-    private String name, value;
+    /* Data structure that holds all 'value' strings for security reasons */
+    private static final SecureStringData strings = new SecureStringData();
+
+    /* The 'name' of the sensitive data */
+    private String name;
     /* The record this sensitive data corresponds to */
     private final EntryRecord record;
 
@@ -41,7 +44,6 @@ public class SensitiveEntry extends VaultModel {
     private SensitiveEntry(Parcel in) {
         record = in.readParcelable(EntryRecord.class.getClassLoader());
         name = in.readString();
-        value = in.readString();
     }
 
     public EntryRecord getRecord() {
@@ -56,19 +58,28 @@ public class SensitiveEntry extends VaultModel {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public char[] getValue() {
+        if (strings.contains(getId()))
+            return strings.get(getId());
+        else
+            throw new IllegalStateException("SensitiveEntry value has been accessed after it has been erased from memory");
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValue(char[] value) {
+        strings.put(value, getId());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(record, i);
         parcel.writeString(name);
-        parcel.writeString(value);
+    }
+
+    /**
+     * Erases all of the char[]'s in memory that contain sensitive data.
+     */
+    public static void eraseSecureMemory() {
+        strings.eraseAll();
     }
 
 }
