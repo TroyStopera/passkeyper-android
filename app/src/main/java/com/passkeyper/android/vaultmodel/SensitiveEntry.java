@@ -1,7 +1,6 @@
 package com.passkeyper.android.vaultmodel;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * Represents the 'private' data for an entry in the Vault. Contains the name of a piece of
@@ -13,9 +12,9 @@ public class SensitiveEntry extends VaultModel {
     /**
      * The Parcelable Creator for SecurityQuesEntry.
      */
-    public static final Parcelable.Creator<SensitiveEntry> CREATOR = new Parcelable.Creator<SensitiveEntry>() {
-        public SensitiveEntry createFromParcel(Parcel in) {
-            return new SensitiveEntry(in);
+    public static final Creator<SensitiveEntry> CREATOR = new Creator<SensitiveEntry>() {
+        public SensitiveEntry newFromParcel(Parcel parcel) {
+            return new SensitiveEntry(parcel);
         }
 
         public SensitiveEntry[] newArray(int size) {
@@ -70,7 +69,7 @@ public class SensitiveEntry extends VaultModel {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    protected void saveToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(record, i);
         parcel.writeString(name);
     }

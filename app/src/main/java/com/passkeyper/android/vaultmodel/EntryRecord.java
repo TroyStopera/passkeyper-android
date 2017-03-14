@@ -1,21 +1,20 @@
 package com.passkeyper.android.vaultmodel;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * Represents the 'public' data for an entry in the Vault. Only contains the name of the
  * account/entry and optionally  the username.
  */
-
 public class EntryRecord extends VaultModel {
 
     /**
      * The Parcelable Creator for EntryRecord.
      */
-    public static final Parcelable.Creator<EntryRecord> CREATOR = new Parcelable.Creator<EntryRecord>() {
-        public EntryRecord createFromParcel(Parcel in) {
-            return new EntryRecord(in);
+    public static final Creator<EntryRecord> CREATOR = new Creator<EntryRecord>() {
+
+        protected EntryRecord newFromParcel(Parcel parcel) {
+            return new EntryRecord(parcel);
         }
 
         public EntryRecord[] newArray(int size) {
@@ -56,7 +55,7 @@ public class EntryRecord extends VaultModel {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    protected void saveToParcel(Parcel parcel, int i) {
         parcel.writeString(account);
         parcel.writeString(username);
     }

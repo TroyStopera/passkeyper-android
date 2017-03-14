@@ -1,20 +1,19 @@
 package com.passkeyper.android.vaultmodel;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * Represents a security question and an answer for an entry in the vault.
  */
-
 public class SecurityQuesEntry extends VaultModel {
 
     /**
      * The Parcelable Creator for SecurityQuesEntry.
      */
-    public static final Parcelable.Creator<SecurityQuesEntry> CREATOR = new Parcelable.Creator<SecurityQuesEntry>() {
-        public SecurityQuesEntry createFromParcel(Parcel in) {
-            return new SecurityQuesEntry(in);
+    public static final Creator<SecurityQuesEntry> CREATOR = new Creator<SecurityQuesEntry>() {
+
+        protected SecurityQuesEntry newFromParcel(Parcel parcel) {
+            return new SecurityQuesEntry(parcel);
         }
 
         public SecurityQuesEntry[] newArray(int size) {
@@ -69,7 +68,7 @@ public class SecurityQuesEntry extends VaultModel {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    protected void saveToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(record, i);
         parcel.writeString(question);
     }
