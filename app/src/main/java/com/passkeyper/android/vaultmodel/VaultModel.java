@@ -13,6 +13,13 @@ public abstract class VaultModel implements Parcelable {
     private long id = -1;
 
     /**
+     * @return true if this model has been written to the vault db.
+     */
+    public final boolean isSaved() {
+        return id != -1;
+    }
+
+    /**
      * Write the model's data to the given Parcel.
      *
      * @param parcel the Parcel to write to.
