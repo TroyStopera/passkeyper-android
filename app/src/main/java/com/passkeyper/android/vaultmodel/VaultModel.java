@@ -2,17 +2,26 @@ package com.passkeyper.android.vaultmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.SparseArrayCompat;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Abstract model class for data that is stored within a Vault.
  */
 public abstract class VaultModel implements Parcelable {
 
+    /* The next long to use as a key */
+    private static int nextKey = new Random().nextInt();
     /* The unique ID of a model */
     private long id = -1;
+    /* The key used to store secure strings, different from id to account for unsaved models  */
+    final int key;
+
+    VaultModel() {
+        key = nextKey++;
+    }
 
     /**
      * @return true if this model has been written to the vault db.
@@ -65,31 +74,29 @@ public abstract class VaultModel implements Parcelable {
      */
     static final class SecureStringData {
 
-        //TODO: fix bug where unsaved models will all map to the same string
-
-        private final LongSparseArray<char[]> strings = new LongSparseArray<>();
+        private final SparseArrayCompat<char[]> strings = new SparseArrayCompat<>();
 
         /* Only instantiate from classes in vaultmodel */
         SecureStringData() {
 
         }
 
-        void put(char[] string, long id) {
+        void put(char[] string, int id) {
             //erase any old data for this id
             erase(id);
             //put the new data in
             strings.put(id, string);
         }
 
-        boolean contains(long id) {
+        boolean contains(int id) {
             return strings.get(id) != null;
         }
 
-        char[] get(long id) {
+        char[] get(int id) {
             return strings.get(id);
         }
 
-        void erase(long id) {
+        void erase(int id) {
             if (contains(id))
                 Arrays.fill(get(id), '\0');
         }

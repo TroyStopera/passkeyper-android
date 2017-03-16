@@ -57,14 +57,14 @@ public class SecurityQuesEntry extends VaultModel {
     }
 
     public char[] getAnswer() {
-        if (strings.contains(getId()))
-            return strings.get(getId());
+        if (strings.contains(key))
+            return strings.get(key);
         else
             throw new IllegalStateException("SecurityQuesEntry answer has been accessed after it has been erased from memory");
     }
 
     public void setAnswer(char[] answer) {
-        strings.put(answer, getId());
+        strings.put(answer, key);
     }
 
     @Override

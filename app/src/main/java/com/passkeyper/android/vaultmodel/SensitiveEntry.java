@@ -58,14 +58,14 @@ public class SensitiveEntry extends VaultModel {
     }
 
     public char[] getValue() {
-        if (strings.contains(getId()))
-            return strings.get(getId());
+        if (strings.contains(key))
+            return strings.get(key);
         else
             throw new IllegalStateException("SensitiveEntry value has been accessed after it has been erased from memory");
     }
 
     public void setValue(char[] value) {
-        strings.put(value, getId());
+        strings.put(value, key);
     }
 
     @Override
