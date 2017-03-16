@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.passkeyper.android.crypto.LocalDbCrypto;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
@@ -18,6 +19,8 @@ import java.util.List;
 public class LocalVaultManager extends VaultManager {
 
     private final DbHelper dbHelper;
+    /* Used when an exception is thrown during encryption/decryption to avoid leaking sensitive data */
+    private static final String ERROR_STRING = "*Error during encryption/decryption*";
 
     /**
      * Create a new DbHelper to access the local vault.
@@ -62,7 +65,13 @@ public class LocalVaultManager extends VaultManager {
             SensitiveEntry entry = new SensitiveEntry(record);
             //read data
             entry.setName(cursor.getString(1));
-            entry.setValue(Encryption.decrypt(cursor.getString(2)));
+            //try to decrypt encrypted data
+            try {
+                entry.setValue(LocalDbCrypto.decrypt(cursor.getString(2)));
+            } catch (Exception e) {
+                //fall back to error string
+                entry.setValue(ERROR_STRING.toCharArray());
+            }
             //update id
             setModelID(entry, cursor.getLong(0));
             //add to list
@@ -86,7 +95,13 @@ public class LocalVaultManager extends VaultManager {
             SecurityQuesEntry entry = new SecurityQuesEntry(record);
             //read data
             entry.setQuestion(cursor.getString(1));
-            entry.setAnswer(Encryption.decrypt(cursor.getString(2)));
+            //try to decrypt encrypted data
+            try {
+                entry.setAnswer(LocalDbCrypto.decrypt(cursor.getString(2)));
+            } catch (Exception e) {
+                //fall back to error string
+                entry.setAnswer(ERROR_STRING.toCharArray());
+            }
             //update id
             setModelID(entry, cursor.getLong(0));
             //add to list
@@ -109,8 +124,14 @@ public class LocalVaultManager extends VaultManager {
     public void save(SensitiveEntry sensitiveEntry) {
         ContentValues values = new ContentValues();
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_NAME, sensitiveEntry.getName());
-        values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, Encryption.encrypt(sensitiveEntry.getValue()));
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID, sensitiveEntry.getRecord().getId());
+        //try to encrypt sensitive data
+        try {
+            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, LocalDbCrypto.encrypt(sensitiveEntry.getValue()));
+        } catch (Exception e) {
+            //fall back to saving the error string
+            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, ERROR_STRING);
+        }
 
         dbHelper.save(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID, values);
     }
@@ -119,8 +140,14 @@ public class LocalVaultManager extends VaultManager {
     public void save(SecurityQuesEntry securityQuesEntry) {
         ContentValues values = new ContentValues();
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_QUESTION, securityQuesEntry.getQuestion());
-        values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, Encryption.encrypt(securityQuesEntry.getAnswer()));
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID, securityQuesEntry.getRecord().getId());
+        //try to encrypt sensitive data
+        try {
+            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, LocalDbCrypto.encrypt(securityQuesEntry.getAnswer()));
+        } catch (Exception e) {
+            //fall back to saving the error string
+            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, ERROR_STRING);
+        }
 
         dbHelper.save(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID, values);
     }

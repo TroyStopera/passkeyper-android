@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
 
+import java.util.Arrays;
+
 /**
  * Abstract model class for data that is stored within a Vault.
  */
@@ -63,6 +65,8 @@ public abstract class VaultModel implements Parcelable {
      */
     static final class SecureStringData {
 
+        //TODO: fix bug where unsaved models will all map to the same string
+
         private final LongSparseArray<char[]> strings = new LongSparseArray<>();
 
         /* Only instantiate from classes in vaultmodel */
@@ -86,11 +90,8 @@ public abstract class VaultModel implements Parcelable {
         }
 
         void erase(long id) {
-            if (contains(id)) {
-                char[] string = get(id);
-                for (int i = 0; i < string.length; i++)
-                    string[i] = Character.MIN_VALUE;
-            }
+            if (contains(id))
+                Arrays.fill(get(id), '\0');
         }
 
         void eraseAll() {
