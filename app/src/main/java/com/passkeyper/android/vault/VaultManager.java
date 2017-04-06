@@ -1,5 +1,8 @@
 package com.passkeyper.android.vault;
 
+import android.content.Context;
+
+import com.passkeyper.android.vault.local.LocalVaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
@@ -11,6 +14,9 @@ import java.util.List;
  * Defines the methods that need to be implemented in order to manage a vault.
  */
 public abstract class VaultManager extends VaultModel.Manager {
+
+    /* The instance of vault manager that the app should use */
+    private static VaultManager instance = null;
 
     /**
      * @return all EntryRecords from the vault.
@@ -70,5 +76,17 @@ public abstract class VaultManager extends VaultModel.Manager {
      * @param securityQuesEntry the SecurityQuesEntry to delete.
      */
     public abstract void delete(SecurityQuesEntry securityQuesEntry);
+
+    /**
+     * Returns the proper instance of VaultManager.
+     *
+     * @param context a Context used to inflate a VaultManager.
+     * @return the instance of VaultManager.
+     */
+    public static VaultManager get(Context context) {
+        //TODO: check user preferences for vault manager
+        if (instance == null) instance = new LocalVaultManager(context);
+        return instance;
+    }
 
 }
