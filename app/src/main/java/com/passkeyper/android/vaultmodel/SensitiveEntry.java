@@ -27,6 +27,10 @@ public class SensitiveEntry extends VaultModel {
 
     /* The 'name' of the sensitive data */
     private String name;
+    /* Keeps track of if a value has been set yet */
+    private boolean valueSet = false;
+    /* Keeps track of if the data has been erased */
+    private boolean erased = false;
     /* The record this sensitive data corresponds to */
     private final EntryRecord record;
 
@@ -43,10 +47,16 @@ public class SensitiveEntry extends VaultModel {
     private SensitiveEntry(Parcel in) {
         record = in.readParcelable(EntryRecord.class.getClassLoader());
         name = in.readString();
+        valueSet = in.readByte() == 1;
+        erased = in.readByte() == 1;
     }
 
     public EntryRecord getRecord() {
         return record;
+    }
+
+    public boolean hasName() {
+        return name != null && !name.isEmpty();
     }
 
     public String getName() {
@@ -57,21 +67,37 @@ public class SensitiveEntry extends VaultModel {
         this.name = name;
     }
 
+    public boolean hasValue() {
+        return valueSet && !erased;
+    }
+
     public char[] getValue() {
-        if (strings.contains(key))
+        //if the value has never been set return an empty array
+        if (!valueSet) return new char[0];
+        else if (strings.contains(key))
             return strings.get(key);
         else
             throw new IllegalStateException("SensitiveEntry value has been accessed after it has been erased from memory");
     }
 
     public void setValue(char[] value) {
+        if (erased)
+            throw new IllegalStateException("SensitiveEntry value has been accessed after it has been erased from memory");
+
+        valueSet = true;
         strings.put(value, key);
+    }
+
+    public void free() {
+        strings.erase(key);
     }
 
     @Override
     protected void saveToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(record, i);
         parcel.writeString(name);
+        parcel.writeByte((byte) (valueSet ? 1 : 0));
+        parcel.writeByte((byte) (erased ? 1 : 0));
     }
 
     /**

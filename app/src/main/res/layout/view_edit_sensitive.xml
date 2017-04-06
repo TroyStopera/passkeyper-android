@@ -30,7 +30,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <ImageButton
-        android:id="@+id/edit_sensitive_visible"
+        android:id="@+id/edit_visible"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
@@ -38,7 +38,7 @@
         android:src="@drawable/ic_visibility_off"/>
 
     <ImageButton
-        android:id="@+id/edit_sensitive_delete"
+        android:id="@+id/edit_delete"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
@@ -46,7 +46,7 @@
         android:src="@drawable/ic_delete"/>
 
     <ImageButton
-        android:id="@+id/edit_sensitive_done"
+        android:id="@+id/edit_done"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"

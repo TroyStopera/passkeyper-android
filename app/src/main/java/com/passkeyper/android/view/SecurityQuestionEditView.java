@@ -8,61 +8,28 @@ import android.support.design.widget.TextInputLayout;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.view.inputmethod.InputMethodManager;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 
 /**
  * A custom View that encapsulates the functionality needed to edit a SecurityQuesEntry.
  */
-public class SecurityQuestionEditView extends FrameLayout implements View.OnFocusChangeListener, View.OnClickListener {
+public class SecurityQuestionEditView extends VaultModelEditView<SecurityQuesEntry> implements View.OnFocusChangeListener {
 
     private static final TransformationMethod password = new PasswordTransformationMethod();
 
     private TextInputLayout questionInputLayout, answerInputLayout;
     private TextInputEditText questionEditText, answerEditText;
-    private ImageButton visibilityButton, deleteButton, doneButton;
 
-    private boolean isTextCensored = true;
-    private OnDeletePressedListener listener;
-
-    public SecurityQuestionEditView(@NonNull Context context) {
-        super(context);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.view_edit_security, this);
-
-        setUiFields();
+    public SecurityQuestionEditView(@NonNull Context context, SecurityQuesEntry entry) {
+        super(context, R.layout.view_edit_security, entry);
     }
 
-    public SecurityQuestionEditView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.view_edit_security, this);
-
-        setUiFields();
-    }
-
-    public SecurityQuesEntry getSecurityQuesEntry(EntryRecord record) {
-        SecurityQuesEntry entry = new SecurityQuesEntry(record);
-        entry.setQuestion(getQuestion());
-        entry.setAnswer(getAnswer());
-        return entry;
-    }
-
-    public void setSecurityQuesEntry(SecurityQuesEntry securityQuesEntry) {
-        String question = securityQuesEntry.getQuestion();
-        char[] answer = securityQuesEntry.getAnswer();
-
-        questionEditText.setText(question);
-        answerEditText.setText(answer, 0, answer.length);
-        if (question == null || question.isEmpty())
-            answerInputLayout.setHint(getContext().getString(R.string.security_edit_new_hint));
-        else answerInputLayout.setHint(question);
+    public SecurityQuestionEditView(@NonNull Context context, @Nullable AttributeSet attrs, SecurityQuesEntry entry) {
+        super(context, attrs, R.layout.view_edit_security, entry);
     }
 
     public String getQuestion() {
@@ -77,8 +44,8 @@ public class SecurityQuestionEditView extends FrameLayout implements View.OnFocu
         return chars;
     }
 
-    public void setDeletePressedListener(OnDeletePressedListener listener) {
-        this.listener = listener;
+    public void setImeOptions(int options) {
+        answerEditText.setImeOptions(options);
     }
 
     @Override
@@ -92,65 +59,58 @@ public class SecurityQuestionEditView extends FrameLayout implements View.OnFocu
     }
 
     @Override
-    public void onClick(View view) {
-        // send a delete pressed event
-        if (view.getId() == R.id.edit_security_delete) {
-            if (listener != null) listener.onDeletePressed(this);
-        }
-        // hide edit mode
-        else if (view.getId() == R.id.edit_security_done) {
-            setEditMode(false);
-        }
-        // toggle text visibility
-        else if (view.getId() == R.id.edit_security_visible) {
-            if (isTextCensored) {
-                visibilityButton.setImageResource(R.drawable.ic_visibility_on);
-                answerEditText.setTransformationMethod(null);
-            } else {
-                visibilityButton.setImageResource(R.drawable.ic_visibility_off);
-                answerEditText.setTransformationMethod(password);
-            }
-            isTextCensored = !isTextCensored;
-        }
+    protected void onEditEnabled() {
+        questionInputLayout.setVisibility(VISIBLE);
+        answerInputLayout.setHint(getContext().getString(R.string.security_edit_answer));
+        questionEditText.requestFocus();
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(questionEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private void setUiFields() {
+    @Override
+    protected void onEditDisabled() {
+        questionInputLayout.setVisibility(GONE);
+        answerEditText.clearFocus();
+        if (questionEditText.length() > 0 && answerEditText.length() > 0)
+            answerInputLayout.setHint(questionEditText.getText());
+        else answerInputLayout.setHint(getContext().getString(R.string.security_edit_new_hint));
+    }
+
+    @Override
+    protected void onCensoredChange(boolean b) {
+        if (b) answerEditText.setTransformationMethod(password);
+        else answerEditText.setTransformationMethod(null);
+    }
+
+    @Override
+    protected void onInitUiFields() {
         questionInputLayout = (TextInputLayout) findViewById(R.id.edit_security_ques_input);
         questionEditText = (TextInputEditText) findViewById(R.id.edit_security_ques_edit_text);
         answerInputLayout = (TextInputLayout) findViewById(R.id.edit_security_answer_input);
         answerEditText = (TextInputEditText) findViewById(R.id.edit_security_answer_edit_text);
-        visibilityButton = (ImageButton) findViewById(R.id.edit_security_visible);
-        deleteButton = (ImageButton) findViewById(R.id.edit_security_delete);
-        doneButton = (ImageButton) findViewById(R.id.edit_security_done);
 
         answerEditText.setOnFocusChangeListener(this);
         questionEditText.setOnFocusChangeListener(this);
-        visibilityButton.setOnClickListener(this);
-        deleteButton.setOnClickListener(this);
-        doneButton.setOnClickListener(this);
+
+        questionEditText.setNextFocusForwardId(answerEditText.getId());
     }
 
-    private void setEditMode(boolean enabled) {
-        if (enabled) {
-            questionInputLayout.setVisibility(VISIBLE);
-            doneButton.setVisibility(VISIBLE);
-            deleteButton.setVisibility(GONE);
-            answerInputLayout.setHint(getContext().getString(R.string.security_edit_answer));
-        } else {
-            questionInputLayout.setVisibility(GONE);
-            doneButton.setVisibility(GONE);
-            deleteButton.setVisibility(VISIBLE);
-            answerEditText.clearFocus();
-            if (questionEditText.length() > 0 && answerEditText.length() > 0)
-                answerInputLayout.setHint(questionEditText.getText());
-            else answerInputLayout.setHint(getContext().getString(R.string.security_edit_new_hint));
-        }
+    @Override
+    protected void onWriteToModel() {
+        model.setQuestion(getQuestion());
+        model.setAnswer(getAnswer());
     }
 
-    public interface OnDeletePressedListener {
+    @Override
+    protected void updateUi() {
+        if (model.hasQuestion()) {
+            answerInputLayout.setHint(model.getQuestion());
+            questionEditText.setText(model.getQuestion());
+        } else answerInputLayout.setHint(getContext().getString(R.string.security_edit_new_hint));
 
-        void onDeletePressed(SecurityQuestionEditView view);
-
+        char[] answer = model.getAnswer();
+        if (model.hasAnswer())
+            answerEditText.setText(answer, 0, answer.length);
     }
 
 }

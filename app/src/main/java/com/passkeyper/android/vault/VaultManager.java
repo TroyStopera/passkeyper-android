@@ -19,6 +19,28 @@ public abstract class VaultManager extends VaultModel.Manager {
     private static VaultManager instance = null;
 
     /**
+     * Saves a VaultModel to the vault.
+     *
+     * @param vaultModel the model to save.
+     */
+    public final void save(VaultModel vaultModel) {
+        if (vaultModel instanceof EntryRecord) save((EntryRecord) vaultModel);
+        else if (vaultModel instanceof SensitiveEntry) save((SensitiveEntry) vaultModel);
+        else if (vaultModel instanceof SecurityQuesEntry) save((SecurityQuesEntry) vaultModel);
+    }
+
+    /**
+     * Deletes a VaultModel from the vault.
+     *
+     * @param vaultModel the model to delete.
+     */
+    public final void delete(VaultModel vaultModel) {
+        if (vaultModel instanceof EntryRecord) delete((EntryRecord) vaultModel);
+        else if (vaultModel instanceof SensitiveEntry) delete((SensitiveEntry) vaultModel);
+        else if (vaultModel instanceof SecurityQuesEntry) delete((SecurityQuesEntry) vaultModel);
+    }
+
+    /**
      * @return all EntryRecords from the vault.
      */
     public abstract List<EntryRecord> getAllEntryRecords();

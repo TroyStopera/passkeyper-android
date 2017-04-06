@@ -23,7 +23,8 @@
 
         <activity
             android:name=".EditEntry"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
     </application>
