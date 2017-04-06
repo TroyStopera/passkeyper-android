@@ -35,7 +35,7 @@ class DbContract {
                 COLUMN_NAME_VALUE + " TEXT NOT NULL, " +
                 COLUMN_NAME_RECORD_ID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + COLUMN_NAME_RECORD_ID + ") REFERENCES " +
-                RecordTable.TABLE_NAME + "(" + RecordTable._ID + "))'";
+                RecordTable.TABLE_NAME + "(" + RecordTable._ID + "));";
 
         static final String[] COLUMNS = {_ID, COLUMN_NAME_NAME, COLUMN_NAME_VALUE, COLUMN_NAME_RECORD_ID};
     }
@@ -52,7 +52,7 @@ class DbContract {
                 COLUMN_NAME_ANSWER + " TEXT NOT NULL, " +
                 COLUMN_NAME_RECORD_ID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + COLUMN_NAME_RECORD_ID + ") REFERENCES " +
-                RecordTable.TABLE_NAME + "(" + RecordTable._ID + "))'";
+                RecordTable.TABLE_NAME + "(" + RecordTable._ID + "));";
 
         static final String[] COLUMNS = {_ID, COLUMN_NAME_QUESTION, COLUMN_NAME_ANSWER, COLUMN_NAME_RECORD_ID};
     }
