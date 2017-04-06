@@ -12,4 +12,24 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_save">Save</string>
+
+    <string name="edit_entry_account">Account</string>
+    <string name="edit_entry_username">Username</string>
+
+    <string-array name="sensitive_data_name_array">
+        <item>@string/sensitive_type_password</item>
+        <item>@string/sensitive_type_Pin</item>
+        <item>@string/sensitive_type_other</item>
+    </string-array>
+
+    <string name="sensitive_type_editing">Editing…</string>
+    <string name="sensitive_type_password">Password</string>
+    <string name="sensitive_type_Pin">PIN</string>
+    <string name="sensitive_type_other">Other</string>
+
+    <string name="security_edit_answer">Answer</string>
+    <string name="security_edit_question">Question</string>
+    <string name="security_edit_new_hint">Security Question &amp; Answer</string>
+
 </resources>
