@@ -38,15 +38,14 @@ class ArrayHelper {
      * @return the new char[].
      */
     static char[] bytesToChars(byte[] bytes) {
-        CharBuffer charBuffer = ByteBuffer.wrap(bytes).asCharBuffer();
+        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+        CharBuffer charBuffer = Charset.forName("UTF-8").decode(byteBuffer);
 
-        char[] chars = Arrays.copyOfRange(
-                charBuffer.array(),
-                charBuffer.position(),
-                charBuffer.limit()
-        );
+        char[] chars = new char[charBuffer.remaining()];
+        charBuffer.get(chars);
 
         //clear sensitive data
+        Arrays.fill(byteBuffer.array(), (byte) 0);
         Arrays.fill(charBuffer.array(), '\0');
 
         return chars;

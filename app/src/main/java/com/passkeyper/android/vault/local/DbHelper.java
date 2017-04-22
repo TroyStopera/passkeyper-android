@@ -37,11 +37,12 @@ class DbHelper extends SQLiteOpenHelper {
         return read(table, projection, recordIdColumn + " = ?", new String[]{String.valueOf(recordId)});
     }
 
-    void save(VaultModel model, String table, String _id, ContentValues values) {
+    long save(VaultModel model, String table, String _id, ContentValues values) {
         if (model.isSaved())
             save(table, values, _id + " = ?", new String[]{String.valueOf(model.getId())}, true);
         else
-            save(table, values, null, null, false);
+            return save(table, values, null, null, false);
+        return model.getId();
     }
 
     void delete(VaultModel model, String table, String _id) {
@@ -58,11 +59,12 @@ class DbHelper extends SQLiteOpenHelper {
         return db.query(table, projection, selection, args, null, null, null);
     }
 
-    private void save(String table, ContentValues values, String selection, String[] args, boolean update) {
+    private long save(String table, ContentValues values, String selection, String[] args, boolean update) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         if (update) db.update(table, values, selection, args);
-        else db.insert(table, null, values);
+        else return db.insert(table, null, values);
+        return -1;
     }
 
     private void delete(String table, String selection, String[] args) {

@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class LocalVaultManager extends VaultManager {
 
+    private final Context context;
     private final DbHelper dbHelper;
     /* Used when an exception is thrown during encryption/decryption to avoid leaking sensitive data */
     private static final String ERROR_STRING = "*Error during encryption/decryption*";
@@ -28,6 +29,7 @@ public class LocalVaultManager extends VaultManager {
      * @param context the Context used to access the database.
      */
     public LocalVaultManager(Context context) {
+        this.context = context;
         dbHelper = new DbHelper(context);
     }
 
@@ -67,8 +69,9 @@ public class LocalVaultManager extends VaultManager {
             entry.setName(cursor.getString(1));
             //try to decrypt encrypted data
             try {
-                entry.setValue(LocalDbCrypto.decrypt(cursor.getString(2)));
+                entry.setValue(LocalDbCrypto.decrypt(context, cursor.getString(2)));
             } catch (Exception e) {
+                e.printStackTrace();
                 //fall back to error string
                 entry.setValue(ERROR_STRING.toCharArray());
             }
@@ -97,8 +100,9 @@ public class LocalVaultManager extends VaultManager {
             entry.setQuestion(cursor.getString(1));
             //try to decrypt encrypted data
             try {
-                entry.setAnswer(LocalDbCrypto.decrypt(cursor.getString(2)));
+                entry.setAnswer(LocalDbCrypto.decrypt(context, cursor.getString(2)));
             } catch (Exception e) {
+                e.printStackTrace();
                 //fall back to error string
                 entry.setAnswer(ERROR_STRING.toCharArray());
             }
@@ -117,7 +121,7 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.RecordTable.COLUMN_NAME_ACCOUNT, record.getAccount());
         values.put(DbContract.RecordTable.COLUMN_NAME_USERNAME, record.getUsername());
 
-        dbHelper.save(record, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable._ID, values);
+        setModelID(record, dbHelper.save(record, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable._ID, values));
     }
 
     @Override
@@ -127,13 +131,14 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID, sensitiveEntry.getRecord().getId());
         //try to encrypt sensitive data
         try {
-            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, LocalDbCrypto.encrypt(sensitiveEntry.getValue()));
+            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, LocalDbCrypto.encrypt(context, sensitiveEntry.getValue()));
         } catch (Exception e) {
+            e.printStackTrace();
             //fall back to saving the error string
             values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, ERROR_STRING);
         }
 
-        dbHelper.save(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID, values);
+        setModelID(sensitiveEntry, dbHelper.save(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID, values));
     }
 
     @Override
@@ -143,13 +148,14 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID, securityQuesEntry.getRecord().getId());
         //try to encrypt sensitive data
         try {
-            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, LocalDbCrypto.encrypt(securityQuesEntry.getAnswer()));
+            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, LocalDbCrypto.encrypt(context, securityQuesEntry.getAnswer()));
         } catch (Exception e) {
+            e.printStackTrace();
             //fall back to saving the error string
             values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, ERROR_STRING);
         }
 
-        dbHelper.save(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID, values);
+        setModelID(securityQuesEntry, dbHelper.save(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID, values));
     }
 
     @Override
