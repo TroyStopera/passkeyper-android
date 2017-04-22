@@ -29,7 +29,8 @@ public class EntryRecord extends AbstractVaultModel {
      * Creates a new, empty EntryRecord.
      */
     public EntryRecord() {
-
+        account = "";
+        username = "";
     }
 
     /* Create from Parcel */
