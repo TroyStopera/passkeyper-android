@@ -5,7 +5,7 @@ import android.os.Parcel;
 /**
  * Represents a security question and an answer for an entry in the vault.
  */
-public class SecurityQuesEntry extends VaultModel {
+public class SecurityQuesEntry extends AbstractVaultModel implements PrivateModel {
 
     /**
      * The Parcelable Creator for SecurityQuesEntry.
@@ -86,6 +86,7 @@ public class SecurityQuesEntry extends VaultModel {
         strings.put(answer, key);
     }
 
+    @Override
     public void free() {
         strings.erase(key);
     }

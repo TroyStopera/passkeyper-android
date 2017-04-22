@@ -12,12 +12,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.vaultmodel.VaultModel;
+import com.passkeyper.android.vaultmodel.PrivateModel;
 
 /**
- * A custom View that encapsulates the functionality needed to edit a VaultModel.
+ * A custom View that encapsulates the functionality needed to edit a private VaultModel.
  */
-public abstract class VaultModelEditView<T extends VaultModel> extends FrameLayout implements View.OnClickListener {
+public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends FrameLayout implements View.OnClickListener {
 
     protected static final TransformationMethod hidden = new PasswordTransformationMethod();
     private static int lastId = 0;
@@ -28,7 +28,7 @@ public abstract class VaultModelEditView<T extends VaultModel> extends FrameLayo
     private OnDeletePressedListener listener;
     private final int uniqueId = lastId++;
 
-    public VaultModelEditView(@NonNull Context context, int layoutRes, T model) {
+    public PrivateVaultModelEditView(@NonNull Context context, int layoutRes, T model) {
         super(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(layoutRes, this);
@@ -38,7 +38,7 @@ public abstract class VaultModelEditView<T extends VaultModel> extends FrameLayo
         updateUi();
     }
 
-    public VaultModelEditView(@NonNull Context context, @Nullable AttributeSet attrs, int layoutRes, T model) {
+    public PrivateVaultModelEditView(@NonNull Context context, @Nullable AttributeSet attrs, int layoutRes, T model) {
         super(context, attrs);
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(layoutRes, this);
@@ -78,8 +78,8 @@ public abstract class VaultModelEditView<T extends VaultModel> extends FrameLayo
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof VaultModelEditView) {
-            VaultModelEditView view = (VaultModelEditView) obj;
+        if (obj instanceof PrivateVaultModelEditView) {
+            PrivateVaultModelEditView view = (PrivateVaultModelEditView) obj;
             return view.getUniqueId() == getUniqueId();
         }
         return false;
@@ -135,7 +135,7 @@ public abstract class VaultModelEditView<T extends VaultModel> extends FrameLayo
 
     public interface OnDeletePressedListener {
 
-        void onDeletePressed(VaultModelEditView view);
+        void onDeletePressed(PrivateVaultModelEditView view);
 
     }
 

@@ -7,7 +7,7 @@ import android.os.Parcel;
  * sensitive data and teh value that goes along with it.
  */
 
-public class SensitiveEntry extends VaultModel {
+public class SensitiveEntry extends AbstractVaultModel implements PrivateModel {
 
     /**
      * The Parcelable Creator for SecurityQuesEntry.
@@ -88,6 +88,7 @@ public class SensitiveEntry extends VaultModel {
         strings.put(value, key);
     }
 
+    @Override
     public void free() {
         strings.erase(key);
     }

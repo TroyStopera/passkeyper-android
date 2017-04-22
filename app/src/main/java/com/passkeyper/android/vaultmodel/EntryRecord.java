@@ -6,7 +6,7 @@ import android.os.Parcel;
  * Represents the 'public' data for an entry in the Vault. Only contains the name of the
  * account/entry and optionally  the username.
  */
-public class EntryRecord extends VaultModel {
+public class EntryRecord extends AbstractVaultModel {
 
     /**
      * The Parcelable Creator for EntryRecord.

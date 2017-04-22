@@ -14,7 +14,7 @@ import com.passkeyper.android.view.SecurityQuestionEditView;
 /**
  * Class used to adapt/format SecurityQuesEntry objects.
  */
-public class SecurityQuesAdapter extends VaultModelAdapter<SecurityQuesEntry> {
+public class SecurityQuesAdapter extends PrivateVaultModelAdapter<SecurityQuesEntry> {
 
     private boolean verifyModeEnabled = false;
 

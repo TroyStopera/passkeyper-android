@@ -24,12 +24,12 @@ import com.passkeyper.android.vaultmodel.SensitiveEntry;
 import com.passkeyper.android.vaultmodel.VaultModel;
 import com.passkeyper.android.view.SecurityQuestionEditView;
 import com.passkeyper.android.view.SensitiveEntryEditView;
-import com.passkeyper.android.view.VaultModelEditView;
+import com.passkeyper.android.view.PrivateVaultModelEditView;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class EditEntry extends AppCompatActivity implements VaultModelEditView.OnDeletePressedListener, View.OnClickListener {
+public class EditEntry extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener {
 
     public static final String ENTRY_RECORD_EXTRA_KEY = "EntryRecord";
 
@@ -78,7 +78,7 @@ public class EditEntry extends AppCompatActivity implements VaultModelEditView.O
     }
 
     @Override
-    public void onDeletePressed(VaultModelEditView view) {
+    public void onDeletePressed(PrivateVaultModelEditView view) {
         //hide keyboard on delete so "undo" can be seen
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

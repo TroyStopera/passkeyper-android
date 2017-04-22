@@ -3,28 +3,28 @@ package com.passkeyper.android.adapter;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
-import com.passkeyper.android.vaultmodel.VaultModel;
-import com.passkeyper.android.view.VaultModelEditView;
+import com.passkeyper.android.vaultmodel.PrivateModel;
+import com.passkeyper.android.view.PrivateVaultModelEditView;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Abstract class to be used for adapting VaultModel data.
+ * Abstract class to be used for adapting private VaultModel data.
  */
-public abstract class VaultModelAdapter<K extends VaultModel> extends BaseAdapter implements VaultModelEditView.OnDeletePressedListener {
+public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends BaseAdapter implements PrivateVaultModelEditView.OnDeletePressedListener {
 
     protected final Context context;
 
     private final List<K> content = new LinkedList<>();
-    private VaultModelEditView.OnDeletePressedListener listener;
+    private PrivateVaultModelEditView.OnDeletePressedListener listener;
 
-    VaultModelAdapter(Context context) {
+    PrivateVaultModelAdapter(Context context) {
         this.context = context;
     }
 
-    public final void setOnDeletePressedListener(VaultModelEditView.OnDeletePressedListener listener) {
+    public final void setOnDeletePressedListener(PrivateVaultModelEditView.OnDeletePressedListener listener) {
         this.listener = listener;
     }
 
@@ -65,7 +65,7 @@ public abstract class VaultModelAdapter<K extends VaultModel> extends BaseAdapte
     }
 
     @Override
-    public final void onDeletePressed(VaultModelEditView view) {
+    public final void onDeletePressed(PrivateVaultModelEditView view) {
         if (listener != null)
             listener.onDeletePressed(view);
     }

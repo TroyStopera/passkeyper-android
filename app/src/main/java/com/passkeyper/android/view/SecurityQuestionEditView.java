@@ -1,13 +1,12 @@
 package com.passkeyper.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -17,7 +16,8 @@ import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 /**
  * A custom View that encapsulates the functionality needed to edit a SecurityQuesEntry.
  */
-public class SecurityQuestionEditView extends VaultModelEditView<SecurityQuesEntry> implements View.OnFocusChangeListener {
+@SuppressLint("ViewConstructor")
+public class SecurityQuestionEditView extends PrivateVaultModelEditView<SecurityQuesEntry> implements View.OnFocusChangeListener {
 
     private static final TransformationMethod password = new PasswordTransformationMethod();
 
@@ -26,10 +26,6 @@ public class SecurityQuestionEditView extends VaultModelEditView<SecurityQuesEnt
 
     public SecurityQuestionEditView(@NonNull Context context, SecurityQuesEntry entry) {
         super(context, R.layout.view_edit_security, entry);
-    }
-
-    public SecurityQuestionEditView(@NonNull Context context, @Nullable AttributeSet attrs, SecurityQuesEntry entry) {
-        super(context, attrs, R.layout.view_edit_security, entry);
     }
 
     public String getQuestion() {

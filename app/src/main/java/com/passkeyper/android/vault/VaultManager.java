@@ -3,6 +3,7 @@ package com.passkeyper.android.vault;
 import android.content.Context;
 
 import com.passkeyper.android.vault.local.LocalVaultManager;
+import com.passkeyper.android.vaultmodel.AbstractVaultModel;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * Defines the methods that need to be implemented in order to manage a vault.
  */
-public abstract class VaultManager extends VaultModel.Manager {
+public abstract class VaultManager extends AbstractVaultModel.Manager {
 
     /* The instance of vault manager that the app should use */
     private static VaultManager instance = null;

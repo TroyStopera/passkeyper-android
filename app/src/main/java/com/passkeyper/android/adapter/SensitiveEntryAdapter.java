@@ -11,7 +11,7 @@ import com.passkeyper.android.view.SensitiveEntryEditView;
 /**
  * Class used to adapt/format SensitiveEntry objects.
  */
-public class SensitiveEntryAdapter extends VaultModelAdapter<SensitiveEntry> {
+public class SensitiveEntryAdapter extends PrivateVaultModelAdapter<SensitiveEntry> {
 
     public SensitiveEntryAdapter(Context context) {
         super(context);

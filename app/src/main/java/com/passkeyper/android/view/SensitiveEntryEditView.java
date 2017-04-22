@@ -1,11 +1,10 @@
 package com.passkeyper.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,8 @@ import com.passkeyper.android.vaultmodel.SensitiveEntry;
 /**
  * A custom View that encapsulates the functionality needed to edit a SensitiveEntry.
  */
-public class SensitiveEntryEditView extends VaultModelEditView<SensitiveEntry> implements View.OnFocusChangeListener, AdapterView.OnItemSelectedListener {
+@SuppressLint("ViewConstructor")
+public class SensitiveEntryEditView extends PrivateVaultModelEditView<SensitiveEntry> implements View.OnFocusChangeListener, AdapterView.OnItemSelectedListener {
 
     private Spinner nameSpinner;
     private TextInputLayout inputLayout;
@@ -25,10 +25,6 @@ public class SensitiveEntryEditView extends VaultModelEditView<SensitiveEntry> i
 
     public SensitiveEntryEditView(@NonNull Context context, SensitiveEntry entry) {
         super(context, R.layout.view_edit_sensitive, entry);
-    }
-
-    public SensitiveEntryEditView(@NonNull Context context, @Nullable AttributeSet attrs, SensitiveEntry entry) {
-        super(context, attrs, R.layout.view_edit_sensitive, entry);
     }
 
     public String getEntryName() {
