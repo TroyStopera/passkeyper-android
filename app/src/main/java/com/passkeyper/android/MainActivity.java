@@ -140,4 +140,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    @Override
+    protected void onPause() {
+        mSnackbarUndoDelete.forceDismissSnackbar();
+        mEntryAdapter.collapseSelected();
+        super.onPause();
+    }
 }

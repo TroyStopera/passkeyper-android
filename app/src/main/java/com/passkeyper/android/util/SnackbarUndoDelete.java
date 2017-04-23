@@ -59,6 +59,7 @@ public class SnackbarUndoDelete<T> extends Snackbar.Callback {
                 mCurrentUndoCount = 0;
             }
         });
+        mSnackbar.addCallback(this);
         tList.add(t);
 
         //hide keyboard on delete so "undo" can be seen
