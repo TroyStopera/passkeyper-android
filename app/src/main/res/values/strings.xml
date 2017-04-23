@@ -19,13 +19,15 @@
     <string name="action_delete">Delete</string>
     <string name="action_undo">Undo</string>
 
-    <string name="main_entry_deleted">1 entry deleted</string>
+    <string name="main_entry_deleted">entry deleted</string>
+    <string name="main_entries_deleted">entries deleted</string>
 
     <string name="edit_entry_account">Account</string>
     <string name="edit_entry_username">Username</string>
     <string name="edit_entry_sensitive_data">Sensitive Data</string>
     <string name="edit_entry_security_questions">Security Questions</string>
-    <string name="edit_entry_item_deleted">1 item deleted</string>
+    <string name="edit_entry_item_deleted">item deleted</string>
+    <string name="edit_entry_items_deleted">items deleted</string>
     <string name="edit_entry_add_press">Press </string>
     <string name="edit_entry_add_sensitive">To add Passwords, PINs, etc…</string>
     <string name="edit_entry_add_security">To add Security Questions</string>

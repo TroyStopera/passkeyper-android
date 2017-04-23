@@ -3,8 +3,6 @@ package com.passkeyper.android;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -17,19 +15,20 @@ import android.widget.ListView;
 
 import com.passkeyper.android.adapter.SecurityQuesAdapter;
 import com.passkeyper.android.adapter.SensitiveEntryAdapter;
+import com.passkeyper.android.util.SnackbarUndoDelete;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
+import com.passkeyper.android.vaultmodel.PrivateModel;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
 import com.passkeyper.android.vaultmodel.VaultModel;
 import com.passkeyper.android.view.PrivateVaultModelEditView;
-import com.passkeyper.android.view.SecurityQuestionEditView;
-import com.passkeyper.android.view.SensitiveEntryEditView;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EditEntry extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener {
+public class EditEntry extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener, SnackbarUndoDelete.SnackBarDeleteListener<PrivateModel> {
 
     public static final int RESULT_ENTRY_DELETED = 0;
     public static final int RESULT_ENTRY_CREATED = 1;
@@ -41,7 +40,7 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
     private ListView mSensitiveList, mSecurityList;
     private SensitiveEntryAdapter mSensitiveEntryAdapter;
     private SecurityQuesAdapter mSecurityQuesAdapter;
-    private Snackbar mSnackbar;
+    private SnackbarUndoDelete<PrivateModel> mSnackbarUndoDelete;
 
     private EntryRecord record;
     private VaultManager vaultManager;
@@ -85,13 +84,12 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
 
     @Override
     public void onDeletePressed(PrivateVaultModelEditView view) {
-        int removedIndex = -1;
-        if (view instanceof SensitiveEntryEditView)
-            removedIndex = mSensitiveEntryAdapter.remove(((SensitiveEntryEditView) view).getVaultModel());
-        else if (view instanceof SecurityQuestionEditView)
-            removedIndex = mSecurityQuesAdapter.remove(((SecurityQuestionEditView) view).getVaultModel());
-
-        showUndo(removedIndex, view.getVaultModel());
+        PrivateModel privateModel = view.getVaultModel();
+        if (privateModel instanceof SensitiveEntry)
+            mSensitiveEntryAdapter.remove((SensitiveEntry) privateModel);
+        else if (privateModel instanceof SecurityQuesEntry)
+            mSecurityQuesAdapter.remove((SecurityQuesEntry) privateModel);
+        mSnackbarUndoDelete.addUndoable(view.getVaultModel());
     }
 
     @Override
@@ -123,9 +121,31 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
     }
 
     @Override
+    public void onDelete(Collection<PrivateModel> privateModels) {
+        deletedModels.addAll(privateModels);
+    }
+
+    @Override
+    public void onUndo(Collection<PrivateModel> privateModels) {
+        for (PrivateModel privateModel : privateModels) {
+            if (privateModel instanceof SensitiveEntry)
+                mSensitiveEntryAdapter.addVaultModel((SensitiveEntry) privateModel);
+            else if (privateModel instanceof SecurityQuesEntry)
+                mSecurityQuesAdapter.addVaultModel((SecurityQuesEntry) privateModel);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_entry);
+
+        mSnackbarUndoDelete = new SnackbarUndoDelete<>(
+                findViewById(R.id.edit_activity_root),
+                getString(R.string.edit_entry_item_deleted),
+                getString(R.string.edit_entry_items_deleted),
+                this
+        );
 
         Intent intent = getIntent();
         if (intent.hasExtra(ENTRY_RECORD_EXTRA_KEY))
@@ -174,42 +194,6 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void showUndo(final int index, final VaultModel model) {
-        mSnackbar = Snackbar.make(
-                findViewById(R.id.edit_activity_root),
-                R.string.edit_entry_item_deleted,
-                Snackbar.LENGTH_LONG
-        );
-
-        final BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                deletedModels.add(model);
-            }
-        };
-
-        mSnackbar.setAction(R.string.action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (model instanceof SensitiveEntry)
-                    mSensitiveEntryAdapter.addVaultModel(index, (SensitiveEntry) model);
-                else if (model instanceof SecurityQuesEntry)
-                    mSecurityQuesAdapter.addVaultModel(index, (SecurityQuesEntry) model);
-
-                //no need to add vault model to deleted when undone
-                mSnackbar.removeCallback(callback);
-            }
-        });
-
-        mSnackbar.addCallback(callback);
-
-        //hide keyboard on delete so "undo" can be seen
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(findViewById(R.id.edit_activity_root).getWindowToken(), 0);
-
-        mSnackbar.show();
-    }
-
     private boolean verifyInput() {
         boolean valid = true;
 
@@ -253,13 +237,14 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
         boolean created = !record.isSaved();
         if (!verifyInput()) return;
 
+        //delete any pending deletions by closing the Snackbar
+        mSnackbarUndoDelete.forceDismissSnackbar();
+
         for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed
-            if (model instanceof SensitiveEntry)
-                ((SensitiveEntry) model).free();
-            else if (model instanceof SecurityQuesEntry)
-                ((SecurityQuesEntry) model).free();
+            if (model instanceof PrivateModel)
+                ((PrivateModel) model).free();
         }
 
         record.setAccount(mAccountInput.getText().toString());

@@ -10,6 +10,8 @@ import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.view.EntryRecordViewHolder;
 
+import java.util.Collection;
+
 /**
  * Class used to adapt EntryRecord data for use in the main activity's RecyclerView.
  */
@@ -45,6 +47,10 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     public void add(EntryRecord record) {
         records.add(record);
+    }
+
+    public void addAll(Collection<EntryRecord> entryRecords) {
+        records.addAll(entryRecords);
     }
 
     public void setSortOrder(SortOrder sortOrder) {

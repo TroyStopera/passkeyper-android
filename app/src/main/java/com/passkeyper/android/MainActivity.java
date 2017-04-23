@@ -2,9 +2,7 @@ package com.passkeyper.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,21 +14,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.passkeyper.android.adapter.EntryAdapter;
+import com.passkeyper.android.util.SnackbarUndoDelete;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
+import java.util.Collection;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, EntryAdapter.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, EntryAdapter.OnClickListener, SnackbarUndoDelete.SnackBarDeleteListener<EntryRecord> {
 
     public static final int EDIT_REQUEST_CODE = 24;
 
     private VaultManager mVaultManager;
     private RecyclerView mEntryRecyclerView;
-    private Snackbar mSnackbar;
     private EntryAdapter mEntryAdapter;
+    private SnackbarUndoDelete<EntryRecord> mSnackbarUndoDelete;
 
     @Override
     public void onBackPressed() {
@@ -74,7 +74,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDeleteClicked(EntryRecord record) {
         mEntryAdapter.remove(record);
-        showUndo(record);
+        mSnackbarUndoDelete.addUndoable(record);
+    }
+
+    @Override
+    public void onDelete(Collection<EntryRecord> entryRecords) {
+        for (EntryRecord entryRecord : entryRecords)
+            mVaultManager.delete(entryRecord);
+    }
+
+    @Override
+    public void onUndo(Collection<EntryRecord> entryRecords) {
+        mEntryAdapter.addAll(entryRecords);
     }
 
     @Override
@@ -94,6 +105,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mVaultManager = VaultManager.get(this);
+        mSnackbarUndoDelete = new SnackbarUndoDelete<>(
+                findViewById(R.id.main_activity_root),
+                getString(R.string.main_entry_deleted),
+                getString(R.string.main_entries_deleted),
+                this
+        );
 
         mEntryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
         mEntryAdapter = new EntryAdapter(this);
@@ -121,37 +138,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void showUndo(final EntryRecord record) {
-        mSnackbar = Snackbar.make(
-                findViewById(R.id.main_activity_root),
-                R.string.main_entry_deleted,
-                Snackbar.LENGTH_LONG
-        );
-
-        final BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                mVaultManager.delete(record);
-            }
-        };
-
-        mSnackbar.setAction(R.string.action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSnackbar.removeCallback(callback);
-                mEntryAdapter.add(record);
-            }
-        });
-
-        mSnackbar.addCallback(callback);
-
-        //hide keyboard on delete so "undo" can be seen
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(findViewById(R.id.main_activity_root).getWindowToken(), 0);
-
-        mSnackbar.show();
     }
 
 }
