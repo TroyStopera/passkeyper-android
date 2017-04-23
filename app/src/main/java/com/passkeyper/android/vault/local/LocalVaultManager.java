@@ -160,6 +160,11 @@ public class LocalVaultManager extends VaultManager {
 
     @Override
     public void delete(EntryRecord record) {
+        //delete all associated models as well
+        for (SensitiveEntry entry : getSensitiveEntries(record))
+            delete(entry);
+        for (SecurityQuesEntry entry : getSecurityQuestions(record))
+            delete(entry);
         dbHelper.delete(record, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable._ID);
     }
 

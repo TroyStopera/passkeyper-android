@@ -80,7 +80,7 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
     public abstract void save(SecurityQuesEntry securityQuesEntry);
 
     /**
-     * Delete an EntryRecord from the vault.
+     * Delete an EntryRecord from the vault. Implementations should also delete all related database rows.
      *
      * @param record the EntryRecord to delete.
      */
