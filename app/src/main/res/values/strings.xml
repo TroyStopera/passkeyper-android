@@ -19,6 +19,8 @@
     <string name="action_delete">Delete</string>
     <string name="action_undo">Undo</string>
 
+    <string name="main_entry_deleted">1 entry deleted</string>
+
     <string name="edit_entry_account">Account</string>
     <string name="edit_entry_username">Username</string>
     <string name="edit_entry_sensitive_data">Sensitive Data</string>

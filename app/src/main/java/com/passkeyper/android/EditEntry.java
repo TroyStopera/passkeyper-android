@@ -22,15 +22,18 @@ import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
 import com.passkeyper.android.vaultmodel.VaultModel;
+import com.passkeyper.android.view.PrivateVaultModelEditView;
 import com.passkeyper.android.view.SecurityQuestionEditView;
 import com.passkeyper.android.view.SensitiveEntryEditView;
-import com.passkeyper.android.view.PrivateVaultModelEditView;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class EditEntry extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener {
 
+    public static final int RESULT_ENTRY_DELETED = 0;
+    public static final int RESULT_ENTRY_CREATED = 1;
+    public static final int RESULT_ENTRY_UPDATED = 2;
     public static final String ENTRY_RECORD_EXTRA_KEY = "EntryRecord";
 
     private TextInputLayout mAccountInputLayout;
@@ -79,17 +82,12 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
 
     @Override
     public void onDeletePressed(PrivateVaultModelEditView view) {
-        //hide keyboard on delete so "undo" can be seen
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
         int removedIndex = -1;
         if (view instanceof SensitiveEntryEditView)
             removedIndex = mSensitiveEntryAdapter.remove(((SensitiveEntryEditView) view).getVaultModel());
         else if (view instanceof SecurityQuestionEditView)
             removedIndex = mSecurityQuesAdapter.remove(((SecurityQuestionEditView) view).getVaultModel());
 
-        //show the undo option
         showUndo(removedIndex, view.getVaultModel());
     }
 
@@ -135,7 +133,9 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
 
         mAccountInputLayout = (TextInputLayout) findViewById(R.id.input_layout_account);
         mAccountInput = (TextInputEditText) findViewById(R.id.input_account);
+        if (!record.getAccount().isEmpty()) mAccountInput.setText(record.getAccount());
         mUsernameInput = (TextInputEditText) findViewById(R.id.input_username);
+        if (!record.getUsername().isEmpty()) mUsernameInput.setText(record.getUsername());
 
         //setup the mSensitiveList entry list
         mSensitiveList = (ListView) findViewById(R.id.edit_sensitive_list);
@@ -177,14 +177,14 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
                 R.string.edit_entry_item_deleted,
                 Snackbar.LENGTH_LONG
         );
-        //create a callback
+
         final BaseTransientBottomBar.BaseCallback<Snackbar> callback = new BaseTransientBottomBar.BaseCallback<Snackbar>() {
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 deletedModels.add(model);
             }
         };
-        //add the undo button
+
         mSnackbar.setAction(R.string.action_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,6 +199,11 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
         });
 
         mSnackbar.addCallback(callback);
+
+        //hide keyboard on delete so "undo" can be seen
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(findViewById(R.id.edit_activity_root).getWindowToken(), 0);
+
         mSnackbar.show();
     }
 
@@ -242,9 +247,9 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
     }
 
     private void save() {
-        //check user's input
+        boolean created = !record.isSaved();
         if (!verifyInput()) return;
-        //delete all deleted models
+
         for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed
@@ -253,28 +258,34 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
             else if (model instanceof SecurityQuesEntry)
                 ((SecurityQuesEntry) model).free();
         }
-        //update & save the entry record
+
         record.setAccount(mAccountInput.getText().toString());
         record.setUsername(mUsernameInput.getText().toString());
         vaultManager.save(record);
-        //save the sensitive data
+
         for (SensitiveEntry entry : mSensitiveEntryAdapter.getAllVaultModels()) {
             //only save if the user has filled out the field
-            if (entry.hasValue() && entry.hasName()) vaultManager.save(entry);
-            //release the sensitive data from memory
+            if (entry.hasValue() && entry.hasName()) {
+                vaultManager.save(entry);
+            }
             entry.free();
         }
-        //save the security question
+
         for (SecurityQuesEntry entry : mSecurityQuesAdapter.getAllVaultModels()) {
             vaultManager.save(entry);
-            //release the sensitive data from memory
             entry.free();
         }
+
+        if (created) {
+            Intent data = new Intent();
+            data.putExtra(ENTRY_RECORD_EXTRA_KEY, record);
+            setResult(RESULT_ENTRY_CREATED, data);
+        } else setResult(RESULT_ENTRY_UPDATED);
+
         finish();
     }
 
     private void delete() {
-        //delete all deleted models
         for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed
@@ -283,20 +294,22 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
             else if (model instanceof SecurityQuesEntry)
                 ((SecurityQuesEntry) model).free();
         }
-        //delete the entry record
+
         vaultManager.delete(record);
-        //delete the sensitive data
+
         for (SensitiveEntry entry : mSensitiveEntryAdapter.getAllVaultModels()) {
             vaultManager.delete(entry);
-            //release the sensitive data from memory
             entry.free();
         }
-        //delete the security question
+
         for (SecurityQuesEntry entry : mSecurityQuesAdapter.getAllVaultModels()) {
             vaultManager.delete(entry);
-            //release the sensitive data from memory
             entry.free();
         }
+
+        Intent data = new Intent();
+        data.putExtra(ENTRY_RECORD_EXTRA_KEY, record);
+        setResult(RESULT_ENTRY_DELETED, data);
         finish();
     }
 
