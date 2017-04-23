@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:padding="2dp"
+        android:padding="@dimen/icon_padding"
         android:src="@drawable/ic_visibility_off"/>
 
     <ImageButton
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:padding="2dp"
+        android:padding="@dimen/icon_padding"
         android:src="@drawable/ic_delete"/>
 
     <ImageButton
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:padding="2dp"
+        android:padding="@dimen/icon_padding"
         android:src="@drawable/ic_done"
         android:visibility="gone"/>
 
