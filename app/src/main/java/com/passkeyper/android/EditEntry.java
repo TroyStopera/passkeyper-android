@@ -58,6 +58,9 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                //clear focus of any EditText that is being edited
+                View focus = getCurrentFocus();
+                if (focus != null) focus.clearFocus();
                 save();
                 return true;
             case R.id.action_delete:
