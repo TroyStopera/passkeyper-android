@@ -13,6 +13,11 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_missing_details">Missing required information</string>
 
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_alpha_asc">A to Z</string>
+    <string name="action_sort_alpha_desc">Z to A</string>
+    <string name="action_sort_chron_asc">Oldest First</string>
+    <string name="action_sort_chron_desc">Newest First</string>
     <string name="action_settings">Settings</string>
     <string name="action_logout">Log Out</string>
     <string name="action_save">Save</string>

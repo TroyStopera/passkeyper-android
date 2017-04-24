@@ -16,7 +16,6 @@ import com.passkeyper.android.adapter.EntryDetailItemAdapter;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
-
 /**
  * ViewHolder used to display EntryRecords and their sub-items.
  */
@@ -68,8 +67,12 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
             mSecurityQuestionAdapter = new EntryDetailItemAdapter<>(context, mVaultManager.getSecurityQuestions(record));
             mSecurityQuestionsList.setAdapter(mSecurityQuestionAdapter);
 
+            mEditButton.setVisibility(View.VISIBLE);
+            mDeleteButton.setVisibility(View.VISIBLE);
             mDetailLayout.setVisibility(View.VISIBLE);
         } else {
+            mEditButton.setVisibility(View.GONE);
+            mDeleteButton.setVisibility(View.GONE);
             mDetailLayout.setVisibility(View.GONE);
         }
     }
@@ -78,7 +81,7 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(listener);
     }
 
-    public void setOnEditCLickListener(final EntryAdapter.OnClickListener listener) {
+    public void setOnEditCLickListener(final EntryAdapter.OnActionListener listener) {
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +91,7 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setOnDeleteCLickListener(final EntryAdapter.OnClickListener listener) {
+    public void setOnDeleteCLickListener(final EntryAdapter.OnActionListener listener) {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

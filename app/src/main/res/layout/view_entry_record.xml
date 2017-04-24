@@ -36,7 +36,8 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:padding="@dimen/icon_padding"
-            android:src="@drawable/ic_edit"/>
+            android:src="@drawable/ic_edit"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/record_delete"
@@ -44,7 +45,8 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:padding="@dimen/icon_padding"
-            android:src="@drawable/ic_delete"/>
+            android:src="@drawable/ic_delete"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

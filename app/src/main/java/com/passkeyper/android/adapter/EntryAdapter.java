@@ -11,6 +11,7 @@ import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.view.EntryRecordViewHolder;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Class used to adapt EntryRecord data for use in the main activity's RecyclerView.
@@ -18,16 +19,17 @@ import java.util.Collection;
 public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     public enum SortOrder {
-        Alpha, Alpha_Inverse, Chron, Chron_Inverse
+        AtoZ, ZtoA, OldestFirst, NewestFirst
     }
 
     private final Context context;
     private final VaultManager vaultManager;
     private final SortedList<EntryRecord> records = new SortedList<>(EntryRecord.class, new Callback());
 
-    private OnClickListener listener;
+    private OnEntryExpandedListener onEntryExpandedListener;
+    private OnActionListener listener;
     private long mExpandedId = -1;
-    private SortOrder sortOrder = SortOrder.Chron;
+    private SortOrder sortOrder = SortOrder.OldestFirst;
 
     public EntryAdapter(Context context) {
         this.context = context;
@@ -55,9 +57,21 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
+
+        //make a copy of the items
+        Collection<EntryRecord> entryRecords = new LinkedList<>();
+        for (int i = 0; i < records.size(); i++)
+            entryRecords.add(records.get(i));
+        //clear it and re-add them to force a re-sort
+        records.clear();
+        addAll(entryRecords);
     }
 
-    public void setOnClickListener(OnClickListener listener) {
+    public void setOnEntryExpandedListener(OnEntryExpandedListener onEntryExpandedListener) {
+        this.onEntryExpandedListener = onEntryExpandedListener;
+    }
+
+    public void setOnClickListener(OnActionListener listener) {
         this.listener = listener;
     }
 
@@ -67,7 +81,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(EntryRecordViewHolder holder, final int position) {
+    public void onBindViewHolder(final EntryRecordViewHolder holder, final int position) {
         final EntryRecord record = records.get(position);
         final boolean isExpanded = record.getId() == mExpandedId;
 
@@ -80,6 +94,8 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
             @Override
             public void onClick(View view) {
                 mExpandedId = isExpanded ? -1 : record.getId();
+                if (!isExpanded && onEntryExpandedListener != null)
+                    onEntryExpandedListener.onEntryExpanded(record, holder.getAdapterPosition());
                 notifyDataSetChanged();
             }
         });
@@ -90,7 +106,19 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
         return records.size();
     }
 
-    public interface OnClickListener {
+    /**
+     * Listener interface for detecting when an entry int he adapter is expanded.
+     */
+    public interface OnEntryExpandedListener {
+
+        void onEntryExpanded(EntryRecord record, int pos);
+
+    }
+
+    /**
+     * Listener interface for when the edit or delete icon buttons are pressed.
+     */
+    public interface OnActionListener {
 
         void onEditClicked(EntryRecord record);
 
@@ -98,18 +126,21 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     }
 
+    /**
+     * Implementation of the Callback needed to communicate from SortedList to Adapter.
+     */
     private class Callback extends SortedList.Callback<EntryRecord> {
 
         @Override
         public int compare(EntryRecord entryRecord1, EntryRecord entryRecord2) {
             switch (sortOrder) {
-                case Alpha:
+                case AtoZ:
                     return entryRecord1.getAccount().compareTo(entryRecord2.getAccount());
-                case Alpha_Inverse:
+                case ZtoA:
                     return 0 - entryRecord1.getAccount().compareTo(entryRecord2.getAccount());
-                case Chron:
+                case OldestFirst:
                     return Long.compare(entryRecord1.getId(), entryRecord2.getId());
-                case Chron_Inverse:
+                case NewestFirst:
                     return 0 - Long.compare(entryRecord1.getId(), entryRecord2.getId());
                 default:
                     return entryRecord1.getAccount().compareTo(entryRecord2.getAccount());

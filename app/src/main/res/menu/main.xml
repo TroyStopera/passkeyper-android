@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_sort"
+        android:orderInCategory="100"
+        android:title="@string/action_sort"
+        app:showAsAction="ifRoom">
+
+        <menu>
+
+            <item
+                android:id="@+id/action_sort_alpha_asc"
+                android:icon="@drawable/ic_alpha"
+                android:orderInCategory="100"
+                android:title="@string/action_sort_alpha_asc"
+                app:showAsAction="withText"/>
+
+            <item
+                android:id="@+id/action_sort_alpha_desc"
+                android:icon="@drawable/ic_alpha"
+                android:orderInCategory="100"
+                android:title="@string/action_sort_alpha_desc"
+                app:showAsAction="withText"/>
+
+            <item
+                android:id="@+id/action_sort_chron_asc"
+                android:icon="@drawable/ic_clock"
+                android:orderInCategory="100"
+                android:title="@string/action_sort_chron_asc"
+                app:showAsAction="withText"/>
+
+            <item
+                android:id="@+id/action_sort_chron_desc"
+                android:icon="@drawable/ic_clock"
+                android:orderInCategory="100"
+                android:title="@string/action_sort_chron_desc"
+                app:showAsAction="withText"/>
+
+        </menu>
+
+    </item>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
