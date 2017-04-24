@@ -4,11 +4,15 @@
     <dimen name="header_vertical_margin">16dp</dimen>
     <dimen name="activity_horizontal_padding">8dp</dimen>
     <dimen name="activity_vertical_padding">8dp</dimen>
+
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">120dp</dimen>
+    <dimen name="nav_header_icon_size">72dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="entry_detail_spacing">5dp</dimen>
     <dimen name="icon_padding">2dp</dimen>
+
     <!-- calculated based on 56dp FAB height and 16dp FAB padding (32dp total for top and bottom) -->
     <dimen name="main_activity_list_bottom_padding">88dp</dimen>
 </resources>
