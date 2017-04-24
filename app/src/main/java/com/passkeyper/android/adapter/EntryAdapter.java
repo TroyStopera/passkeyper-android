@@ -1,10 +1,12 @@
 package com.passkeyper.android.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
@@ -12,30 +14,43 @@ import com.passkeyper.android.view.EntryRecordViewHolder;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Class used to adapt EntryRecord data for use in the main activity's RecyclerView.
  */
-public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
+public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> implements SearchView.OnQueryTextListener {
 
     public enum SortOrder {
         AtoZ, ZtoA, OldestFirst, NewestFirst
     }
 
-    private final Context context;
-    private final VaultManager vaultManager;
-    private final SortedList<EntryRecord> records = new SortedList<>(EntryRecord.class, new Callback());
+    private final Activity context;
+    private final List<EntryRecord> allRecords = new LinkedList<>();
+    private final SortedList<EntryRecord> list = new SortedList<>(EntryRecord.class, new Callback());
 
     private OnEntryExpandedListener onEntryExpandedListener;
     private OnActionListener listener;
     private long mExpandedId = -1;
     private SortOrder sortOrder = SortOrder.OldestFirst;
 
-    public EntryAdapter(Context context) {
+    public EntryAdapter(Activity context) {
         this.context = context;
 
-        vaultManager = VaultManager.get(context);
-        records.addAll(vaultManager.getAllEntryRecords());
+        reload();
+    }
+
+    public void reload() {
+        allRecords.clear();
+        allRecords.addAll(VaultManager.get(context).getAllEntryRecords());
+        list.clear();
+        list.addAll(allRecords);
+    }
+
+    public boolean hasExpandedEntry() {
+        return mExpandedId != -1;
     }
 
     public void collapseSelected() {
@@ -44,27 +59,15 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
     }
 
     public void remove(EntryRecord record) {
-        records.remove(record);
+        list.remove(record);
     }
 
     public void add(EntryRecord record) {
-        records.add(record);
+        list.add(record);
     }
 
     public void addAll(Collection<EntryRecord> entryRecords) {
-        records.addAll(entryRecords);
-    }
-
-    public void setSortOrder(SortOrder sortOrder) {
-        this.sortOrder = sortOrder;
-
-        //make a copy of the items
-        Collection<EntryRecord> entryRecords = new LinkedList<>();
-        for (int i = 0; i < records.size(); i++)
-            entryRecords.add(records.get(i));
-        //clear it and re-add them to force a re-sort
-        records.clear();
-        addAll(entryRecords);
+        list.addAll(entryRecords);
     }
 
     public void setOnEntryExpandedListener(OnEntryExpandedListener onEntryExpandedListener) {
@@ -80,9 +83,22 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
         return new EntryRecordViewHolder(context, parent);
     }
 
+    public void setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
+
+        //make a copy of the items
+        Collection<EntryRecord> entryRecords = new LinkedList<>();
+        for (int i = 0; i < list.size(); i++)
+            entryRecords.add(list.get(i));
+
+        //clear it and re-add them to force a re-sort
+        list.clear();
+        addAll(entryRecords);
+    }
+
     @Override
     public void onBindViewHolder(final EntryRecordViewHolder holder, final int position) {
-        final EntryRecord record = records.get(position);
+        final EntryRecord record = list.get(position);
         final boolean isExpanded = record.getId() == mExpandedId;
 
         holder.bind(record);
@@ -103,7 +119,35 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     @Override
     public int getItemCount() {
-        return records.size();
+        return list.size();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        //hide keyboard on search clicked
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(context.findViewById(android.R.id.content).getWindowToken(), 0);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        newText = newText.toLowerCase();
+        if (newText.isEmpty()) {
+            list.clear();
+            list.addAll(allRecords);
+            return true;
+        }
+
+        list.beginBatchedUpdates();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            EntryRecord record = list.get(i);
+            if (!record.getAccount().toLowerCase().contains(newText))
+                list.removeItemAt(i);
+        }
+        list.endBatchedUpdates();
+
+        return true;
     }
 
     /**

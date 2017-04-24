@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,13 +34,18 @@ public class MainActivity extends AppCompatActivity
     private VaultManager mVaultManager;
     private RecyclerView mEntryRecyclerView;
     private EntryAdapter mEntryAdapter;
+    private SearchView mSearchView;
     private SnackbarUndoDelete<EntryRecord> mSnackbarUndoDelete;
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mSearchView != null && !mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+        } else if (mEntryAdapter != null && mEntryAdapter.hasExpandedEntry()) {
+            mEntryAdapter.collapseSelected();
         } else {
             super.onBackPressed();
         }
@@ -47,6 +54,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setOnQueryTextListener(mEntryAdapter);
         return true;
     }
 
@@ -172,4 +182,5 @@ public class MainActivity extends AppCompatActivity
         mEntryAdapter.collapseSelected();
         super.onPause();
     }
+
 }
