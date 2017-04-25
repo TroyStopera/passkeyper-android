@@ -2,6 +2,7 @@ package com.passkeyper.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -20,7 +21,6 @@ import android.view.View;
 import com.passkeyper.android.adapter.EntryAdapter;
 import com.passkeyper.android.prefs.UserPreferences;
 import com.passkeyper.android.util.SnackbarUndoDelete;
-import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
 import java.util.Collection;
@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity
     public static final int EDIT_REQUEST_CODE = 24;
 
     private UserPreferences mUserPreferences;
-    private VaultManager mVaultManager;
     private RecyclerView mEntryRecyclerView;
     private EntryAdapter mEntryAdapter;
     private SearchView mSearchView;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDelete(Collection<EntryRecord> entryRecords) {
         for (EntryRecord entryRecord : entryRecords)
-            mVaultManager.delete(entryRecord);
+            AppVault.get().getManager().delete(entryRecord);
     }
 
     @Override
@@ -138,7 +137,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mUserPreferences = UserPreferences.get(this);
-        mVaultManager = VaultManager.get(this);
         mSnackbarUndoDelete = new SnackbarUndoDelete<>(
                 findViewById(R.id.main_activity_root),
                 getString(R.string.main_entry_deleted),

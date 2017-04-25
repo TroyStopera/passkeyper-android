@@ -1,8 +1,5 @@
 package com.passkeyper.android.vault;
 
-import android.content.Context;
-
-import com.passkeyper.android.vault.local.LocalVaultManager;
 import com.passkeyper.android.vaultmodel.AbstractVaultModel;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
@@ -16,8 +13,7 @@ import java.util.List;
  */
 public abstract class VaultManager extends AbstractVaultModel.Manager {
 
-    /* The instance of vault manager that the app should use */
-    private static VaultManager instance = null;
+    private boolean isClosed = false;
 
     /**
      * Saves a VaultModel to the vault.
@@ -39,6 +35,20 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
         if (vaultModel instanceof EntryRecord) delete((EntryRecord) vaultModel);
         else if (vaultModel instanceof SensitiveEntry) delete((SensitiveEntry) vaultModel);
         else if (vaultModel instanceof SecurityQuesEntry) delete((SecurityQuesEntry) vaultModel);
+    }
+
+    /**
+     * Closes a vault. Once closed, a vault should not be able to do any transactions.
+     */
+    public void close() {
+        isClosed = true;
+    }
+
+    /**
+     * @return true if this VaultManager has been closed.
+     */
+    public boolean isClosed() {
+        return isClosed;
     }
 
     /**
@@ -99,17 +109,5 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
      * @param securityQuesEntry the SecurityQuesEntry to delete.
      */
     public abstract void delete(SecurityQuesEntry securityQuesEntry);
-
-    /**
-     * Returns the proper instance of VaultManager.
-     *
-     * @param context a Context used to inflate a VaultManager.
-     * @return the instance of VaultManager.
-     */
-    public static VaultManager get(Context context) {
-        //TODO: check user preferences for vault manager
-        if (instance == null) instance = new LocalVaultManager(context);
-        return instance;
-    }
 
 }

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.passkeyper.android.vault.VaultManager;
+import com.passkeyper.android.AppVault;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.view.EntryRecordViewHolder;
 
@@ -44,7 +44,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
 
     public void reload() {
         allRecords.clear();
-        allRecords.addAll(VaultManager.get(context).getAllEntryRecords());
+        allRecords.addAll(AppVault.get().getManager().getAllEntryRecords());
         list.clear();
         list.addAll(allRecords);
     }

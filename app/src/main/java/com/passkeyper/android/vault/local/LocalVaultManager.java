@@ -2,14 +2,15 @@ package com.passkeyper.android.vault.local;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 
-import com.passkeyper.android.crypto.LocalDbCrypto;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,19 +19,25 @@ import java.util.List;
  */
 public class LocalVaultManager extends VaultManager {
 
-    private final Context context;
     private final DbHelper dbHelper;
-    /* Used when an exception is thrown during encryption/decryption to avoid leaking sensitive data */
-    private static final String ERROR_STRING = "*Error during encryption/decryption*";
 
     /**
      * Create a new DbHelper to access the local vault.
      *
      * @param context the Context used to access the database.
      */
-    public LocalVaultManager(Context context) {
-        this.context = context;
-        dbHelper = new DbHelper(context);
+    public LocalVaultManager(Context context, char[] password) {
+        dbHelper = new DbHelper(context, password);
+    }
+
+    public void changePassword(char[] newPassword) {
+        dbHelper.resetKey(newPassword);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        dbHelper.close();
     }
 
     @Override
@@ -49,6 +56,7 @@ public class LocalVaultManager extends VaultManager {
             //add to list
             records.add(record);
         } while (cursor.moveToNext());
+        cursor.close();
 
         return records;
     }
@@ -65,21 +73,20 @@ public class LocalVaultManager extends VaultManager {
 
         if (cursor.moveToFirst()) do {
             SensitiveEntry entry = new SensitiveEntry(record);
-            //read data
+            //read string data
             entry.setName(cursor.getString(1));
-            //try to decrypt encrypted data
-            try {
-                entry.setValue(LocalDbCrypto.decrypt(context, cursor.getString(2)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                //fall back to error string
-                entry.setValue(ERROR_STRING.toCharArray());
-            }
+            //read the private data
+            CharArrayBuffer buffer = new CharArrayBuffer(16);
+            cursor.copyStringToBuffer(2, buffer);
+            entry.setValue(Arrays.copyOfRange(buffer.data, 0, buffer.sizeCopied));
+            //clear the private data
+            Arrays.fill(buffer.data, '\0');
             //update id
             setModelID(entry, cursor.getLong(0));
             //add to list
             entries.add(entry);
         } while (cursor.moveToNext());
+        cursor.close();
 
         return entries;
     }
@@ -96,21 +103,20 @@ public class LocalVaultManager extends VaultManager {
 
         if (cursor.moveToFirst()) do {
             SecurityQuesEntry entry = new SecurityQuesEntry(record);
-            //read data
+            //read string data
             entry.setQuestion(cursor.getString(1));
-            //try to decrypt encrypted data
-            try {
-                entry.setAnswer(LocalDbCrypto.decrypt(context, cursor.getString(2)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                //fall back to error string
-                entry.setAnswer(ERROR_STRING.toCharArray());
-            }
+            //read the private data
+            CharArrayBuffer buffer = new CharArrayBuffer(16);
+            cursor.copyStringToBuffer(2, buffer);
+            entry.setAnswer(Arrays.copyOfRange(buffer.data, 0, buffer.sizeCopied));
+            //clear the private data
+            Arrays.fill(buffer.data, '\0');
             //update id
             setModelID(entry, cursor.getLong(0));
             //add to list
             entries.add(entry);
         } while (cursor.moveToNext());
+        cursor.close();
 
         return entries;
     }
@@ -128,15 +134,8 @@ public class LocalVaultManager extends VaultManager {
     public void save(SensitiveEntry sensitiveEntry) {
         ContentValues values = new ContentValues();
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_NAME, sensitiveEntry.getName());
+        values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, new String(sensitiveEntry.getValue()));
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID, sensitiveEntry.getRecord().getId());
-        //try to encrypt sensitive data
-        try {
-            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, LocalDbCrypto.encrypt(context, sensitiveEntry.getValue()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            //fall back to saving the error string
-            values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, ERROR_STRING);
-        }
 
         setModelID(sensitiveEntry, dbHelper.save(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID, values));
     }
@@ -145,15 +144,8 @@ public class LocalVaultManager extends VaultManager {
     public void save(SecurityQuesEntry securityQuesEntry) {
         ContentValues values = new ContentValues();
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_QUESTION, securityQuesEntry.getQuestion());
+        values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, new String(securityQuesEntry.getAnswer()));
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID, securityQuesEntry.getRecord().getId());
-        //try to encrypt sensitive data
-        try {
-            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, LocalDbCrypto.encrypt(context, securityQuesEntry.getAnswer()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            //fall back to saving the error string
-            values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, ERROR_STRING);
-        }
 
         setModelID(securityQuesEntry, dbHelper.save(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID, values));
     }

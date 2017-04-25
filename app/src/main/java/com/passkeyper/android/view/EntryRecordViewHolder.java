@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.passkeyper.android.AppVault;
 import com.passkeyper.android.R;
 import com.passkeyper.android.adapter.EntryAdapter;
 import com.passkeyper.android.adapter.EntryDetailItemAdapter;
@@ -45,7 +46,7 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
 
         mDetailLayout.setVisibility(View.GONE);
 
-        mVaultManager = VaultManager.get(context);
+        mVaultManager = AppVault.get().getManager();
     }
 
     public void bind(EntryRecord record) {
