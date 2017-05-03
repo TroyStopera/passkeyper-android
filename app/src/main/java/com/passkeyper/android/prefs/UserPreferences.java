@@ -23,6 +23,9 @@ public class UserPreferences {
         preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
+    /**
+     * @return the SortOrder the user has chosen.
+     */
     public EntryAdapter.SortOrder getSortOrder() {
         int i = preferences.getInt(PREF_SORT_ORDER, 0);
         switch (i) {
@@ -39,6 +42,11 @@ public class UserPreferences {
         }
     }
 
+    /**
+     * Set the user's preferred SortOrder.
+     *
+     * @param order the SortOrder to use.
+     */
     public void setSortOrder(EntryAdapter.SortOrder order) {
         SharedPreferences.Editor editor = preferences.edit();
         switch (order) {
@@ -58,6 +66,12 @@ public class UserPreferences {
         editor.apply();
     }
 
+    /**
+     * Get the instance of UserPreferences.
+     *
+     * @param context the Context used to load the SharedPreferences object.
+     * @return the instance of UserPreferences.
+     */
     public static UserPreferences get(Context context) {
         if (instance == null)
             instance = new UserPreferences(context);

@@ -37,16 +37,16 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
     public static final int RESULT_ENTRY_UPDATED = 2;
     public static final String ENTRY_RECORD_EXTRA_KEY = "EntryRecord";
 
-    private TextInputLayout mAccountInputLayout;
-    private TextInputEditText mAccountInput, mUsernameInput;
-    private ListView mSensitiveList, mSecurityList;
-    private SensitiveEntryAdapter mSensitiveEntryAdapter;
-    private SecurityQuesAdapter mSecurityQuesAdapter;
-    private SnackbarUndoDelete<PrivateModel> mSnackbarUndoDelete;
+    private TextInputLayout accountInputLayout;
+    private TextInputEditText accountInput, usernameInput;
+    private ListView sensitiveList, securityList;
+    private SensitiveEntryAdapter sensitiveEntryAdapter;
+    private SecurityQuesAdapter securityQuesAdapter;
+    private SnackbarUndoDelete<PrivateModel> snackbarUndoDelete;
 
-    private EntryRecord mRecord;
-
-    private final List<VaultModel> mDeletedModels = new LinkedList<>();
+    private EntryRecord record;
+    /* the list of all models that should be deleted if the user saves their edits */
+    private final List<VaultModel> deletedModels = new LinkedList<>();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,28 +87,28 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
     public void onDeletePressed(PrivateVaultModelEditView view) {
         PrivateModel privateModel = view.getVaultModel();
         if (privateModel instanceof SensitiveEntry)
-            mSensitiveEntryAdapter.remove((SensitiveEntry) privateModel);
+            sensitiveEntryAdapter.remove((SensitiveEntry) privateModel);
         else if (privateModel instanceof SecurityQuesEntry)
-            mSecurityQuesAdapter.remove((SecurityQuesEntry) privateModel);
-        mSnackbarUndoDelete.addUndoable(view.getVaultModel());
+            securityQuesAdapter.remove((SecurityQuesEntry) privateModel);
+        snackbarUndoDelete.addUndoable(privateModel);
     }
 
     @Override
     public void onClick(View view) {
-        //when a view is clicked clear focus to force writing VaultModelEditViews values to model
+        //when a view is clicked, clear focus to force writing VaultModelEditViews values to model
         View focus = getCurrentFocus();
         if (focus != null) focus.clearFocus();
 
         switch (view.getId()) {
             case R.id.press_sensitive:
             case R.id.edit_add_sensitive:
-                mSensitiveEntryAdapter.addVaultModel(new SensitiveEntry(mRecord));
-                mSensitiveList.setSelection(mSensitiveList.getAdapter().getCount() - 1);
+                sensitiveEntryAdapter.addVaultModel(new SensitiveEntry(record));
+                sensitiveList.setSelection(sensitiveList.getAdapter().getCount() - 1);
                 break;
             case R.id.press_security:
             case R.id.edit_add_security:
-                mSecurityQuesAdapter.addVaultModel(new SecurityQuesEntry(mRecord));
-                mSecurityList.setSelection(mSecurityList.getAdapter().getCount() - 1);
+                securityQuesAdapter.addVaultModel(new SecurityQuesEntry(record));
+                securityList.setSelection(securityList.getAdapter().getCount() - 1);
                 break;
         }
 
@@ -123,16 +123,16 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
 
     @Override
     public void onDelete(Collection<PrivateModel> privateModels) {
-        mDeletedModels.addAll(privateModels);
+        deletedModels.addAll(privateModels);
     }
 
     @Override
     public void onUndo(Collection<PrivateModel> privateModels) {
         for (PrivateModel privateModel : privateModels) {
             if (privateModel instanceof SensitiveEntry)
-                mSensitiveEntryAdapter.addVaultModel((SensitiveEntry) privateModel);
+                sensitiveEntryAdapter.addVaultModel((SensitiveEntry) privateModel);
             else if (privateModel instanceof SecurityQuesEntry)
-                mSecurityQuesAdapter.addVaultModel((SecurityQuesEntry) privateModel);
+                securityQuesAdapter.addVaultModel((SecurityQuesEntry) privateModel);
         }
     }
 
@@ -141,42 +141,41 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_entry);
 
-        mSnackbarUndoDelete = new SnackbarUndoDelete<>(
+        snackbarUndoDelete = new SnackbarUndoDelete<>(
                 findViewById(R.id.edit_activity_root),
                 getString(R.string.edit_entry_item_deleted),
                 getString(R.string.edit_entry_items_deleted),
                 this
         );
 
-        Intent intent = getIntent();
-        if (intent.hasExtra(ENTRY_RECORD_EXTRA_KEY))
-            mRecord = intent.getParcelableExtra(ENTRY_RECORD_EXTRA_KEY);
-        else mRecord = new EntryRecord();
+        if (getIntent().hasExtra(ENTRY_RECORD_EXTRA_KEY))
+            record = getIntent().getParcelableExtra(ENTRY_RECORD_EXTRA_KEY);
+        else record = new EntryRecord();
 
-        mAccountInputLayout = (TextInputLayout) findViewById(R.id.input_layout_account);
-        mAccountInput = (TextInputEditText) findViewById(R.id.input_account);
-        if (!mRecord.getAccount().isEmpty()) mAccountInput.setText(mRecord.getAccount());
-        mUsernameInput = (TextInputEditText) findViewById(R.id.input_username);
-        if (!mRecord.getUsername().isEmpty()) mUsernameInput.setText(mRecord.getUsername());
+        accountInputLayout = (TextInputLayout) findViewById(R.id.input_layout_account);
+        accountInput = (TextInputEditText) findViewById(R.id.input_account);
+        if (!record.getAccount().isEmpty()) accountInput.setText(record.getAccount());
+        usernameInput = (TextInputEditText) findViewById(R.id.input_username);
+        if (!record.getUsername().isEmpty()) usernameInput.setText(record.getUsername());
 
-        //setup the mSensitiveList entry list
-        mSensitiveList = (ListView) findViewById(R.id.edit_sensitive_list);
-        mSensitiveEntryAdapter = new SensitiveEntryAdapter(this);
-        mSensitiveEntryAdapter.setOnDeletePressedListener(this);
-        mSensitiveList.setEmptyView(findViewById(R.id.edit_empty_list_sensitive));
-        mSensitiveList.setAdapter(mSensitiveEntryAdapter);
+        //setup the sensitiveList entry list
+        sensitiveList = (ListView) findViewById(R.id.edit_sensitive_list);
+        sensitiveEntryAdapter = new SensitiveEntryAdapter(this);
+        sensitiveEntryAdapter.setOnDeletePressedListener(this);
+        sensitiveList.setEmptyView(findViewById(R.id.edit_empty_list_sensitive));
+        sensitiveList.setAdapter(sensitiveEntryAdapter);
 
-        //setup the mSecurityList question list
-        mSecurityList = (ListView) findViewById(R.id.edit_security_list);
-        mSecurityQuesAdapter = new SecurityQuesAdapter(this);
-        mSecurityQuesAdapter.setOnDeletePressedListener(this);
-        mSecurityList.setEmptyView(findViewById(R.id.edit_empty_list_security));
-        mSecurityList.setAdapter(mSecurityQuesAdapter);
+        //setup the securityList question list
+        securityList = (ListView) findViewById(R.id.edit_security_list);
+        securityQuesAdapter = new SecurityQuesAdapter(this);
+        securityQuesAdapter.setOnDeletePressedListener(this);
+        securityList.setEmptyView(findViewById(R.id.edit_empty_list_security));
+        securityList.setAdapter(securityQuesAdapter);
 
         //if its a new record then add blank entries
-        if (!mRecord.isSaved()) {
-            mSensitiveEntryAdapter.addVaultModel(new SensitiveEntry(mRecord));
-            mSecurityQuesAdapter.addVaultModel(new SecurityQuesEntry(mRecord));
+        if (!record.isSaved()) {
+            sensitiveEntryAdapter.addVaultModel(new SensitiveEntry(record));
+            securityQuesAdapter.addVaultModel(new SecurityQuesEntry(record));
         }
 
         //listen for adding entries
@@ -196,11 +195,11 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
         AppVault appVault = AppVault.get();
 
         if (appVault.hasManager() || appVault.loadManager()) {
-            if (mRecord.isSaved()) {
+            if (record.isSaved()) {
                 VaultManager vaultManager = appVault.getManager();
                 //add any new vault models
-                mSensitiveEntryAdapter.addNewVaultModels(vaultManager.getSensitiveEntries(mRecord));
-                mSecurityQuesAdapter.addNewVaultModels(vaultManager.getSecurityQuestions(mRecord));
+                sensitiveEntryAdapter.addNewVaultModels(vaultManager.getSensitiveEntries(record));
+                securityQuesAdapter.addNewVaultModels(vaultManager.getSecurityQuestions(record));
             }
         } else appVault.requestSignIn(this);
     }
@@ -209,62 +208,62 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
         boolean valid = true;
 
         //verify that the account is defined
-        if (mAccountInput.length() <= 0) {
-            mAccountInputLayout.setError(getString(R.string.error_field_required));
+        if (accountInput.length() <= 0) {
+            accountInputLayout.setError(getString(R.string.error_field_required));
             valid = false;
-        } else mAccountInputLayout.setErrorEnabled(false);
+        } else accountInputLayout.setErrorEnabled(false);
 
         //remove any sensitive entries not filled out
-        for (SensitiveEntry entry : mSensitiveEntryAdapter.getAllVaultModels()) {
+        for (SensitiveEntry entry : sensitiveEntryAdapter.getAllVaultModels()) {
             if (!entry.hasValue()) {
-                mSensitiveEntryAdapter.remove(entry);
-                mDeletedModels.add(entry);
+                sensitiveEntryAdapter.remove(entry);
+                deletedModels.add(entry);
             }
         }
 
         //verify the security question - they all need a question and answer
-        SecurityQuesEntry[] entries = mSecurityQuesAdapter.getAllVaultModels();
+        SecurityQuesEntry[] entries = securityQuesAdapter.getAllVaultModels();
         for (int i = 0; i < entries.length; i++) {
             SecurityQuesEntry entry = entries[i];
             //remove totally empty entries
             if (!entry.hasQuestion() && !entry.hasAnswer()) {
-                mSecurityQuesAdapter.remove(entry);
-                mDeletedModels.add(entry);
+                securityQuesAdapter.remove(entry);
+                deletedModels.add(entry);
             }
             //handle entries that are incomplete
             else if (!entry.hasQuestion() || !entry.hasAnswer()) {
-                mSecurityQuesAdapter.setVerifyModeEnabled(true);
-                mSecurityList.setSelection(i);
+                securityQuesAdapter.setVerifyModeEnabled(true);
+                securityList.setSelection(i);
                 valid = false;
             }
         }
 
-        if (valid) mSecurityQuesAdapter.setVerifyModeEnabled(false);
+        if (valid) securityQuesAdapter.setVerifyModeEnabled(false);
 
         return valid;
     }
 
     private void save() {
-        boolean created = !mRecord.isSaved();
+        boolean created = !record.isSaved();
         if (!verifyInput()) return;
 
         //delete any pending deletions by closing the Snackbar
-        mSnackbarUndoDelete.forceDismissSnackbar();
+        snackbarUndoDelete.forceDismissSnackbar();
 
         VaultManager vaultManager = AppVault.get().getManager();
 
-        for (VaultModel model : mDeletedModels) {
+        for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed
             if (model instanceof PrivateModel)
                 ((PrivateModel) model).free();
         }
 
-        mRecord.setAccount(mAccountInput.getText().toString());
-        mRecord.setUsername(mUsernameInput.getText().toString());
-        vaultManager.save(mRecord);
+        record.setAccount(accountInput.getText().toString());
+        record.setUsername(usernameInput.getText().toString());
+        vaultManager.save(record);
 
-        for (SensitiveEntry entry : mSensitiveEntryAdapter.getAllVaultModels()) {
+        for (SensitiveEntry entry : sensitiveEntryAdapter.getAllVaultModels()) {
             //only save if the user has filled out the field
             if (entry.hasValue() && entry.hasName()) {
                 vaultManager.save(entry);
@@ -272,14 +271,14 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
             entry.free();
         }
 
-        for (SecurityQuesEntry entry : mSecurityQuesAdapter.getAllVaultModels()) {
+        for (SecurityQuesEntry entry : securityQuesAdapter.getAllVaultModels()) {
             vaultManager.save(entry);
             entry.free();
         }
 
         if (created) {
             Intent data = new Intent();
-            data.putExtra(ENTRY_RECORD_EXTRA_KEY, mRecord);
+            data.putExtra(ENTRY_RECORD_EXTRA_KEY, record);
             setResult(RESULT_ENTRY_CREATED, data);
         } else setResult(RESULT_ENTRY_UPDATED);
 
@@ -288,7 +287,7 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
 
     private void delete() {
         VaultManager vaultManager = AppVault.get().getManager();
-        for (VaultModel model : mDeletedModels) {
+        for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed
             if (model instanceof SensitiveEntry)
@@ -297,20 +296,20 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
                 ((SecurityQuesEntry) model).free();
         }
 
-        vaultManager.delete(mRecord);
+        vaultManager.delete(record);
 
-        for (SensitiveEntry entry : mSensitiveEntryAdapter.getAllVaultModels()) {
+        for (SensitiveEntry entry : sensitiveEntryAdapter.getAllVaultModels()) {
             vaultManager.delete(entry);
             entry.free();
         }
 
-        for (SecurityQuesEntry entry : mSecurityQuesAdapter.getAllVaultModels()) {
+        for (SecurityQuesEntry entry : securityQuesAdapter.getAllVaultModels()) {
             vaultManager.delete(entry);
             entry.free();
         }
 
         Intent data = new Intent();
-        data.putExtra(ENTRY_RECORD_EXTRA_KEY, mRecord);
+        data.putExtra(ENTRY_RECORD_EXTRA_KEY, record);
         setResult(RESULT_ENTRY_DELETED, data);
         finish();
     }

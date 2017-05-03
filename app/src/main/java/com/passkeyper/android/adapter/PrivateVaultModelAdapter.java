@@ -42,13 +42,6 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
         }
     }
 
-    public final void addVaultModels(Collection<K> models) {
-        content.addAll(models);
-        for (K k : models)
-            modelIds.add(k.getId());
-        notifyDataSetChanged();
-    }
-
     public final void addVaultModel(K model) {
         if (model != null) {
             content.add(model);
@@ -57,19 +50,9 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
         }
     }
 
-    public final void addVaultModel(int index, K model) {
-        if (index < 0) addVaultModel(model);
-        else {
-            content.add(index, model);
-            modelIds.add(model.getId());
-            notifyDataSetChanged();
-        }
-    }
-
-    public final int remove(K model) {
+    public final void remove(K model) {
         int index = content.indexOf(model);
         if (index >= 0) remove(index);
-        return index;
     }
 
     public final K remove(int index) {

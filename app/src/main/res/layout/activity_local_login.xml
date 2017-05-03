@@ -8,7 +8,7 @@
               android:gravity="center"
               android:orientation="horizontal"
               android:weightSum="1"
-              tools:context=".activity.LocalLoginActivity">
+              tools:context=".activity.LocalSignInActivity">
 
     <LinearLayout
         android:layout_width="0dp"

@@ -32,24 +32,32 @@ public class MainActivity extends AppCompatActivity
 
     public static final int EDIT_REQUEST_CODE = 24;
 
-    private UserPreferences mUserPreferences;
-    private RecyclerView mEntryRecyclerView;
-    private EntryAdapter mEntryAdapter;
-    private SearchView mSearchView;
-    private SnackbarUndoDelete<EntryRecord> mSnackbarUndoDelete;
+    private UserPreferences userPreferences;
+    private RecyclerView entryRecyclerView;
+    private EntryAdapter entryAdapter;
+    private SearchView searchView;
+    private SnackbarUndoDelete<EntryRecord> snackbarUndoDelete;
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //first try to close the drawer
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (mSearchView != null && !mSearchView.isIconified()) {
-            mSearchView.setQuery("", false);
-            mSearchView.clearFocus();
-            mSearchView.setIconified(true);
-        } else if (mEntryAdapter != null && mEntryAdapter.hasExpandedEntry()) {
-            mEntryAdapter.collapseSelected();
-        } else {
+        }
+        //then try to close the search view
+        else if (searchView != null && !searchView.isIconified()) {
+            searchView.setQuery("", false);
+            searchView.clearFocus();
+            searchView.setIconified(true);
+        }
+        //then try to collapse selected entry
+        else if (entryAdapter != null && entryAdapter.hasExpandedEntry()) {
+            entryAdapter.collapseSelected();
+        }
+        //then, finally, sign out
+        else {
+            //TODO: implement 'press back again to sign out'
             AppVault appVault = AppVault.get();
             appVault.signOut();
             appVault.requestSignIn(this, MainActivity.class);
@@ -62,8 +70,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setOnQueryTextListener(mEntryAdapter);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(entryAdapter);
         return true;
     }
 
@@ -73,24 +81,24 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_logout:
                 AppVault appVault = AppVault.get();
                 appVault.signOut();
-                appVault.requestSignIn(this, getClass());
+                appVault.requestSignIn(this, MainActivity.class);
                 finish();
                 return true;
             case R.id.action_sort_alpha_asc:
-                mUserPreferences.setSortOrder(EntryAdapter.SortOrder.AtoZ);
-                mEntryAdapter.setmSortOrder(EntryAdapter.SortOrder.AtoZ);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.AtoZ);
+                entryAdapter.setSortOrder(EntryAdapter.SortOrder.AtoZ);
                 return true;
             case R.id.action_sort_alpha_desc:
-                mUserPreferences.setSortOrder(EntryAdapter.SortOrder.ZtoA);
-                mEntryAdapter.setmSortOrder(EntryAdapter.SortOrder.ZtoA);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.ZtoA);
+                entryAdapter.setSortOrder(EntryAdapter.SortOrder.ZtoA);
                 return true;
             case R.id.action_sort_chron_asc:
-                mUserPreferences.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
-                mEntryAdapter.setmSortOrder(EntryAdapter.SortOrder.OldestFirst);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
+                entryAdapter.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
                 return true;
             case R.id.action_sort_chron_desc:
-                mUserPreferences.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
-                mEntryAdapter.setmSortOrder(EntryAdapter.SortOrder.NewestFirst);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
+                entryAdapter.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -112,8 +120,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDeleteClicked(EntryRecord record) {
-        mEntryAdapter.remove(record);
-        mSnackbarUndoDelete.addUndoable(record);
+        entryAdapter.remove(record);
+        snackbarUndoDelete.addUndoable(record);
     }
 
     @Override
@@ -124,23 +132,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onUndo(Collection<EntryRecord> entryRecords) {
-        mEntryAdapter.addAll(entryRecords);
+        entryAdapter.addAll(entryRecords);
     }
 
     @Override
     public void onEntryExpanded(EntryRecord record, int pos) {
-        mEntryRecyclerView.getLayoutManager().scrollToPosition(pos);
+        entryRecyclerView.getLayoutManager().scrollToPosition(pos);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_REQUEST_CODE) {
             if (resultCode == EditEntryActivity.RESULT_ENTRY_CREATED)
-                mEntryAdapter.add((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
+                entryAdapter.add((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
             else if (resultCode == EditEntryActivity.RESULT_ENTRY_DELETED)
-                mEntryAdapter.remove((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
+                entryAdapter.remove((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
             else if (resultCode == EditEntryActivity.RESULT_ENTRY_UPDATED)
-                mEntryAdapter.collapseSelected();
+                entryAdapter.collapseSelected();
         }
     }
 
@@ -149,24 +157,23 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mUserPreferences = UserPreferences.get(this);
-        mSnackbarUndoDelete = new SnackbarUndoDelete<>(
+        userPreferences = UserPreferences.get(this);
+        snackbarUndoDelete = new SnackbarUndoDelete<>(
                 findViewById(R.id.main_activity_root),
                 getString(R.string.main_entry_deleted),
                 getString(R.string.main_entries_deleted),
                 this
         );
 
-        mEntryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
-        mEntryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mEntryRecyclerView.addItemDecoration(new DividerItemDecoration(mEntryRecyclerView.getContext(), getResources().getConfiguration().orientation));
+        entryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
+        entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
 
 
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditEntryActivity.class);
-                startActivityForResult(intent, EDIT_REQUEST_CODE);
+                startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE);
             }
         });
 
@@ -184,17 +191,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if (mSnackbarUndoDelete != null)
-            mSnackbarUndoDelete.forceDismissSnackbar();
+        if (snackbarUndoDelete != null)
+            snackbarUndoDelete.forceDismissSnackbar();
         //collapse the currently selected entry to remove sensitive data from memory
-        if (mEntryAdapter != null)
-            mEntryAdapter.collapseSelected();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
+        if (entryAdapter != null)
+            entryAdapter.collapseSelected();
     }
 
     @Override
@@ -203,15 +204,15 @@ public class MainActivity extends AppCompatActivity
         AppVault appVault = AppVault.get();
 
         if (appVault.hasManager() || appVault.loadManager()) {
-            if (mEntryAdapter == null) {
-                mEntryAdapter = new EntryAdapter(this, appVault.getManager());
-                mEntryAdapter.setmSortOrder(mUserPreferences.getSortOrder());
-                mEntryAdapter.setOnClickListener(this);
-                mEntryAdapter.setOnEntryExpandedListener(this);
-                mEntryRecyclerView.setAdapter(mEntryAdapter);
+            if (entryAdapter == null) {
+                entryAdapter = new EntryAdapter(this, appVault.getManager());
+                entryAdapter.setSortOrder(userPreferences.getSortOrder());
+                entryAdapter.setOnClickListener(this);
+                entryAdapter.setOnEntryExpandedListener(this);
+                entryRecyclerView.setAdapter(entryAdapter);
             } else {
-                mEntryAdapter.setVaultManager(appVault.getManager());
-                mEntryAdapter.reload();
+                entryAdapter.setVaultManager(appVault.getManager());
+                entryAdapter.reload();
             }
         } else appVault.requestSignIn(this);
     }

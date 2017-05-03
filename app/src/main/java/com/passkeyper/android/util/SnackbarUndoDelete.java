@@ -18,66 +18,88 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
  */
 public class SnackbarUndoDelete<T> extends Snackbar.Callback {
 
-    private final View mView;
-    private final String mDescriptionSingle, mDescriptionMultiple;
-    private final SnackBarDeleteListener<T> mDeleteListener;
+    private final View view;
+    private final String descriptionSingle, descriptionMultiple;
+    private final SnackBarDeleteListener<T> deleteListener;
     private final List<T> tList = new LinkedList<>();
 
-    private Snackbar mSnackbar;
-    private int mCurrentUndoCount = 0;
+    private Snackbar snackbar;
+    private int currentUndoCount = 0;
 
+    /**
+     * Creates a new SnackbarUndoDelete.
+     *
+     * @param view                the view used int he Snackbar.
+     * @param descriptionSingle   a String that is used to describe a single deleted item.
+     * @param descriptionMultiple a String used to describe multiple deleted items.
+     * @param deleteListener      the listener that is called when items are deleted or undone.
+     */
     public SnackbarUndoDelete(View view, String descriptionSingle, String descriptionMultiple, SnackBarDeleteListener<T> deleteListener) {
-        mView = view;
-        mDescriptionSingle = descriptionSingle;
-        mDescriptionMultiple = descriptionMultiple;
-        mDeleteListener = deleteListener;
+        this.view = view;
+        this.descriptionSingle = descriptionSingle;
+        this.descriptionMultiple = descriptionMultiple;
+        this.deleteListener = deleteListener;
     }
 
+    /**
+     * Closes the snackbar leading to onDelete being called for all current items.
+     */
     public void forceDismissSnackbar() {
-        if (mSnackbar != null)
-            mSnackbar.dismiss();
+        if (snackbar != null)
+            snackbar.dismiss();
     }
 
+    /**
+     * Adds a deleted item that can be undone.
+     *
+     * @param t the item to add.
+     */
     public void addUndoable(T t) {
-        if (mSnackbar != null) {
-            mSnackbar.removeCallback(this);
-            mSnackbar.dismiss();
+        if (snackbar != null) {
+            snackbar.removeCallback(this);
+            snackbar.dismiss();
         }
-        mCurrentUndoCount++;
-        if (mCurrentUndoCount == 1)
-            mSnackbar = Snackbar.make(mView, mCurrentUndoCount + " " + mDescriptionSingle, Snackbar.LENGTH_LONG);
+        currentUndoCount++;
+        if (currentUndoCount == 1)
+            snackbar = Snackbar.make(view, currentUndoCount + " " + descriptionSingle, Snackbar.LENGTH_LONG);
         else
-            mSnackbar = Snackbar.make(mView, mCurrentUndoCount + " " + mDescriptionMultiple, Snackbar.LENGTH_LONG);
-        mSnackbar.setAction(R.string.action_undo, new View.OnClickListener() {
+            snackbar = Snackbar.make(view, currentUndoCount + " " + descriptionMultiple, Snackbar.LENGTH_LONG);
+
+        snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSnackbar.removeCallback(SnackbarUndoDelete.this);
-                if (mDeleteListener != null) {
-                    mDeleteListener.onUndo(tList);
+                snackbar.removeCallback(SnackbarUndoDelete.this);
+                if (deleteListener != null) {
+                    deleteListener.onUndo(tList);
                 }
                 tList.clear();
-                mCurrentUndoCount = 0;
+                currentUndoCount = 0;
             }
         });
-        mSnackbar.addCallback(this);
+        snackbar.addCallback(this);
         tList.add(t);
 
         //hide keyboard on delete so "undo" can be seen
-        InputMethodManager inputMethodManager = (InputMethodManager) mView.getContext().getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(mView.getWindowToken(), 0);
+        InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-        mSnackbar.show();
+        snackbar.show();
     }
 
     @Override
     public void onDismissed(Snackbar transientBottomBar, int event) {
-        if (mDeleteListener != null) {
-            mDeleteListener.onDelete(tList);
+        if (deleteListener != null) {
+            deleteListener.onDelete(tList);
         }
         tList.clear();
-        mCurrentUndoCount = 0;
+        currentUndoCount = 0;
     }
 
+    /**
+     * Listener interface used to know when items are deleted or undone.
+     *
+     * @param <T> the type of items that are being deleted/undone.
+     */
     public interface SnackBarDeleteListener<T> {
 
         void onDelete(Collection<T> tCollection);

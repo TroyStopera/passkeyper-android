@@ -21,59 +21,59 @@ import com.passkeyper.android.vaultmodel.EntryRecord;
  */
 public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
 
-    private final Context mContext;
-    private final VaultManager mVaultManager;
+    private final Context context;
+    private final VaultManager vaultManager;
 
-    private final LinearLayout mDetailLayout;
-    private final TextView mAccountView, mUsernameView;
-    private final ListView mSensitiveDataList, mSecurityQuestionsList;
-    private final ImageButton mEditButton, mDeleteButton;
+    private final LinearLayout detailLayout;
+    private final TextView accountView, usernameView;
+    private final ListView sensitiveDataList, securityQuestionsList;
+    private final ImageButton editButton, deleteButton;
 
-    private EntryDetailItemAdapter mSensitiveDataAdapter, mSecurityQuestionAdapter;
+    private EntryDetailItemAdapter sensitiveDataAdapter, securityQuestionAdapter;
     private EntryRecord record;
 
     public EntryRecordViewHolder(Context context, ViewGroup parent, VaultManager vaultManager) {
         super(LayoutInflater.from(context).inflate(R.layout.view_entry_record, parent, false));
-        mContext = context;
-        mVaultManager = vaultManager;
+        this.context = context;
+        this.vaultManager = vaultManager;
 
-        mDetailLayout = (LinearLayout) itemView.findViewById(R.id.entry_details);
-        mAccountView = (TextView) itemView.findViewById(R.id.record_account);
-        mUsernameView = (TextView) itemView.findViewById(R.id.record_username);
-        mSensitiveDataList = (ListView) itemView.findViewById(R.id.record_sensitive_data_list);
-        mSecurityQuestionsList = (ListView) itemView.findViewById(R.id.record_security_question_list);
-        mEditButton = (ImageButton) itemView.findViewById(R.id.record_edit);
-        mDeleteButton = (ImageButton) itemView.findViewById(R.id.record_delete);
+        detailLayout = (LinearLayout) itemView.findViewById(R.id.entry_details);
+        accountView = (TextView) itemView.findViewById(R.id.record_account);
+        usernameView = (TextView) itemView.findViewById(R.id.record_username);
+        sensitiveDataList = (ListView) itemView.findViewById(R.id.record_sensitive_data_list);
+        securityQuestionsList = (ListView) itemView.findViewById(R.id.record_security_question_list);
+        editButton = (ImageButton) itemView.findViewById(R.id.record_edit);
+        deleteButton = (ImageButton) itemView.findViewById(R.id.record_delete);
 
-        mDetailLayout.setVisibility(View.GONE);
+        detailLayout.setVisibility(View.GONE);
     }
 
     public void bind(EntryRecord record) {
         this.record = record;
 
-        mAccountView.setText(record.getAccount());
-        mUsernameView.setText(record.getUsername());
+        accountView.setText(record.getAccount());
+        usernameView.setText(record.getUsername());
     }
 
     public void setExpanded(boolean isExpanded) {
         if (record == null) return;
         //always ensure that any private info is cleared before losing reference to the adapters
-        if (mSensitiveDataAdapter != null) mSensitiveDataAdapter.freeAllModels();
-        if (mSecurityQuestionAdapter != null) mSecurityQuestionAdapter.freeAllModels();
+        if (sensitiveDataAdapter != null) sensitiveDataAdapter.freeAllModels();
+        if (securityQuestionAdapter != null) securityQuestionAdapter.freeAllModels();
 
         if (isExpanded) {
-            mSensitiveDataAdapter = new EntryDetailItemAdapter<>(mContext, mVaultManager.getSensitiveEntries(record));
-            mSensitiveDataList.setAdapter(mSensitiveDataAdapter);
-            mSecurityQuestionAdapter = new EntryDetailItemAdapter<>(mContext, mVaultManager.getSecurityQuestions(record));
-            mSecurityQuestionsList.setAdapter(mSecurityQuestionAdapter);
+            sensitiveDataAdapter = new EntryDetailItemAdapter<>(context, vaultManager.getSensitiveEntries(record));
+            sensitiveDataList.setAdapter(sensitiveDataAdapter);
+            securityQuestionAdapter = new EntryDetailItemAdapter<>(context, vaultManager.getSecurityQuestions(record));
+            securityQuestionsList.setAdapter(securityQuestionAdapter);
 
-            mEditButton.setVisibility(View.VISIBLE);
-            mDeleteButton.setVisibility(View.VISIBLE);
-            mDetailLayout.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.VISIBLE);
+            deleteButton.setVisibility(View.VISIBLE);
+            detailLayout.setVisibility(View.VISIBLE);
         } else {
-            mEditButton.setVisibility(View.GONE);
-            mDeleteButton.setVisibility(View.GONE);
-            mDetailLayout.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
+            detailLayout.setVisibility(View.GONE);
         }
     }
 
@@ -82,7 +82,7 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setOnEditCLickListener(final EntryAdapter.OnActionListener listener) {
-        mEditButton.setOnClickListener(new View.OnClickListener() {
+        editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null)
@@ -92,7 +92,7 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setOnDeleteCLickListener(final EntryAdapter.OnActionListener listener) {
-        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null)

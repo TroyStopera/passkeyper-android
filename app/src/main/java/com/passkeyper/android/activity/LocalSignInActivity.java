@@ -17,37 +17,38 @@ import com.passkeyper.android.R;
 
 import java.util.Arrays;
 
-public class LocalLoginActivity extends AppCompatActivity {
+public class LocalSignInActivity extends AppCompatActivity {
 
     private static final String TAG = "Local Sign In";
 
-    private AppVault mAppVault;
-    private TextInputLayout mPasswordInputLayout;
-    private TextInputEditText mPasswordInput;
-    private String mNextActivityName;
+    private AppVault appVault;
+    private TextInputLayout passwordInputLayout;
+    private TextInputEditText passwordInput;
+    private String nextActivityName;
 
     public void signIn(View view) {
-        mPasswordInputLayout.setErrorEnabled(false);
+        passwordInputLayout.setErrorEnabled(false);
 
-        int len = mPasswordInput.length();
+        //get the password and clear the input for security
+        int len = passwordInput.length();
         char[] password = new char[len];
-        mPasswordInput.getText().getChars(0, len, password, 0);
-        mPasswordInput.getText().clear();
+        passwordInput.getText().getChars(0, len, password, 0);
+        passwordInput.getText().clear();
 
-        if (mAppVault.signInToLocalVault(this, password)) {
+        if (appVault.signInToLocalVault(this, password)) {
             Arrays.fill(password, '\0');
             //launch the next activity if there is one
-            if (mNextActivityName != null) try {
-                Class<?> clazz = Class.forName(mNextActivityName);
+            if (nextActivityName != null) try {
+                Class<?> clazz = Class.forName(nextActivityName);
                 Intent intent = new Intent(this, clazz);
                 startActivity(intent);
             } catch (ClassNotFoundException e) {
-                Log.w(TAG, "Unable redirect to Activity '" + mNextActivityName + "'", e);
+                Log.w(TAG, "Unable redirect to Activity '" + nextActivityName + "'", e);
             }
             finish();
         } else {
-            mPasswordInputLayout.setErrorEnabled(true);
-            mPasswordInputLayout.setError(getString(R.string.error_incorrect_password));
+            passwordInputLayout.setErrorEnabled(true);
+            passwordInputLayout.setError(getString(R.string.error_incorrect_password));
             Arrays.fill(password, '\0');
         }
     }
@@ -56,7 +57,7 @@ public class LocalLoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         //ensure the vault manager is closed
-        mAppVault.signOut();
+        appVault.signOut();
         finishAffinity();
     }
 
@@ -67,13 +68,13 @@ public class LocalLoginActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(AppVault.ACTIVITY_AFTER_SIGN_IN_EXTRA))
-            mNextActivityName = intent.getStringExtra(AppVault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
+            nextActivityName = intent.getStringExtra(AppVault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
 
-        mAppVault = AppVault.get();
-        mPasswordInputLayout = (TextInputLayout) findViewById(R.id.input_layout_password);
-        mPasswordInput = (TextInputEditText) findViewById(R.id.input_password);
+        appVault = AppVault.get();
+        passwordInputLayout = (TextInputLayout) findViewById(R.id.input_layout_password);
+        passwordInput = (TextInputEditText) findViewById(R.id.input_password);
 
-        mPasswordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        passwordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_GO) {

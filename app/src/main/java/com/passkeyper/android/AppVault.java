@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.DatabaseAuthException;
 import com.passkeyper.android.vault.local.LocalVaultManager;
@@ -31,7 +31,7 @@ public class AppVault {
      * @param activity the Activity the request is being made from.
      */
     public void requestSignIn(Activity activity) {
-        Intent intent = new Intent(activity, LocalLoginActivity.class);
+        Intent intent = new Intent(activity, LocalSignInActivity.class);
         activity.startActivity(intent);
     }
 
@@ -42,7 +42,7 @@ public class AppVault {
      * @param activityAfterSignIn the Activity to start after authentication.
      */
     public void requestSignIn(Activity activity, Class<?> activityAfterSignIn) {
-        Intent intent = new Intent(activity, LocalLoginActivity.class);
+        Intent intent = new Intent(activity, LocalSignInActivity.class);
         intent.putExtra(ACTIVITY_AFTER_SIGN_IN_EXTRA, activityAfterSignIn.getCanonicalName());
         activity.startActivity(intent);
     }

@@ -20,11 +20,14 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
     protected static final TransformationMethod hidden = new PasswordTransformationMethod();
     private static int lastId = 0;
 
-    protected T model;
-    private ImageButton visibilityButton, deleteButton, doneButton;
-    private boolean isTextCensored = true, isInEditMode = false;
-    private OnDeletePressedListener listener;
     private final int uniqueId = lastId++;
+
+    private ImageButton visibilityButton, deleteButton, doneButton;
+
+    private boolean isTextCensored = true, isInEditMode = false;
+
+    protected T model;
+    private OnDeletePressedListener listener;
 
     public PrivateVaultModelEditView(@NonNull Context context, int layoutRes, T model) {
         super(context);
@@ -121,6 +124,9 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
         onInitUiFields();
     }
 
+    /**
+     * Listener interface for when a user clicks to delete a private vault model.
+     */
     public interface OnDeletePressedListener {
 
         void onDeletePressed(PrivateVaultModelEditView view);

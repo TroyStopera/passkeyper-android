@@ -1,7 +1,7 @@
 package com.passkeyper.android.vaultmodel;
 
 /**
- * Created by troy on 4/8/17.
+ * Most basic interface for data stored in a vault.
  */
 public interface VaultModel {
 
