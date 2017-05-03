@@ -7,8 +7,10 @@ import com.passkeyper.android.vaultmodel.PrivateModel;
 import com.passkeyper.android.view.PrivateVaultModelEditView;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract class to be used for adapting private VaultModel data.
@@ -18,6 +20,7 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
     protected final Context context;
 
     private final List<K> content = new LinkedList<>();
+    private final Set<Long> modelIds = new HashSet<>();
     private PrivateVaultModelEditView.OnDeletePressedListener listener;
 
     PrivateVaultModelAdapter(Context context) {
@@ -32,14 +35,24 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
         return content.toArray(newArray(content.size()));
     }
 
+    public final void addNewVaultModels(Collection<K> models) {
+        for (K model : models) {
+            if (!modelIds.contains(model.getId()))
+                addVaultModel(model);
+        }
+    }
+
     public final void addVaultModels(Collection<K> models) {
         content.addAll(models);
+        for (K k : models)
+            modelIds.add(k.getId());
         notifyDataSetChanged();
     }
 
     public final void addVaultModel(K model) {
         if (model != null) {
             content.add(model);
+            modelIds.add(model.getId());
             notifyDataSetChanged();
         }
     }
@@ -48,6 +61,7 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
         if (index < 0) addVaultModel(model);
         else {
             content.add(index, model);
+            modelIds.add(model.getId());
             notifyDataSetChanged();
         }
     }
@@ -60,6 +74,7 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
 
     public final K remove(int index) {
         K model = content.remove(index);
+        modelIds.remove(model.getId());
         notifyDataSetChanged();
         return model;
     }

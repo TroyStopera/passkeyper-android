@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/activity_vertical_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.passkeyper.android.MainActivity"
+    tools:context="com.passkeyper.android.activity.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <android.support.v7.widget.RecyclerView

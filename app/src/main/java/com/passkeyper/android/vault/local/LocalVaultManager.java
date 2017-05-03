@@ -19,32 +19,47 @@ import java.util.List;
  */
 public class LocalVaultManager extends VaultManager {
 
+    private char[] password;
     private final DbHelper dbHelper;
 
     /**
-     * Create a new DbHelper to access the local vault.
+     * Create a new VaultManager with the given password to access the local vault.
      *
-     * @param context the Context used to access the database.
+     * @param context  the Context used to access the database.
+     * @param password the password to unlock the database.
+     * @throws DatabaseAuthException when an incorrect password is provided
      */
-    public LocalVaultManager(Context context, char[] password) {
-        dbHelper = new DbHelper(context, password);
+    public LocalVaultManager(Context context, char[] password) throws DatabaseAuthException {
+        if (isLocalDbSetup(context)) {
+            dbHelper = new DbHelper(context);
+            this.password = Arrays.copyOf(password, password.length);
+        } else
+            throw new IllegalStateException("Cannot access LocalVault before setting up the Local Db");
+
+        //verify the password to be correct
+        if (!dbHelper.isKeyValid(password))
+            throw new DatabaseAuthException("Invalid password provided");
     }
 
     public void changePassword(char[] newPassword) {
-        dbHelper.resetKey(newPassword);
+        dbHelper.updateKey(password, newPassword);
+
+        Arrays.fill(password, '\0');
+        password = Arrays.copyOf(newPassword, newPassword.length);
     }
 
     @Override
     public void close() {
         super.close();
         dbHelper.close();
+        Arrays.fill(password, '\0');
     }
 
     @Override
     public List<EntryRecord> getAllEntryRecords() {
         List<EntryRecord> records = new LinkedList<>();
         //query db
-        Cursor cursor = dbHelper.readAllRecords();
+        Cursor cursor = dbHelper.readAllRecords(password);
 
         if (cursor.moveToFirst()) do {
             EntryRecord record = new EntryRecord();
@@ -66,6 +81,7 @@ public class LocalVaultManager extends VaultManager {
         List<SensitiveEntry> entries = new LinkedList<>();
         //query db
         Cursor cursor = dbHelper.readEntry(
+                password,
                 DbContract.SensitiveEntryTable.TABLE_NAME,
                 DbContract.SensitiveEntryTable.COLUMNS,
                 DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID,
@@ -96,6 +112,7 @@ public class LocalVaultManager extends VaultManager {
         List<SecurityQuesEntry> entries = new LinkedList<>();
         //query db
         Cursor cursor = dbHelper.readEntry(
+                password,
                 DbContract.SecurityQuestionTable.TABLE_NAME,
                 DbContract.SecurityQuestionTable.COLUMNS,
                 DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID,
@@ -127,7 +144,15 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.RecordTable.COLUMN_NAME_ACCOUNT, record.getAccount());
         values.put(DbContract.RecordTable.COLUMN_NAME_USERNAME, record.getUsername());
 
-        setModelID(record, dbHelper.save(record, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable._ID, values));
+        setModelID(record,
+                dbHelper.save(
+                        password,
+                        record,
+                        DbContract.RecordTable.TABLE_NAME,
+                        DbContract.RecordTable._ID,
+                        values
+                )
+        );
     }
 
     @Override
@@ -137,7 +162,15 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_VALUE, new String(sensitiveEntry.getValue()));
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID, sensitiveEntry.getRecord().getId());
 
-        setModelID(sensitiveEntry, dbHelper.save(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID, values));
+        setModelID(sensitiveEntry,
+                dbHelper.save(
+                        password,
+                        sensitiveEntry,
+                        DbContract.SensitiveEntryTable.TABLE_NAME,
+                        DbContract.SensitiveEntryTable._ID,
+                        values
+                )
+        );
     }
 
     @Override
@@ -147,7 +180,15 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_ANSWER, new String(securityQuesEntry.getAnswer()));
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID, securityQuesEntry.getRecord().getId());
 
-        setModelID(securityQuesEntry, dbHelper.save(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID, values));
+        setModelID(securityQuesEntry,
+                dbHelper.save(
+                        password,
+                        securityQuesEntry,
+                        DbContract.SecurityQuestionTable.TABLE_NAME,
+                        DbContract.SecurityQuestionTable._ID,
+                        values
+                )
+        );
     }
 
     @Override
@@ -157,17 +198,55 @@ public class LocalVaultManager extends VaultManager {
             delete(entry);
         for (SecurityQuesEntry entry : getSecurityQuestions(record))
             delete(entry);
-        dbHelper.delete(record, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable._ID);
+
+        dbHelper.delete(
+                password,
+                record,
+                DbContract.RecordTable.TABLE_NAME,
+                DbContract.RecordTable._ID
+        );
     }
 
     @Override
     public void delete(SensitiveEntry sensitiveEntry) {
-        dbHelper.delete(sensitiveEntry, DbContract.SensitiveEntryTable.TABLE_NAME, DbContract.SensitiveEntryTable._ID);
+        dbHelper.delete(
+                password,
+                sensitiveEntry,
+                DbContract.SensitiveEntryTable.TABLE_NAME,
+                DbContract.SensitiveEntryTable._ID
+        );
     }
 
     @Override
     public void delete(SecurityQuesEntry securityQuesEntry) {
-        dbHelper.delete(securityQuesEntry, DbContract.SecurityQuestionTable.TABLE_NAME, DbContract.SecurityQuestionTable._ID);
+        dbHelper.delete(
+                password,
+                securityQuesEntry,
+                DbContract.SecurityQuestionTable.TABLE_NAME,
+                DbContract.SecurityQuestionTable._ID
+        );
+    }
+
+    /**
+     * Used to determine if the local database has been created and setup.
+     *
+     * @param context a Context used to load the database.
+     * @return true if the database has been setup.
+     */
+    public static boolean isLocalDbSetup(Context context) {
+        return new DbHelper(context).isKeySet();
+    }
+
+    /**
+     * Sets up the local database to use the given password.
+     *
+     * @param context a Context used to load the database.
+     * @param key     the key that is used to encrypt the database.
+     */
+    public static void setupLocalDb(Context context, char[] key) {
+        if (isLocalDbSetup(context))
+            throw new IllegalStateException("Cannot setup the local database twice");
+        new DbHelper(context).updateKey(DbHelper.defaultKey(), key);
     }
 
 }

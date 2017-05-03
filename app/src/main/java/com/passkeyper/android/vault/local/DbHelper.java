@@ -9,42 +9,35 @@ import com.passkeyper.android.vaultmodel.VaultModel;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
-import java.util.Arrays;
-
 /**
  * The helper class for the SQLite implementation of the local vault.
  */
 class DbHelper extends SQLiteOpenHelper {
 
-    private char[] password;
-    private boolean isClosed = false;
-
-    DbHelper(Context context, char[] password) {
+    DbHelper(Context context) {
         super(context, DbContract.DATABASE_NAME, null, DbContract.DATABASE_VERSION);
         SQLiteDatabase.loadLibs(context);
-        this.password = Arrays.copyOf(password, password.length);
     }
 
-    @Override
-    public void close() {
-        Arrays.fill(password, '\0');
-        isClosed = true;
-        super.close();
+    boolean isKeyValid(char[] key) {
+        try {
+            //if the database can be opened with the key then the key is valid
+            getReadableDatabase(key).close();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
-    public boolean isClosed() {
-        return isClosed;
+    boolean isKeySet() {
+        //if the default key is valid then the key has not been set
+        return !isKeyValid(defaultKey());
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //init the encryption
-        StringBuilder builder = new StringBuilder();
-        builder.append("PRAGMA key = '");
-        for (char c : password)
-            builder.append(c);
-        builder.append("';");
-        db.execSQL(builder.toString());
+        //set default key on create
+        db.execSQL("PRAGMA key = 'p';");
         //build the tables
         db.execSQL(DbContract.RecordTable.SQL_CREATE_TABLE);
         db.execSQL(DbContract.SensitiveEntryTable.SQL_CREATE_TABLE);
@@ -56,61 +49,48 @@ class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    Cursor readAllRecords() {
-        return read(DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable.COLUMNS, " 1 = 1", null);
+    Cursor readAllRecords(char[] key) {
+        return read(key, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable.COLUMNS, " 1 = 1", null);
     }
 
-    Cursor readEntry(String table, String[] projection, String recordIdColumn, long recordId) {
-        return read(table, projection, recordIdColumn + " = ?", new String[]{String.valueOf(recordId)});
+    Cursor readEntry(char[] key, String table, String[] projection, String recordIdColumn, long recordId) {
+        return read(key, table, projection, recordIdColumn + " = ?", new String[]{String.valueOf(recordId)});
     }
 
-    void resetKey(char[] key) {
-        if (isClosed())
-            throw new IllegalStateException("Database accessed after being closed");
-
-        SQLiteDatabase db = this.getWritableDatabase(password);
+    void updateKey(char[] oldKey, char[] newKey) {
+        SQLiteDatabase db = this.getWritableDatabase(oldKey);
 
         StringBuilder builder = new StringBuilder();
         builder.append("PRAGMA rekey = '");
-        for (char c : key)
+        for (char c : newKey)
             builder.append(c);
         builder.append("';");
 
         db.execSQL(builder.toString());
-
-        //update the password field
-        Arrays.fill(password, '\0');
-        password = Arrays.copyOf(key, key.length);
     }
 
-    long save(VaultModel model, String table, String _id, ContentValues values) {
+    long save(char[] key, VaultModel model, String table, String _id, ContentValues values) {
         if (model.isSaved())
-            save(table, values, _id + " = ?", new String[]{String.valueOf(model.getId())}, true);
+            save(key, table, values, _id + " = ?", new String[]{String.valueOf(model.getId())}, true);
         else
-            return save(table, values, null, null, false);
+            return save(key, table, values, null, null, false);
         return model.getId();
     }
 
-    void delete(VaultModel model, String table, String _id) {
-        delete(table, _id + " = ?", new String[]{String.valueOf(model.getId())});
+    void delete(char[] key, VaultModel model, String table, String _id) {
+        delete(key, table, _id + " = ?", new String[]{String.valueOf(model.getId())});
     }
 
     /*
         Below are the helper private methods for accessing the database
      */
 
-    private Cursor read(String table, String[] projection, String selection, String[] args) {
-        if (isClosed())
-            throw new IllegalStateException("Database accessed after being closed");
-
-        return this.getReadableDatabase(password).query(table, projection, selection, args, null, null, null);
+    private Cursor read(char[] key, String table, String[] projection, String selection, String[] args) {
+        return this.getReadableDatabase(key).query(table, projection, selection, args, null, null, null);
     }
 
-    private long save(String table, ContentValues values, String selection, String[] args, boolean update) {
-        if (isClosed())
-            throw new IllegalStateException("Database accessed after being closed");
-
-        SQLiteDatabase db = this.getWritableDatabase(password);
+    private long save(char[] key, String table, ContentValues values, String selection, String[] args, boolean update) {
+        SQLiteDatabase db = this.getWritableDatabase(key);
 
         long id = -1;
         if (update) db.update(table, values, selection, args);
@@ -120,13 +100,17 @@ class DbHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    private void delete(String table, String selection, String[] args) {
-        if (isClosed())
-            throw new IllegalStateException("Database accessed after being closed");
-
-        SQLiteDatabase db = this.getWritableDatabase(password);
+    private void delete(char[] key, String table, String selection, String[] args) {
+        SQLiteDatabase db = this.getWritableDatabase(key);
         db.delete(table, selection, args);
         db.close();
+    }
+
+    /**
+     * @return the default key used to encrypt the database.
+     */
+    static char[] defaultKey() {
+        return new char[]{'p'};
     }
 
 }

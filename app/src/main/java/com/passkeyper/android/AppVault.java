@@ -1,33 +1,110 @@
 package com.passkeyper.android;
 
-import android.app.Application;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
+import com.passkeyper.android.activity.LocalLoginActivity;
 import com.passkeyper.android.vault.VaultManager;
+import com.passkeyper.android.vault.local.DatabaseAuthException;
 import com.passkeyper.android.vault.local.LocalVaultManager;
 
 /**
- * Application class that handles variables that are needed globally.
+ * Singleton class that handles variables that are needed globally.
  */
-public class AppVault extends Application {
+public class AppVault {
+
+    public static final String ACTIVITY_AFTER_SIGN_IN_EXTRA = "afterSignIn";
+    private static final String TAG = "AppVault";
 
     private static AppVault mInstance;
     private VaultManager mVaultManager;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        mInstance = this;
-        //TODO: consider which vault manager to use
-        //TODO: get a real password
-        mVaultManager = new LocalVaultManager(this, new char[]{'a', 'b', 'c'});
+    private AppVault() {
+        /* uses singleton pattern */
     }
 
+    /**
+     * Shows the sign in Activity on top of the current Activity for user authentication.
+     *
+     * @param activity the Activity the request is being made from.
+     */
+    public void requestSignIn(Activity activity) {
+        Intent intent = new Intent(activity, LocalLoginActivity.class);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * Shows the sign in Activity for user authentication.
+     *
+     * @param activity            the Activity the request is being made from.
+     * @param activityAfterSignIn the Activity to start after authentication.
+     */
+    public void requestSignIn(Activity activity, Class<?> activityAfterSignIn) {
+        Intent intent = new Intent(activity, LocalLoginActivity.class);
+        intent.putExtra(ACTIVITY_AFTER_SIGN_IN_EXTRA, activityAfterSignIn.getCanonicalName());
+        activity.startActivity(intent);
+    }
+
+    /**
+     * Signs the user out and closes the VaultManger. Does not show the sign in Activity.
+     */
+    public void signOut() {
+        if (mVaultManager != null && !mVaultManager.isClosed())
+            mVaultManager.close();
+        mVaultManager = null;
+    }
+
+    /**
+     * Attempts to authenticate the user in order to access the local vault.
+     *
+     * @param context  an instance of Context used to load the vault.
+     * @param password the password for the local vault.
+     * @return true if the authentication was successful.
+     */
+    public boolean signInToLocalVault(Context context, char[] password) {
+        if (mVaultManager != null && !mVaultManager.isClosed())
+            mVaultManager.close();
+
+        try {
+            mVaultManager = new LocalVaultManager(context, password);
+            return true;
+        } catch (DatabaseAuthException e) {
+            Log.w(TAG, "Unable to login", e);
+            return false;
+        }
+    }
+
+    /**
+     * Attempts to load a VaultManager without the user signing in.
+     *
+     * @return true if the VaultManager was loaded.
+     */
+    public boolean loadManager() {
+        return false;
+    }
+
+    /**
+     * @return true if there is a usable VaultManager.
+     */
+    public boolean hasManager() {
+        return mVaultManager != null && !mVaultManager.isClosed();
+    }
+
+    /**
+     * @return an instance of a usable (i.e. not closed) VaultManager.
+     */
     public VaultManager getManager() {
         return mVaultManager;
     }
 
+    /**
+     * @return the instance of the singleton object.
+     */
     public static AppVault get() {
+        if (mInstance == null)
+            mInstance = new AppVault();
         return mInstance;
     }
 

@@ -2,10 +2,8 @@ package com.passkeyper.android.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -30,16 +28,6 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
 
     public PrivateVaultModelEditView(@NonNull Context context, int layoutRes, T model) {
         super(context);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(layoutRes, this);
-
-        this.model = model;
-        setUiFields();
-        updateUi();
-    }
-
-    public PrivateVaultModelEditView(@NonNull Context context, @Nullable AttributeSet attrs, int layoutRes, T model) {
-        super(context, attrs);
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(layoutRes, this);
 

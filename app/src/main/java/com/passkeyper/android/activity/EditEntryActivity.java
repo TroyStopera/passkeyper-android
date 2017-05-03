@@ -1,4 +1,4 @@
-package com.passkeyper.android;
+package com.passkeyper.android.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
+import com.passkeyper.android.AppVault;
+import com.passkeyper.android.R;
 import com.passkeyper.android.adapter.SecurityQuesAdapter;
 import com.passkeyper.android.adapter.SensitiveEntryAdapter;
 import com.passkeyper.android.util.SnackbarUndoDelete;
@@ -28,7 +30,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EditEntry extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener, SnackbarUndoDelete.SnackBarDeleteListener<PrivateModel> {
+public class EditEntryActivity extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener, SnackbarUndoDelete.SnackBarDeleteListener<PrivateModel> {
 
     public static final int RESULT_ENTRY_DELETED = 0;
     public static final int RESULT_ENTRY_CREATED = 1;
@@ -171,12 +173,8 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
         mSecurityList.setEmptyView(findViewById(R.id.edit_empty_list_security));
         mSecurityList.setAdapter(mSecurityQuesAdapter);
 
-        //populate the lists
-        if (mRecord.isSaved()) {
-            VaultManager vaultManager = AppVault.get().getManager();
-            mSensitiveEntryAdapter.addVaultModels(vaultManager.getSensitiveEntries(mRecord));
-            mSecurityQuesAdapter.addVaultModels(vaultManager.getSecurityQuestions(mRecord));
-        } else {
+        //if its a new record then add blank entries
+        if (!mRecord.isSaved()) {
             mSensitiveEntryAdapter.addVaultModel(new SensitiveEntry(mRecord));
             mSecurityQuesAdapter.addVaultModel(new SecurityQuesEntry(mRecord));
         }
@@ -190,6 +188,21 @@ public class EditEntry extends AppCompatActivity implements PrivateVaultModelEdi
         // enable the back button
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppVault appVault = AppVault.get();
+
+        if (appVault.hasManager() || appVault.loadManager()) {
+            if (mRecord.isSaved()) {
+                VaultManager vaultManager = appVault.getManager();
+                //add any new vault models
+                mSensitiveEntryAdapter.addNewVaultModels(vaultManager.getSensitiveEntries(mRecord));
+                mSecurityQuesAdapter.addNewVaultModels(vaultManager.getSecurityQuestions(mRecord));
+            }
+        } else appVault.requestSignIn(this);
     }
 
     private boolean verifyInput() {

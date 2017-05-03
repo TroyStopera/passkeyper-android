@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.passkeyper.android.AppVault;
+import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 import com.passkeyper.android.view.EntryRecordViewHolder;
 
@@ -27,24 +27,32 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
         AtoZ, ZtoA, OldestFirst, NewestFirst
     }
 
-    private final Activity context;
+    private final Activity mActivity;
     private final List<EntryRecord> allRecords = new LinkedList<>();
     private final SortedList<EntryRecord> list = new SortedList<>(EntryRecord.class, new Callback());
 
+    private VaultManager mVaultManager;
+
     private OnEntryExpandedListener onEntryExpandedListener;
     private OnActionListener listener;
+
     private long mExpandedId = -1;
-    private SortOrder sortOrder = SortOrder.OldestFirst;
+    private SortOrder mSortOrder = SortOrder.OldestFirst;
 
-    public EntryAdapter(Activity context) {
-        this.context = context;
+    public EntryAdapter(Activity activity, VaultManager vaultManager) {
+        mActivity = activity;
 
+        setVaultManager(vaultManager);
         reload();
+    }
+
+    public void setVaultManager(VaultManager vaultManager) {
+        mVaultManager = vaultManager;
     }
 
     public void reload() {
         allRecords.clear();
-        allRecords.addAll(AppVault.get().getManager().getAllEntryRecords());
+        allRecords.addAll(mVaultManager.getAllEntryRecords());
         list.clear();
         list.addAll(allRecords);
     }
@@ -80,11 +88,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
 
     @Override
     public EntryRecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new EntryRecordViewHolder(context, parent);
+        return new EntryRecordViewHolder(mActivity, parent, mVaultManager);
     }
 
-    public void setSortOrder(SortOrder sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setmSortOrder(SortOrder mSortOrder) {
+        this.mSortOrder = mSortOrder;
 
         //make a copy of the items
         Collection<EntryRecord> entryRecords = new LinkedList<>();
@@ -125,8 +133,8 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
     @Override
     public boolean onQueryTextSubmit(String query) {
         //hide keyboard on search clicked
-        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(context.findViewById(android.R.id.content).getWindowToken(), 0);
+        InputMethodManager inputMethodManager = (InputMethodManager) mActivity.getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mActivity.findViewById(android.R.id.content).getWindowToken(), 0);
         return true;
     }
 
@@ -177,7 +185,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
 
         @Override
         public int compare(EntryRecord entryRecord1, EntryRecord entryRecord2) {
-            switch (sortOrder) {
+            switch (mSortOrder) {
                 case AtoZ:
                     return entryRecord1.getAccount().compareTo(entryRecord2.getAccount());
                 case ZtoA:

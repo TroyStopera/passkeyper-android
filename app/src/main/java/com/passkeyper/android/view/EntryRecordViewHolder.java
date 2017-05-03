@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.passkeyper.android.AppVault;
 import com.passkeyper.android.R;
 import com.passkeyper.android.adapter.EntryAdapter;
 import com.passkeyper.android.adapter.EntryDetailItemAdapter;
@@ -22,19 +21,21 @@ import com.passkeyper.android.vaultmodel.EntryRecord;
  */
 public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
 
-    private final Context context;
+    private final Context mContext;
+    private final VaultManager mVaultManager;
+
     private final LinearLayout mDetailLayout;
     private final TextView mAccountView, mUsernameView;
     private final ListView mSensitiveDataList, mSecurityQuestionsList;
     private final ImageButton mEditButton, mDeleteButton;
 
     private EntryDetailItemAdapter mSensitiveDataAdapter, mSecurityQuestionAdapter;
-    private final VaultManager mVaultManager;
     private EntryRecord record;
 
-    public EntryRecordViewHolder(Context context, ViewGroup parent) {
+    public EntryRecordViewHolder(Context context, ViewGroup parent, VaultManager vaultManager) {
         super(LayoutInflater.from(context).inflate(R.layout.view_entry_record, parent, false));
-        this.context = context;
+        mContext = context;
+        mVaultManager = vaultManager;
 
         mDetailLayout = (LinearLayout) itemView.findViewById(R.id.entry_details);
         mAccountView = (TextView) itemView.findViewById(R.id.record_account);
@@ -45,8 +46,6 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
         mDeleteButton = (ImageButton) itemView.findViewById(R.id.record_delete);
 
         mDetailLayout.setVisibility(View.GONE);
-
-        mVaultManager = AppVault.get().getManager();
     }
 
     public void bind(EntryRecord record) {
@@ -63,9 +62,9 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
         if (mSecurityQuestionAdapter != null) mSecurityQuestionAdapter.freeAllModels();
 
         if (isExpanded) {
-            mSensitiveDataAdapter = new EntryDetailItemAdapter<>(context, mVaultManager.getSensitiveEntries(record));
+            mSensitiveDataAdapter = new EntryDetailItemAdapter<>(mContext, mVaultManager.getSensitiveEntries(record));
             mSensitiveDataList.setAdapter(mSensitiveDataAdapter);
-            mSecurityQuestionAdapter = new EntryDetailItemAdapter<>(context, mVaultManager.getSecurityQuestions(record));
+            mSecurityQuestionAdapter = new EntryDetailItemAdapter<>(mContext, mVaultManager.getSecurityQuestions(record));
             mSecurityQuestionsList.setAdapter(mSecurityQuestionAdapter);
 
             mEditButton.setVisibility(View.VISIBLE);
