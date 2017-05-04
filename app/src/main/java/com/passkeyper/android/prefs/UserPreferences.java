@@ -6,28 +6,24 @@ import android.content.SharedPreferences;
 import com.passkeyper.android.adapter.EntryAdapter;
 
 /**
- * CLass used to access user settings related to basic preferences.
+ * Class used to access user settings related to basic preferences.
  */
-public class UserPreferences {
+public class UserPreferences extends Preferences {
 
     /* instance of UserPreferences */
     private static UserPreferences instance;
-    /* table name */
-    private static final String PREFERENCE_NAME = "UserPrefs";
     /* variable names */
     private static final String PREF_SORT_ORDER = "PrefSortOrder";
 
-    private final SharedPreferences preferences;
-
     private UserPreferences(Context context) {
-        preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        super(context, "UserPrefs");
     }
 
     /**
      * @return the SortOrder the user has chosen.
      */
     public EntryAdapter.SortOrder getSortOrder() {
-        int i = preferences.getInt(PREF_SORT_ORDER, 0);
+        int i = prefs().getInt(PREF_SORT_ORDER, 0);
         switch (i) {
             case 0:
                 return EntryAdapter.SortOrder.AtoZ;
@@ -48,7 +44,7 @@ public class UserPreferences {
      * @param order the SortOrder to use.
      */
     public void setSortOrder(EntryAdapter.SortOrder order) {
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = edit();
         switch (order) {
             case AtoZ:
                 editor.putInt(PREF_SORT_ORDER, 0);
