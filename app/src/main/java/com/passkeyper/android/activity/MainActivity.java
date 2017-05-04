@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        entryRecyclerView.setVisibility(View.INVISIBLE);
         if (snackbarUndoDelete != null)
             snackbarUndoDelete.forceDismissSnackbar();
         //collapse the currently selected entry to remove sensitive data from memory
@@ -201,6 +202,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        entryRecyclerView.setVisibility(View.VISIBLE);
         Vault vault = Vault.get();
 
         if (vault.hasManager() || vault.loadManager()) {
