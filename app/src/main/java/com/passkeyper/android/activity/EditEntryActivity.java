@@ -32,9 +32,9 @@ import java.util.List;
 
 public class EditEntryActivity extends AppCompatActivity implements PrivateVaultModelEditView.OnDeletePressedListener, View.OnClickListener, SnackbarUndoDelete.SnackBarDeleteListener<PrivateModel> {
 
-    public static final int RESULT_ENTRY_DELETED = 0;
-    public static final int RESULT_ENTRY_CREATED = 1;
-    public static final int RESULT_ENTRY_UPDATED = 2;
+    public static final int RESULT_ENTRY_DELETED = 100;
+    public static final int RESULT_ENTRY_CREATED = 200;
+    public static final int RESULT_ENTRY_UPDATED = 300;
     public static final String ENTRY_RECORD_EXTRA_KEY = "EntryRecord";
 
     private TextInputLayout accountInputLayout;
