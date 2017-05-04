@@ -17,9 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
+import com.passkeyper.android.Vault;
 import com.passkeyper.android.adapter.EntryAdapter;
 import com.passkeyper.android.prefs.UserPreferences;
 import com.passkeyper.android.util.SnackbarUndoDelete;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity
     private EntryAdapter entryAdapter;
     private SearchView searchView;
     private SnackbarUndoDelete<EntryRecord> snackbarUndoDelete;
+    private Toast toast;
+
+    private long lastBackPress = -1;
 
     @Override
     public void onBackPressed() {
@@ -55,14 +59,20 @@ public class MainActivity extends AppCompatActivity
         else if (entryAdapter != null && entryAdapter.hasExpandedEntry()) {
             entryAdapter.collapseSelected();
         }
-        //then, finally, sign out
-        else {
-            //TODO: implement 'press back again to sign out'
+        //if back is pressed twice within 3.5 seconds then sign out
+        else if (System.currentTimeMillis() - lastBackPress <= 3500) {
+            if(toast != null) toast.cancel();
             Vault vault = Vault.get();
             vault.signOut();
             vault.requestSignIn(this, MainActivity.class);
             finishAffinity();
             super.onBackPressed();
+        }
+        //show a toast to press back again
+        else {
+            lastBackPress = System.currentTimeMillis();
+            toast = Toast.makeText(this, R.string.main_back_to_sign_out, Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
