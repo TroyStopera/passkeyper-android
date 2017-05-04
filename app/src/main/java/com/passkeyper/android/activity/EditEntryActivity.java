@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
-import com.passkeyper.android.AppVault;
+import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
 import com.passkeyper.android.adapter.SecurityQuesAdapter;
 import com.passkeyper.android.adapter.SensitiveEntryAdapter;
@@ -192,16 +192,16 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
     @Override
     protected void onResume() {
         super.onResume();
-        AppVault appVault = AppVault.get();
+        Vault vault = Vault.get();
 
-        if (appVault.hasManager() || appVault.loadManager()) {
+        if (vault.hasManager() || vault.loadManager()) {
             if (record.isSaved()) {
-                VaultManager vaultManager = appVault.getManager();
+                VaultManager vaultManager = vault.getManager();
                 //add any new vault models
                 sensitiveEntryAdapter.addNewVaultModels(vaultManager.getSensitiveEntries(record));
                 securityQuesAdapter.addNewVaultModels(vaultManager.getSecurityQuestions(record));
             }
-        } else appVault.requestSignIn(this);
+        } else vault.requestSignIn(this);
     }
 
     private boolean verifyInput() {
@@ -250,7 +250,7 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
         //delete any pending deletions by closing the Snackbar
         snackbarUndoDelete.forceDismissSnackbar();
 
-        VaultManager vaultManager = AppVault.get().getManager();
+        VaultManager vaultManager = Vault.get().getManager();
 
         for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
@@ -286,7 +286,7 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
     }
 
     private void delete() {
-        VaultManager vaultManager = AppVault.get().getManager();
+        VaultManager vaultManager = Vault.get().getManager();
         for (VaultModel model : deletedModels) {
             vaultManager.delete(model);
             //free from memory when needed

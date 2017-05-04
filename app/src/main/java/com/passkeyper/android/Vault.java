@@ -13,15 +13,15 @@ import com.passkeyper.android.vault.local.LocalVaultManager;
 /**
  * Singleton class that handles variables that are needed globally.
  */
-public class AppVault {
+public class Vault {
 
     public static final String ACTIVITY_AFTER_SIGN_IN_EXTRA = "afterSignIn";
-    private static final String TAG = "AppVault";
+    private static final String TAG = "Vault";
 
-    private static AppVault mInstance;
+    private static Vault mInstance;
     private VaultManager mVaultManager;
 
-    private AppVault() {
+    private Vault() {
         /* uses singleton pattern */
     }
 
@@ -102,9 +102,9 @@ public class AppVault {
     /**
      * @return the instance of the singleton object.
      */
-    public static AppVault get() {
+    public static Vault get() {
         if (mInstance == null)
-            mInstance = new AppVault();
+            mInstance = new Vault();
         return mInstance;
     }
 

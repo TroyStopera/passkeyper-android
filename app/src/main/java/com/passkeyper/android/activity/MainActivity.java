@@ -18,7 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.passkeyper.android.AppVault;
+import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
 import com.passkeyper.android.adapter.EntryAdapter;
 import com.passkeyper.android.prefs.UserPreferences;
@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity
         //then, finally, sign out
         else {
             //TODO: implement 'press back again to sign out'
-            AppVault appVault = AppVault.get();
-            appVault.signOut();
-            appVault.requestSignIn(this, MainActivity.class);
+            Vault vault = Vault.get();
+            vault.signOut();
+            vault.requestSignIn(this, MainActivity.class);
             finishAffinity();
             super.onBackPressed();
         }
@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                AppVault appVault = AppVault.get();
-                appVault.signOut();
-                appVault.requestSignIn(this, MainActivity.class);
+                Vault vault = Vault.get();
+                vault.signOut();
+                vault.requestSignIn(this, MainActivity.class);
                 finish();
                 return true;
             case R.id.action_sort_alpha_asc:
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDelete(Collection<EntryRecord> entryRecords) {
         for (EntryRecord entryRecord : entryRecords)
-            AppVault.get().getManager().delete(entryRecord);
+            Vault.get().getManager().delete(entryRecord);
     }
 
     @Override
@@ -201,20 +201,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        AppVault appVault = AppVault.get();
+        Vault vault = Vault.get();
 
-        if (appVault.hasManager() || appVault.loadManager()) {
+        if (vault.hasManager() || vault.loadManager()) {
             if (entryAdapter == null) {
-                entryAdapter = new EntryAdapter(this, appVault.getManager());
+                entryAdapter = new EntryAdapter(this, vault.getManager());
                 entryAdapter.setSortOrder(userPreferences.getSortOrder());
                 entryAdapter.setOnClickListener(this);
                 entryAdapter.setOnEntryExpandedListener(this);
                 entryRecyclerView.setAdapter(entryAdapter);
             } else {
-                entryAdapter.setVaultManager(appVault.getManager());
+                entryAdapter.setVaultManager(vault.getManager());
                 entryAdapter.reload();
             }
-        } else appVault.requestSignIn(this);
+        } else vault.requestSignIn(this);
     }
 
 }

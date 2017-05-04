@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import com.passkeyper.android.AppVault;
+import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class LocalSignInActivity extends AppCompatActivity {
 
     private static final String TAG = "Local Sign In";
 
-    private AppVault appVault;
+    private Vault vault;
     private TextInputLayout passwordInputLayout;
     private TextInputEditText passwordInput;
     private String nextActivityName;
@@ -35,7 +35,7 @@ public class LocalSignInActivity extends AppCompatActivity {
         passwordInput.getText().getChars(0, len, password, 0);
         passwordInput.getText().clear();
 
-        if (appVault.signInToLocalVault(this, password)) {
+        if (vault.signInToLocalVault(this, password)) {
             Arrays.fill(password, '\0');
             //launch the next activity if there is one
             if (nextActivityName != null) try {
@@ -57,7 +57,7 @@ public class LocalSignInActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         //ensure the vault manager is closed
-        appVault.signOut();
+        vault.signOut();
         finishAffinity();
     }
 
@@ -67,10 +67,10 @@ public class LocalSignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_local_login);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(AppVault.ACTIVITY_AFTER_SIGN_IN_EXTRA))
-            nextActivityName = intent.getStringExtra(AppVault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
+        if (intent.hasExtra(Vault.ACTIVITY_AFTER_SIGN_IN_EXTRA))
+            nextActivityName = intent.getStringExtra(Vault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
 
-        appVault = AppVault.get();
+        vault = Vault.get();
         passwordInputLayout = (TextInputLayout) findViewById(R.id.input_layout_password);
         passwordInput = (TextInputEditText) findViewById(R.id.input_password);
 
