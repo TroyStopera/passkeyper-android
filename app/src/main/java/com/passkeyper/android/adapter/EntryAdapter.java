@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
@@ -116,14 +115,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
         holder.setOnDeleteCLickListener(listener);
         holder.setOnEditCLickListener(listener);
 
-        holder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expandedId = isExpanded ? -1 : record.getId();
-                if (!isExpanded && onEntryExpandedListener != null)
-                    onEntryExpandedListener.onEntryExpanded(record, holder.getAdapterPosition());
-                notifyDataSetChanged();
-            }
+        holder.setOnClickListener(view -> {
+            expandedId = isExpanded ? -1 : record.getId();
+            if (!isExpanded && onEntryExpandedListener != null)
+                onEntryExpandedListener.onEntryExpanded(record, holder.getAdapterPosition());
+            notifyDataSetChanged();
         });
     }
 

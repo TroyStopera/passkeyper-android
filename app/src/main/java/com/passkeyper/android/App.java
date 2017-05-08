@@ -15,12 +15,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     private final Handler handler = new Handler();
 
-    private final Runnable signOutRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Vault.get().signOut();
-        }
-    };
+    private final Runnable signOutRunnable = () -> Vault.get().signOut();
 
     private AuthPreferences authPreferences;
 

@@ -1,6 +1,5 @@
 package com.passkeyper.android.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -13,8 +12,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
-import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
+import com.passkeyper.android.Vault;
 import com.passkeyper.android.adapter.SecurityQuesAdapter;
 import com.passkeyper.android.adapter.SensitiveEntryAdapter;
 import com.passkeyper.android.util.SnackbarUndoDelete;
@@ -68,12 +67,9 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.edit_entry_popup_title);
                 builder.setMessage(R.string.edit_entry_popup_msg);
-                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        delete();
-                        dialogInterface.dismiss();
-                    }
+                builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                    delete();
+                    dialogInterface.dismiss();
                 });
                 builder.setNegativeButton(android.R.string.cancel, null);
                 builder.create().show();

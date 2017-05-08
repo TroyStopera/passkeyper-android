@@ -180,12 +180,7 @@ public class MainActivity extends AppCompatActivity
         entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
 
 
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE);
-            }
-        });
+        findViewById(R.id.fab).setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -82,22 +82,16 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setOnEditCLickListener(final EntryAdapter.OnActionListener listener) {
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null)
-                    listener.onEditClicked(record);
-            }
+        editButton.setOnClickListener(view -> {
+            if (listener != null)
+                listener.onEditClicked(record);
         });
     }
 
     public void setOnDeleteCLickListener(final EntryAdapter.OnActionListener listener) {
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null)
-                    listener.onDeleteClicked(record);
-            }
+        deleteButton.setOnClickListener(view -> {
+            if (listener != null)
+                listener.onDeleteClicked(record);
         });
     }
 

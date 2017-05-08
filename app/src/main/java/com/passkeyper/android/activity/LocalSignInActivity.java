@@ -74,15 +74,12 @@ public class LocalSignInActivity extends AppCompatActivity {
         passwordInputLayout = (TextInputLayout) findViewById(R.id.input_layout_password);
         passwordInput = (TextInputEditText) findViewById(R.id.input_password);
 
-        passwordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO) {
-                    signIn(findViewById(R.id.sign_in_btn));
-                    return true;
-                }
-                return false;
+        passwordInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                signIn(findViewById(R.id.sign_in_btn));
+                return true;
             }
+            return false;
         });
     }
 

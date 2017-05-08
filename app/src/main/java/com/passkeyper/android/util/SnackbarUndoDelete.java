@@ -65,16 +65,13 @@ public class SnackbarUndoDelete<T> extends Snackbar.Callback {
         else
             snackbar = Snackbar.make(view, currentUndoCount + " " + descriptionMultiple, Snackbar.LENGTH_LONG);
 
-        snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.removeCallback(SnackbarUndoDelete.this);
-                if (deleteListener != null) {
-                    deleteListener.onUndo(tList);
-                }
-                tList.clear();
-                currentUndoCount = 0;
+        snackbar.setAction(R.string.action_undo, v -> {
+            snackbar.removeCallback(SnackbarUndoDelete.this);
+            if (deleteListener != null) {
+                deleteListener.onUndo(tList);
             }
+            tList.clear();
+            currentUndoCount = 0;
         });
         snackbar.addCallback(this);
         tList.add(t);
