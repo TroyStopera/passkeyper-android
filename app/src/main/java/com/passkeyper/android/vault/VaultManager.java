@@ -47,6 +47,7 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
     /**
      * @return true if this VaultManager has been closed.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isClosed() {
         return isClosed;
     }

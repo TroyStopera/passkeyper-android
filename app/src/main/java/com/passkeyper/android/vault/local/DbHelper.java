@@ -19,6 +19,7 @@ class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase.loadLibs(context);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     boolean isKeyValid(char[] key) {
         try {
             //if the database can be opened with the key then the key is valid
@@ -69,16 +70,16 @@ class DbHelper extends SQLiteOpenHelper {
         db.execSQL(builder.toString());
     }
 
-    long save(char[] key, VaultModel model, String table, String _id, ContentValues values) {
+    long save(char[] key, VaultModel model, String table, ContentValues values) {
         if (model.isSaved())
-            save(key, table, values, _id + " = ?", new String[]{String.valueOf(model.getId())}, true);
+            save(key, table, values, android.provider.BaseColumns._ID + " = ?", new String[]{String.valueOf(model.getId())}, true);
         else
             return save(key, table, values, null, null, false);
         return model.getId();
     }
 
-    void delete(char[] key, VaultModel model, String table, String _id) {
-        delete(key, table, _id + " = ?", new String[]{String.valueOf(model.getId())});
+    void delete(char[] key, VaultModel model, String table) {
+        delete(key, table, android.provider.BaseColumns._ID + " = ?", new String[]{String.valueOf(model.getId())});
     }
 
     /*

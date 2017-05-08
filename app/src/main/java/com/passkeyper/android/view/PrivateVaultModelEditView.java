@@ -17,7 +17,7 @@ import com.passkeyper.android.vaultmodel.PrivateModel;
  */
 public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends FrameLayout implements View.OnClickListener {
 
-    protected static final TransformationMethod hidden = new PasswordTransformationMethod();
+    static final TransformationMethod hidden = new PasswordTransformationMethod();
     private static int lastId = 0;
 
     private final int uniqueId = lastId++;
@@ -26,10 +26,10 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
 
     private boolean isTextCensored = true, isInEditMode = false;
 
-    protected T model;
+    final T model;
     private OnDeletePressedListener listener;
 
-    public PrivateVaultModelEditView(@NonNull Context context, int layoutRes, T model) {
+    PrivateVaultModelEditView(@NonNull Context context, int layoutRes, T model) {
         super(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(layoutRes, this);
@@ -37,10 +37,6 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
         this.model = model;
         setUiFields();
         updateUi();
-    }
-
-    public final int getUniqueId() {
-        return uniqueId;
     }
 
     @Override
@@ -71,7 +67,7 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
     public boolean equals(Object obj) {
         if (obj instanceof PrivateVaultModelEditView) {
             PrivateVaultModelEditView view = (PrivateVaultModelEditView) obj;
-            return view.getUniqueId() == getUniqueId();
+            return view.uniqueId == uniqueId;
         }
         return false;
     }
@@ -96,7 +92,7 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
 
     protected abstract void onInitUiFields();
 
-    protected void setEditMode(boolean enabled) {
+    void setEditMode(boolean enabled) {
         if (enabled && !isInEditMode) {
             doneButton.setVisibility(VISIBLE);
             deleteButton.setVisibility(GONE);

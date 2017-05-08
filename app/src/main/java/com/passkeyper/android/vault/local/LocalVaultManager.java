@@ -149,7 +149,6 @@ public class LocalVaultManager extends VaultManager {
                         password,
                         record,
                         DbContract.RecordTable.TABLE_NAME,
-                        DbContract.RecordTable._ID,
                         values
                 )
         );
@@ -167,7 +166,6 @@ public class LocalVaultManager extends VaultManager {
                         password,
                         sensitiveEntry,
                         DbContract.SensitiveEntryTable.TABLE_NAME,
-                        DbContract.SensitiveEntryTable._ID,
                         values
                 )
         );
@@ -185,7 +183,6 @@ public class LocalVaultManager extends VaultManager {
                         password,
                         securityQuesEntry,
                         DbContract.SecurityQuestionTable.TABLE_NAME,
-                        DbContract.SecurityQuestionTable._ID,
                         values
                 )
         );
@@ -202,8 +199,7 @@ public class LocalVaultManager extends VaultManager {
         dbHelper.delete(
                 password,
                 record,
-                DbContract.RecordTable.TABLE_NAME,
-                DbContract.RecordTable._ID
+                DbContract.RecordTable.TABLE_NAME
         );
     }
 
@@ -212,8 +208,7 @@ public class LocalVaultManager extends VaultManager {
         dbHelper.delete(
                 password,
                 sensitiveEntry,
-                DbContract.SensitiveEntryTable.TABLE_NAME,
-                DbContract.SensitiveEntryTable._ID
+                DbContract.SensitiveEntryTable.TABLE_NAME
         );
     }
 
@@ -222,8 +217,7 @@ public class LocalVaultManager extends VaultManager {
         dbHelper.delete(
                 password,
                 securityQuesEntry,
-                DbContract.SecurityQuestionTable.TABLE_NAME,
-                DbContract.SecurityQuestionTable._ID
+                DbContract.SecurityQuestionTable.TABLE_NAME
         );
     }
 

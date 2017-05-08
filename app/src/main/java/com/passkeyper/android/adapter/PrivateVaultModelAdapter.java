@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends BaseAdapter implements PrivateVaultModelEditView.OnDeletePressedListener {
 
-    protected final Context context;
+    final Context context;
 
     private final List<K> content = new LinkedList<>();
     private final Set<Long> modelIds = new HashSet<>();
@@ -52,14 +52,11 @@ public abstract class PrivateVaultModelAdapter<K extends PrivateModel> extends B
 
     public final void remove(K model) {
         int index = content.indexOf(model);
-        if (index >= 0) remove(index);
-    }
-
-    public final K remove(int index) {
-        K model = content.remove(index);
-        modelIds.remove(model.getId());
-        notifyDataSetChanged();
-        return model;
+        if (index >= 0) {
+            content.remove(index);
+            modelIds.remove(model.getId());
+            notifyDataSetChanged();
+        }
     }
 
     @Override

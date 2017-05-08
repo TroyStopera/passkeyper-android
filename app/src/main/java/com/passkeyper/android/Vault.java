@@ -81,6 +81,7 @@ public class Vault {
      *
      * @return true if the VaultManager was loaded.
      */
+    @SuppressWarnings("SameReturnValue")
     public boolean loadManager() {
         return false;
     }

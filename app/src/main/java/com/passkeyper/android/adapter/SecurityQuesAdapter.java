@@ -5,7 +5,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import com.passkeyper.android.R;
 import com.passkeyper.android.vaultmodel.SecurityQuesEntry;
@@ -32,7 +31,7 @@ public class SecurityQuesAdapter extends PrivateVaultModelAdapter<SecurityQuesEn
         SecurityQuestionEditView editView = new SecurityQuestionEditView(context, getItem(i));
         editView.setOnDeletePressedListener(this);
 
-        if (i >= getCount() - 1) editView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (i >= getCount() - 1) editView.setImeDone();
 
         TextInputLayout
                 question = (TextInputLayout) editView.findViewById(R.id.edit_security_ques_input),

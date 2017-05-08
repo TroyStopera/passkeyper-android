@@ -20,7 +20,6 @@
     <string name="action_sort_alpha_desc">Z to A</string>
     <string name="action_sort_chron_asc">Oldest First</string>
     <string name="action_sort_chron_desc">Newest First</string>
-    <string name="action_settings">Settings</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_sign_in">Sign In</string>
     <string name="action_save">Save</string>
@@ -51,7 +50,6 @@
         <item>@string/sensitive_type_other</item>
     </string-array>
 
-    <string name="sensitive_type_editing">Editing…</string>
     <string name="sensitive_type_password">Password</string>
     <string name="sensitive_type_Pin">PIN</string>
     <string name="sensitive_type_other">Other</string>

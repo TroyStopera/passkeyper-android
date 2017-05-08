@@ -8,7 +8,8 @@
               android:gravity="center"
               android:orientation="horizontal"
               android:weightSum="1"
-              tools:context=".activity.LocalSignInActivity">
+              tools:context=".activity.LocalSignInActivity"
+              tools:ignore="Overdraw">
 
     <LinearLayout
         android:layout_width="0dp"

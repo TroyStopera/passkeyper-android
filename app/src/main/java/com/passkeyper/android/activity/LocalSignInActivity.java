@@ -7,13 +7,11 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 
-import com.passkeyper.android.Vault;
 import com.passkeyper.android.R;
+import com.passkeyper.android.Vault;
 
 import java.util.Arrays;
 
@@ -26,6 +24,7 @@ public class LocalSignInActivity extends AppCompatActivity {
     private TextInputEditText passwordInput;
     private String nextActivityName;
 
+    @SuppressWarnings("WeakerAccess")
     public void signIn(View view) {
         passwordInputLayout.setErrorEnabled(false);
 

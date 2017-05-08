@@ -3,7 +3,6 @@ package com.passkeyper.android.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import com.passkeyper.android.vaultmodel.SensitiveEntry;
 import com.passkeyper.android.view.SensitiveEntryEditView;
@@ -22,7 +21,7 @@ public class SensitiveEntryAdapter extends PrivateVaultModelAdapter<SensitiveEnt
         SensitiveEntryEditView editView = new SensitiveEntryEditView(context, getItem(i));
         editView.setOnDeletePressedListener(this);
 
-        if (i >= getCount() - 1) editView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (i >= getCount() - 1) editView.setImeDone();
 
         return editView;
     }

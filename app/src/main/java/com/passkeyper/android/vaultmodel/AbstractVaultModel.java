@@ -118,7 +118,7 @@ public abstract class AbstractVaultModel implements VaultModel, Parcelable {
     static abstract class Creator<T extends AbstractVaultModel> implements Parcelable.Creator<AbstractVaultModel> {
 
         /**
-         * Create a new modle from the given Parcel.
+         * Create a new model from the given Parcel.
          *
          * @param parcel the Parcel with the model's data.
          * @return a new model with the given data from parcel.

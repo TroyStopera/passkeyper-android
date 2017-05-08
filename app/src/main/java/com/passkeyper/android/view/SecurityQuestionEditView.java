@@ -28,20 +28,8 @@ public class SecurityQuestionEditView extends PrivateVaultModelEditView<Security
         super(context, R.layout.view_edit_security, entry);
     }
 
-    public String getQuestion() {
-        return questionEditText.getText().toString();
-    }
-
-    public char[] getAnswer() {
-        int len = answerEditText.length();
-        final char[] chars = new char[len];
-        //fill the array and return
-        answerEditText.getText().getChars(0, len, chars, 0);
-        return chars;
-    }
-
-    public void setImeOptions(int options) {
-        answerEditText.setImeOptions(options);
+    public void setImeDone() {
+        answerEditText.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
     }
 
     @Override
@@ -93,8 +81,12 @@ public class SecurityQuestionEditView extends PrivateVaultModelEditView<Security
 
     @Override
     protected void onWriteToModel() {
-        model.setQuestion(getQuestion());
-        model.setAnswer(getAnswer());
+        int len = answerEditText.length();
+        final char[] chars = new char[len];
+        //fill the array and return
+        answerEditText.getText().getChars(0, len, chars, 0);
+        model.setAnswer(chars);
+        model.setQuestion(questionEditText.getText().toString());
     }
 
     @Override

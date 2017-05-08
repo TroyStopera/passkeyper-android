@@ -27,20 +27,8 @@ public class SensitiveEntryEditView extends PrivateVaultModelEditView<SensitiveE
         super(context, R.layout.view_edit_sensitive, entry);
     }
 
-    public String getEntryName() {
-        return (String) nameSpinner.getSelectedItem();
-    }
-
-    public char[] getValue() {
-        int len = valueEditText.length();
-        final char[] chars = new char[len];
-        //fill the array and return
-        valueEditText.getText().getChars(0, len, chars, 0);
-        return chars;
-    }
-
-    public void setImeOptions(int options) {
-        valueEditText.setImeOptions(options);
+    public void setImeDone() {
+        valueEditText.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
     }
 
     @Override
@@ -89,8 +77,12 @@ public class SensitiveEntryEditView extends PrivateVaultModelEditView<SensitiveE
 
     @Override
     protected void onWriteToModel() {
-        model.setName(getEntryName());
-        model.setValue(getValue());
+        int len = valueEditText.length();
+        final char[] chars = new char[len];
+        //fill the array and return
+        valueEditText.getText().getChars(0, len, chars, 0);
+        model.setValue(chars);
+        model.setName((String) nameSpinner.getSelectedItem());
     }
 
     @Override
@@ -98,6 +90,7 @@ public class SensitiveEntryEditView extends PrivateVaultModelEditView<SensitiveE
         if (model.hasName()) {
             inputLayout.setHint(model.getName());
 
+            //noinspection unchecked
             ArrayAdapter<String> adapter = (ArrayAdapter<String>) nameSpinner.getAdapter();
 
             if (adapter.getPosition(model.getName()) != -1)

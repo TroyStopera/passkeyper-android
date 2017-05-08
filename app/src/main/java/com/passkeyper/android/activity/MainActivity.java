@@ -31,7 +31,7 @@ import java.util.Collection;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, EntryAdapter.OnActionListener, SnackbarUndoDelete.SnackBarDeleteListener<EntryRecord>, EntryAdapter.OnEntryExpandedListener {
 
-    public static final int EDIT_REQUEST_CODE = 24;
+    private static final int EDIT_REQUEST_CODE = 24;
 
     private UserPreferences userPreferences;
     private RecyclerView entryRecyclerView;
@@ -154,9 +154,9 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_REQUEST_CODE) {
             if (resultCode == EditEntryActivity.RESULT_ENTRY_CREATED)
-                entryAdapter.add((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
+                entryAdapter.add(data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
             else if (resultCode == EditEntryActivity.RESULT_ENTRY_DELETED)
-                entryAdapter.remove((EntryRecord) data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
+                entryAdapter.remove(data.getParcelableExtra(EditEntryActivity.ENTRY_RECORD_EXTRA_KEY));
             else if (resultCode == EditEntryActivity.RESULT_ENTRY_UPDATED)
                 entryAdapter.collapseSelected();
         }

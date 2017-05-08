@@ -18,7 +18,7 @@ abstract class Preferences {
         return preferences;
     }
 
-    public SharedPreferences.Editor edit() {
+    SharedPreferences.Editor edit() {
         return prefs().edit();
     }
 
