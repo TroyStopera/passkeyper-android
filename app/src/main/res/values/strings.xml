@@ -27,6 +27,7 @@
     <string name="action_undo">Undo</string>
 
     <string name="login_title">Login</string>
+    <string name="login_forgot">Forgot Password</string>
 
     <string name="main_entry_deleted">entry deleted</string>
     <string name="main_entries_deleted">entries deleted</string>

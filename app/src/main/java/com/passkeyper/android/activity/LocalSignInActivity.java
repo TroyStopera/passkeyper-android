@@ -52,6 +52,11 @@ public class LocalSignInActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public void forgotPassword(View view) {
+
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
