@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         }
         //if back is pressed twice within 3.5 seconds then sign out
         else if (System.currentTimeMillis() - lastBackPress <= 3500) {
-            if(toast != null) toast.cancel();
+            if (toast != null) toast.cancel();
             Vault vault = Vault.get();
             vault.signOut();
             vault.requestSignIn(this, MainActivity.class);
