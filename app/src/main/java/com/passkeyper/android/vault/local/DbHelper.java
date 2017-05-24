@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.passkeyper.android.vaultmodel.VaultModel;
-
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
@@ -40,9 +38,10 @@ class DbHelper extends SQLiteOpenHelper {
         //set default key on create
         db.execSQL("PRAGMA key = 'p';");
         //build the tables
+        db.execSQL(DbContract.SecurityQuestionTable.SQL_CREATE_TABLE);
         db.execSQL(DbContract.RecordTable.SQL_CREATE_TABLE);
         db.execSQL(DbContract.SensitiveEntryTable.SQL_CREATE_TABLE);
-        db.execSQL(DbContract.SecurityQuestionTable.SQL_CREATE_TABLE);
+        db.execSQL(DbContract.RecoveryTable.SQL_CREATE_TABLE);
     }
 
     @Override
@@ -50,16 +49,8 @@ class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    Cursor readAllRecords(char[] key) {
-        return read(key, DbContract.RecordTable.TABLE_NAME, DbContract.RecordTable.COLUMNS, " 1 = 1", null);
-    }
-
-    Cursor readEntry(char[] key, String table, String[] projection, String recordIdColumn, long recordId) {
-        return read(key, table, projection, recordIdColumn + " = ?", new String[]{String.valueOf(recordId)});
-    }
-
     void updateKey(char[] oldKey, char[] newKey) {
-        SQLiteDatabase db = this.getWritableDatabase(oldKey);
+        SQLiteDatabase db = getWritableDatabase(oldKey);
 
         StringBuilder builder = new StringBuilder();
         builder.append("PRAGMA rekey = '");
@@ -68,29 +59,14 @@ class DbHelper extends SQLiteOpenHelper {
         builder.append("';");
 
         db.execSQL(builder.toString());
+        db.close();
     }
 
-    long save(char[] key, VaultModel model, String table, ContentValues values) {
-        if (model.isSaved())
-            save(key, table, values, android.provider.BaseColumns._ID + " = ?", new String[]{String.valueOf(model.getId())}, true);
-        else
-            return save(key, table, values, null, null, false);
-        return model.getId();
+    Cursor read(char[] key, String table, String[] projection, String selection, String[] args) {
+        return getReadableDatabase(key).query(table, projection, selection, args, null, null, null);
     }
 
-    void delete(char[] key, VaultModel model, String table) {
-        delete(key, table, android.provider.BaseColumns._ID + " = ?", new String[]{String.valueOf(model.getId())});
-    }
-
-    /*
-        Below are the helper private methods for accessing the database
-     */
-
-    private Cursor read(char[] key, String table, String[] projection, String selection, String[] args) {
-        return this.getReadableDatabase(key).query(table, projection, selection, args, null, null, null);
-    }
-
-    private long save(char[] key, String table, ContentValues values, String selection, String[] args, boolean update) {
+    long save(char[] key, String table, ContentValues values, String selection, String[] args, boolean update) {
         SQLiteDatabase db = this.getWritableDatabase(key);
 
         long id = -1;
@@ -101,7 +77,7 @@ class DbHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    private void delete(char[] key, String table, String selection, String[] args) {
+    void delete(char[] key, String table, String selection, String[] args) {
         SQLiteDatabase db = this.getWritableDatabase(key);
         db.delete(table, selection, args);
         db.close();

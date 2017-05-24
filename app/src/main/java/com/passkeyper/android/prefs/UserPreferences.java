@@ -14,6 +14,7 @@ public class UserPreferences extends Preferences {
     private static UserPreferences instance;
     /* variable names */
     private static final String PREF_SORT_ORDER = "PrefSortOrder";
+    private static final String PREF_BACKUP_TO_GOOGLE = "BackupToGoogle";
 
     private UserPreferences(Context context) {
         super(context, "UserPrefs");
@@ -59,6 +60,26 @@ public class UserPreferences extends Preferences {
                 editor.putInt(PREF_SORT_ORDER, 3);
                 break;
         }
+        editor.apply();
+    }
+
+    /**
+     * Returns whether the user wants app data backed up to Google.
+     *
+     * @return true if backup is enabled.
+     */
+    public boolean isBackupToGoogleEnabled() {
+        return prefs().getBoolean(PREF_BACKUP_TO_GOOGLE, false);
+    }
+
+    /**
+     * Set whether the app data should be backed up to Google.
+     *
+     * @param enabled true if the app data should be backed up.
+     */
+    public void setBackupToGoogleEnabled(boolean enabled) {
+        SharedPreferences.Editor editor = edit();
+        editor.putBoolean(PREF_BACKUP_TO_GOOGLE, enabled);
         editor.apply();
     }
 

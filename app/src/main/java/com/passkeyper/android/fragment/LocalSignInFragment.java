@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 
 import com.passkeyper.android.R;
+import com.passkeyper.android.activity.LocalLoginActivity;
 
 import java.util.Arrays;
 
 /**
  * LoginFragment for signing into the local vault.
  */
-public class LocalSignInFragment extends AbstractLoginFragment {
+public class LocalSignInFragment extends AbstractLoginFragment<LocalLoginActivity> {
 
     private TextInputLayout passwordInputLayout;
     private TextInputEditText passwordInput;
@@ -29,9 +29,8 @@ public class LocalSignInFragment extends AbstractLoginFragment {
         passwordInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_password);
         passwordInput = (TextInputEditText) view.findViewById(R.id.input_password);
         passwordInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_GO)
-                signIn();
-            return actionId == EditorInfo.IME_ACTION_GO;
+            signIn();
+            return true;
         });
 
         view.findViewById(R.id.sign_in_btn).setOnClickListener(v -> signIn());

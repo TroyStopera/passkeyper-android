@@ -10,9 +10,11 @@ import android.util.Log;
 import com.passkeyper.android.R;
 import com.passkeyper.android.Vault;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
-import com.passkeyper.android.fragment.LocalSignInFragment;
 
-public class LoginActivity extends FragmentActivity implements AbstractLoginFragment.LoginFragmentActivity {
+/**
+ * Abstract Activity that is the basis for logging in and setting up the app.
+ */
+public abstract class AbstractLoginActivity extends FragmentActivity {
 
     private static final String TAG = "Login";
 
@@ -20,8 +22,17 @@ public class LoginActivity extends FragmentActivity implements AbstractLoginFrag
 
     private String nextActivityName;
 
-    @Override
-    public void replace(AbstractLoginFragment fragment) {
+    protected abstract AbstractLoginFragment getFirstFragment();
+
+    public final boolean pop() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
+        return false;
+    }
+
+    public final void replaceFragment(AbstractLoginFragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left, R.anim.in_from_left, R.anim.out_to_right);
         transaction.replace(R.id.login_fragment_container, fragment);
@@ -29,8 +40,7 @@ public class LoginActivity extends FragmentActivity implements AbstractLoginFrag
         transaction.commit();
     }
 
-    @Override
-    public void redirectAndFinish() {
+    public final void redirectAndFinish() {
         //launch the next activity if there is one
         if (nextActivityName != null) try {
             startActivity(new Intent(this, Class.forName(nextActivityName)));
@@ -42,10 +52,8 @@ public class LoginActivity extends FragmentActivity implements AbstractLoginFrag
     }
 
     @Override
-    public void onBackPressed() {        
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
+    public final void onBackPressed() {
+        if (!pop()) {
             //ensure the vault manager is closed if there are no more fragments
             vault.signOut();
             finishAffinity();
@@ -62,7 +70,7 @@ public class LoginActivity extends FragmentActivity implements AbstractLoginFrag
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(0, 0, R.anim.in_from_left, R.anim.out_to_right);
-        transaction.add(R.id.login_fragment_container, new LocalSignInFragment());
+        transaction.add(R.id.login_fragment_container, getFirstFragment());
         transaction.commit();
     }
 

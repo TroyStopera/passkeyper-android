@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.passkeyper.android.prefs.AuthPreferences;
-import com.passkeyper.android.vault.local.LocalVaultManager;
 
 /**
  * Application class that is used to monitor when the user has closed the app or when the screen has timed out.
@@ -24,10 +23,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
         super.onCreate();
         authPreferences = AuthPreferences.get(this);
         registerActivityLifecycleCallbacks(this);
-
-        //TODO: implement a true setup
-        if (!LocalVaultManager.isLocalDbSetup(this))
-            LocalVaultManager.setupLocalDb(this, new char[]{'a', 'b', 'c'});
     }
 
     @Override

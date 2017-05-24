@@ -9,25 +9,48 @@
 
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
+    <string name="error_password_short">Password is too short</string>
+    <string name="error_password_mismatch">Passwords don\'t match</string>
+    <string name="error_incorrect_password">Invalid password</string>
 
-    <string name="error_incorrect_password">Invalid Password</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_missing_details">Missing required information</string>
 
+    <string name="action_begin">Begin</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_finish">Finish</string>
+    <string name="action_save">Save</string>
     <string name="action_search">Search</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_out">Sign Out</string>
     <string name="action_sort">Sort</string>
     <string name="action_sort_alpha_asc">A to Z</string>
     <string name="action_sort_alpha_desc">Z to A</string>
     <string name="action_sort_chron_asc">Oldest First</string>
     <string name="action_sort_chron_desc">Newest First</string>
-    <string name="action_sign_out">Sign Out</string>
-    <string name="action_sign_in">Sign In</string>
-    <string name="action_save">Save</string>
-    <string name="action_delete">Delete</string>
     <string name="action_undo">Undo</string>
 
     <string name="login_title">Login</string>
     <string name="login_forgot">Forgot Password</string>
+
+    <string name="setup_title">First Time Setup</string>
+    <string name="setup_title_password">Master Password</string>
+    <string name="setup_title_security">Security Question</string>
+    <string name="setup_title_auth_settings">Auth Settings</string>
+    <string name="setup_confirm_password">Confirm Password</string>
+    <string name="setup_fingerprint_enabled">Enable logging in with an authorized thumbprint</string>
+    <string name="setup_backup_enabled">Enable automatic backups of your data to Google servers</string>
+    <string name="setup_auth_timeout">How long should the app wait to sign you out after the screen times out or the app is closed?</string>
+    <string name="setup_local_msg">
+        Welcome to Passkeyper, it looks like this is your first time using the app.
+        Please complete this brief one time setup process.
+    </string>
+    <string name="setup_local_password_msg">
+        It must be at least 6 characters.
+    </string>
+    <string name="setup_local_security_msg">
+        Make it secure, if anybody can guess it they can access your passwords!
+    </string>
 
     <string name="main_entry_deleted">entry deleted</string>
     <string name="main_entries_deleted">entries deleted</string>
@@ -45,15 +68,20 @@
     <string name="edit_entry_popup_title">Confirm Delete</string>
     <string name="edit_entry_popup_msg">This will delete the entire entry and cannot be undone.</string>
 
+    <string name="time_seconds">Seconds</string>
+
     <string-array name="sensitive_data_name_array">
-        <item>@string/sensitive_type_password</item>
-        <item>@string/sensitive_type_Pin</item>
-        <item>@string/sensitive_type_other</item>
+        <item>@string/password</item>
+        <item>@string/pin</item>
+        <item>@string/other</item>
     </string-array>
 
-    <string name="sensitive_type_password">Password</string>
-    <string name="sensitive_type_Pin">PIN</string>
-    <string name="sensitive_type_other">Other</string>
+    <string name="password">Password</string>
+    <string name="pin">PIN</string>
+    <string name="other">Other</string>
+
+    <string name="security_question">Security Question</string>
+    <string name="security_answer">Security Answer</string>
 
     <string name="security_edit_answer">Answer</string>
     <string name="security_edit_question">Question</string>

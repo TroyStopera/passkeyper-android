@@ -3,9 +3,12 @@ package com.passkeyper.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.passkeyper.android.activity.LoginActivity;
+import com.passkeyper.android.activity.AbstractLoginActivity;
+import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.activity.LocalLoginActivity;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.DatabaseAuthException;
 import com.passkeyper.android.vault.local.LocalVaultManager;
@@ -31,7 +34,7 @@ public class Vault {
      * @param activity the Activity the request is being made from.
      */
     public void requestSignIn(Activity activity) {
-        Intent intent = new Intent(activity, LoginActivity.class);
+        Intent intent = new Intent(activity, getLoginClass(activity));
         activity.startActivity(intent);
     }
 
@@ -41,8 +44,8 @@ public class Vault {
      * @param activity            the Activity the request is being made from.
      * @param activityAfterSignIn the Activity to start after authentication.
      */
-    public void requestSignIn(Activity activity, Class<?> activityAfterSignIn) {
-        Intent intent = new Intent(activity, LoginActivity.class);
+    public void requestSignIn(Activity activity, @NonNull Class<?> activityAfterSignIn) {
+        Intent intent = new Intent(activity, getLoginClass(activity));
         intent.putExtra(ACTIVITY_AFTER_SIGN_IN_EXTRA, activityAfterSignIn.getCanonicalName());
         activity.startActivity(intent);
     }
@@ -107,6 +110,12 @@ public class Vault {
         if (mInstance == null)
             mInstance = new Vault();
         return mInstance;
+    }
+
+    private Class<? extends AbstractLoginActivity> getLoginClass(Context context) {
+        if (LocalVaultManager.isLocalDbSetup(context)) {
+            return LocalLoginActivity.class;
+        } else return InitialSetupActivity.class;
     }
 
 }

@@ -111,4 +111,58 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
      */
     public abstract void delete(SecurityQuesEntry securityQuesEntry);
 
+    /**
+     * Returns the recovery data needed to access the vault when the password is forgotten.
+     *
+     * @return the RecoveryDta.
+     */
+    public abstract RecoveryData getRecoveryData();
+
+    /**
+     * Saves the recovery data to the vault.
+     *
+     * @param recoveryData the RecoveryData to save.
+     */
+    public abstract void updateRecoveryData(RecoveryData recoveryData);
+
+    /**
+     * Interface used to handle data that is needed to recover the Vault if the password is forgotten.
+     */
+    public interface RecoveryData {
+
+        /**
+         * Get the vault's security question.
+         *
+         * @return the security question.
+         */
+        String getSecurityQuestion();
+
+        /**
+         * Sets the security question for the vault.
+         *
+         * @param securityQuestion the security question.
+         */
+        void setSecurityQuestion(String securityQuestion);
+
+        /**
+         * Get the vault's security question answer.
+         *
+         * @return the security question answer.
+         */
+        char[] getSecurityAnswer();
+
+        /**
+         * sets the security question answer for the vault.
+         *
+         * @param securityAnswer the security question answer.
+         */
+        void setSecurityAnswer(char[] securityAnswer);
+
+        /**
+         * Frees the security question answer from memory.
+         */
+        void free();
+
+    }
+
 }

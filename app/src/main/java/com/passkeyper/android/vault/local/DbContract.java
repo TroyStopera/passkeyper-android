@@ -10,6 +10,19 @@ class DbContract {
     static final int DATABASE_VERSION = 1;
     static final String DATABASE_NAME = "local_vault.db";
 
+    static abstract class RecoveryTable implements BaseColumns {
+        static final String TABLE_NAME = "recovery";
+        static final String COLUMN_NAME_SECURITY_QUESTION = "question";
+        static final String COLUMN_NAME_SECURITY_ANSWER = "answer";
+
+        static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
+                _ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_NAME_SECURITY_QUESTION + " TEXT NOT NULL, " +
+                COLUMN_NAME_SECURITY_ANSWER + " TEXT NOT NULL);";
+
+        static final String[] COLUMNS = {_ID, COLUMN_NAME_SECURITY_QUESTION, COLUMN_NAME_SECURITY_ANSWER};
+    }
+
     static abstract class RecordTable implements BaseColumns {
         static final String TABLE_NAME = "record";
         static final String COLUMN_NAME_ACCOUNT = "account";
