@@ -24,6 +24,7 @@ import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
 import com.passkeyper.android.auth.FingerprintSetupDialog;
 import com.passkeyper.android.prefs.UserPreferences;
+import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.LocalVaultManager;
 
 import java.util.Arrays;
@@ -119,8 +120,14 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
                     userPreferences.setFingerprintEnabled(fingerprintEnabled.isChecked());
                     userPreferences.setBackupToGoogleEnabled(backupEnabled.isChecked());
                     //setup and log into database
+                    Vault vault = Vault.get();
                     LocalVaultManager.setupLocalDb(getContext(), pass, securityQuestion, securityAnswer);
-                    Vault.get().signInToLocalVault(getContext(), pass);
+                    vault.signInToLocalVault(getContext(), pass);
+                    //update the recovery data in the database
+                    VaultManager.RecoveryData recoveryData = vault.getManager().getRecoveryData();
+                    recoveryData.setSecurityQuestion(securityQuestion);
+                    recoveryData.setSecurityAnswer(securityAnswer);
+                    vault.getManager().updateRecoveryData(recoveryData);
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "Unable to setup vault", e);
