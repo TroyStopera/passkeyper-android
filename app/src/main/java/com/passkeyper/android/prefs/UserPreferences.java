@@ -13,11 +13,51 @@ public class UserPreferences extends Preferences {
     /* instance of UserPreferences */
     private static UserPreferences instance;
     /* variable names */
+    private static final String PREF_APP_CLOSED_AUTH_TIMEOUT = "ClosedAuthTimeout";
+    private static final String PREF_FINGERPRINT_ENABLED = "FingerPrintEnabled";
     private static final String PREF_SORT_ORDER = "PrefSortOrder";
     private static final String PREF_BACKUP_TO_GOOGLE = "BackupToGoogle";
 
     private UserPreferences(Context context) {
         super(context, "UserPrefs");
+    }
+
+    /**
+     * Returns the number of milliseconds after the app closes that the user is signed out.
+     *
+     * @return the time in milliseconds.
+     */
+    public long getAppClosedAuthTimeout() {
+        return prefs().getLong(PREF_APP_CLOSED_AUTH_TIMEOUT, 30000);
+    }
+
+    /**
+     * Sets the number of milliseconds after the app closes that the user is signed out.
+     *
+     * @param timeout the time in milliseconds.
+     */
+    public void setAppClosedAuthTimeout(long timeout) {
+        SharedPreferences.Editor editor = edit();
+        editor.putLong(PREF_APP_CLOSED_AUTH_TIMEOUT, timeout);
+        editor.apply();
+    }
+
+    /**
+     * Returns whether the fingerprint login is enabled.
+     *
+     * @return true if fingerprint authentication is enabled
+     */
+    public boolean isFingerprintEnabled() {
+        return prefs().getBoolean(PREF_FINGERPRINT_ENABLED, false);
+    }
+
+    /**
+     * Sets if fingerprint authentication is enabled.
+     *
+     * @param enabled whether fingerprint should be enabled;
+     */
+    public void setFingerprintEnabled(boolean enabled) {
+        edit().putBoolean(PREF_FINGERPRINT_ENABLED, enabled).apply();
     }
 
     /**

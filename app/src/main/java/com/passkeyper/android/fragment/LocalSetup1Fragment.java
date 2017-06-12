@@ -17,7 +17,7 @@ public class LocalSetup1Fragment extends AbstractLoginFragment<InitialSetupActiv
     View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_1_fragment, container, false);
         view.findViewById(R.id.setup_begin_btn).setOnClickListener(v ->
-                loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup2Fragment())
+                loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup2Fragment(), true)
         );
         return view;
     }

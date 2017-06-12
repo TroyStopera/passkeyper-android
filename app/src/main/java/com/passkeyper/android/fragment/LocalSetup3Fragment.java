@@ -32,6 +32,8 @@ public class LocalSetup3Fragment extends AbstractLoginFragment<InitialSetupActiv
         view.findViewById(R.id.back_btn).setOnClickListener(v -> loginFragmentActivity.pop());
         view.findViewById(R.id.next_btn).setOnClickListener(v -> next());
 
+        question.requestFocus();
+
         return view;
     }
 
@@ -59,7 +61,7 @@ public class LocalSetup3Fragment extends AbstractLoginFragment<InitialSetupActiv
         }
 
         if (valid) {
-            loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup4Fragment());
+            loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup4Fragment(), true);
         } else window.startAnimation(shake);
     }
 

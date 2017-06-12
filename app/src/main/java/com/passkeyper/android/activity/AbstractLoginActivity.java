@@ -3,6 +3,7 @@ package com.passkeyper.android.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -22,8 +23,6 @@ public abstract class AbstractLoginActivity extends FragmentActivity {
 
     private String nextActivityName;
 
-    protected abstract AbstractLoginFragment getFirstFragment();
-
     public final boolean pop() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
@@ -32,11 +31,12 @@ public abstract class AbstractLoginActivity extends FragmentActivity {
         return false;
     }
 
-    public final void replaceFragment(AbstractLoginFragment fragment) {
+    public final void replaceFragment(AbstractLoginFragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.in_from_right, R.anim.out_to_left, R.anim.in_from_left, R.anim.out_to_right);
         transaction.replace(R.id.login_fragment_container, fragment);
-        transaction.addToBackStack(null);
+        if (addToBackStack)
+            transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -67,10 +67,12 @@ public abstract class AbstractLoginActivity extends FragmentActivity {
 
         if (getIntent().hasExtra(Vault.ACTIVITY_AFTER_SIGN_IN_EXTRA))
             nextActivityName = getIntent().getStringExtra(Vault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
+    }
 
+    protected final void setInitialFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(0, 0, R.anim.in_from_left, R.anim.out_to_right);
-        transaction.add(R.id.login_fragment_container, getFirstFragment());
+        transaction.add(R.id.login_fragment_container, fragment);
         transaction.commit();
     }
 

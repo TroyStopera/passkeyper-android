@@ -1,6 +1,8 @@
 package com.passkeyper.android.activity;
 
-import com.passkeyper.android.fragment.AbstractLoginFragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.passkeyper.android.fragment.LocalSetup1Fragment;
 import com.passkeyper.android.fragment.LocalSetup2Fragment;
 import com.passkeyper.android.fragment.LocalSetup3Fragment;
@@ -30,8 +32,9 @@ public class InitialSetupActivity extends AbstractLoginActivity {
     }
 
     @Override
-    protected AbstractLoginFragment getFirstFragment() {
-        return getSetup1Fragment();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setInitialFragment(setup1Fragment);
     }
 
 }

@@ -58,7 +58,7 @@ public class LocalSetup2Fragment extends AbstractLoginFragment<InitialSetupActiv
         else {
             password.setError(null);
             confirm.setError(null);
-            loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup3Fragment());
+            loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup3Fragment(), true);
         }
     }
 

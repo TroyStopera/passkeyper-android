@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/setup_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@null"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"/>
+
+    <ProgressBar
+        android:id="@+id/setup_final_loading"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/setup_title_auth_settings"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+        android:text="@string/setup_title_settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,9 +37,10 @@
         <TextView
             style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.75"
-            android:text="@string/setup_auth_timeout" />
+            android:gravity="center_vertical"
+            android:text="@string/setup_auth_timeout"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="0dp"
@@ -47,7 +57,7 @@
                 android:inputType="number"
                 android:maxLines="1"
                 android:text="30"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -56,17 +66,17 @@
     <Switch
         android:id="@+id/backup_enabled_switch"
         style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setup_backup_enabled" />
+        android:text="@string/setup_backup_enabled"/>
 
     <Switch
         android:id="@+id/fingerprint_enabled_switch"
         style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/setup_fingerprint_enabled"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -79,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_arrow_back"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="RtlHardcoded"/>
 
         <Button
             android:id="@+id/finish_btn"
@@ -88,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="@string/action_finish"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="RtlHardcoded"/>
 
     </RelativeLayout>
 
