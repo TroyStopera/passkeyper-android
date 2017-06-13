@@ -5,8 +5,6 @@ import android.app.Application;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.passkeyper.android.prefs.UserPreferences;
-
 /**
  * Application class that is used to monitor when the user has closed the app or when the screen has timed out.
  */
@@ -16,12 +14,12 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     private final Runnable signOutRunnable = () -> Vault.get().signOut();
 
-    private UserPreferences userPreferences;
+    private UserPrefs userPrefs;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        userPreferences = UserPreferences.get(this);
+        userPrefs = new UserPrefs(this);
         registerActivityLifecycleCallbacks(this);
     }
 
@@ -44,7 +42,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
     public void onActivityPaused(Activity activity) {
         //only start sign out timer if there is a VaultManager
         if (Vault.get().hasManager()) {
-            long timeout = userPreferences.getAppClosedAuthTimeout();
+            long timeout = userPrefs.getAppClosedAuthTimeout();
             /*
                 To ensure that users are not signed out when simply switching activities within this
                 app there must be at least a 1000ms delay before signing out.

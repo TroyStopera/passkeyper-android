@@ -1,4 +1,4 @@
-package com.passkeyper.android.prefs;
+package com.passkeyper.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,18 +8,18 @@ import com.passkeyper.android.adapter.EntryAdapter;
 /**
  * Class used to access user settings related to basic preferences.
  */
-public class UserPreferences extends Preferences {
+public class UserPrefs {
 
-    /* instance of UserPreferences */
-    private static UserPreferences instance;
     /* variable names */
     private static final String PREF_APP_CLOSED_AUTH_TIMEOUT = "ClosedAuthTimeout";
     private static final String PREF_FINGERPRINT_ENABLED = "FingerPrintEnabled";
     private static final String PREF_SORT_ORDER = "PrefSortOrder";
     private static final String PREF_BACKUP_TO_GOOGLE = "BackupToGoogle";
 
-    private UserPreferences(Context context) {
-        super(context, "UserPrefs");
+    private final SharedPreferences sharedPreferences;
+
+    public UserPrefs(Context context) {
+        sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
     }
 
     /**
@@ -28,7 +28,7 @@ public class UserPreferences extends Preferences {
      * @return the time in milliseconds.
      */
     public long getAppClosedAuthTimeout() {
-        return prefs().getLong(PREF_APP_CLOSED_AUTH_TIMEOUT, 30000);
+        return sharedPreferences.getLong(PREF_APP_CLOSED_AUTH_TIMEOUT, 30000);
     }
 
     /**
@@ -37,7 +37,7 @@ public class UserPreferences extends Preferences {
      * @param timeout the time in milliseconds.
      */
     public void setAppClosedAuthTimeout(long timeout) {
-        SharedPreferences.Editor editor = edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(PREF_APP_CLOSED_AUTH_TIMEOUT, timeout);
         editor.apply();
     }
@@ -48,7 +48,7 @@ public class UserPreferences extends Preferences {
      * @return true if fingerprint authentication is enabled
      */
     public boolean isFingerprintEnabled() {
-        return prefs().getBoolean(PREF_FINGERPRINT_ENABLED, false);
+        return sharedPreferences.getBoolean(PREF_FINGERPRINT_ENABLED, false);
     }
 
     /**
@@ -57,14 +57,14 @@ public class UserPreferences extends Preferences {
      * @param enabled whether fingerprint should be enabled;
      */
     public void setFingerprintEnabled(boolean enabled) {
-        edit().putBoolean(PREF_FINGERPRINT_ENABLED, enabled).apply();
+        sharedPreferences.edit().putBoolean(PREF_FINGERPRINT_ENABLED, enabled).apply();
     }
 
     /**
      * @return the SortOrder the user has chosen.
      */
     public EntryAdapter.SortOrder getSortOrder() {
-        int i = prefs().getInt(PREF_SORT_ORDER, 0);
+        int i = sharedPreferences.getInt(PREF_SORT_ORDER, 0);
         switch (i) {
             case 0:
                 return EntryAdapter.SortOrder.AtoZ;
@@ -85,7 +85,7 @@ public class UserPreferences extends Preferences {
      * @param order the SortOrder to use.
      */
     public void setSortOrder(EntryAdapter.SortOrder order) {
-        SharedPreferences.Editor editor = edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         switch (order) {
             case AtoZ:
                 editor.putInt(PREF_SORT_ORDER, 0);
@@ -109,7 +109,7 @@ public class UserPreferences extends Preferences {
      * @return true if backup is enabled.
      */
     public boolean isBackupToGoogleEnabled() {
-        return prefs().getBoolean(PREF_BACKUP_TO_GOOGLE, false);
+        return sharedPreferences.getBoolean(PREF_BACKUP_TO_GOOGLE, false);
     }
 
     /**
@@ -118,21 +118,9 @@ public class UserPreferences extends Preferences {
      * @param enabled true if the app data should be backed up.
      */
     public void setBackupToGoogleEnabled(boolean enabled) {
-        SharedPreferences.Editor editor = edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(PREF_BACKUP_TO_GOOGLE, enabled);
         editor.apply();
-    }
-
-    /**
-     * Get the instance of UserPreferences.
-     *
-     * @param context the Context used to load the SharedPreferences object.
-     * @return the instance of UserPreferences.
-     */
-    public static UserPreferences get(Context context) {
-        if (instance == null)
-            instance = new UserPreferences(context);
-        return instance;
     }
 
 }

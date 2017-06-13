@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.passkeyper.android.R;
 import com.passkeyper.android.Vault;
 import com.passkeyper.android.adapter.EntryAdapter;
-import com.passkeyper.android.prefs.UserPreferences;
+import com.passkeyper.android.UserPrefs;
 import com.passkeyper.android.util.SnackbarUndoDelete;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int EDIT_REQUEST_CODE = 24;
 
-    private UserPreferences userPreferences;
+    private UserPrefs userPrefs;
     private RecyclerView entryRecyclerView;
     private EntryAdapter entryAdapter;
     private SearchView searchView;
@@ -95,19 +95,19 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 return true;
             case R.id.action_sort_alpha_asc:
-                userPreferences.setSortOrder(EntryAdapter.SortOrder.AtoZ);
+                userPrefs.setSortOrder(EntryAdapter.SortOrder.AtoZ);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.AtoZ);
                 return true;
             case R.id.action_sort_alpha_desc:
-                userPreferences.setSortOrder(EntryAdapter.SortOrder.ZtoA);
+                userPrefs.setSortOrder(EntryAdapter.SortOrder.ZtoA);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.ZtoA);
                 return true;
             case R.id.action_sort_chron_asc:
-                userPreferences.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
+                userPrefs.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
                 return true;
             case R.id.action_sort_chron_desc:
-                userPreferences.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
+                userPrefs.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
                 return true;
         }
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userPreferences = UserPreferences.get(this);
+        userPrefs = new UserPrefs(this);
         snackbarUndoDelete = new SnackbarUndoDelete<>(
                 findViewById(R.id.main_activity_root),
                 getString(R.string.main_entry_deleted),
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity
         entryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
         entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
-
 
         findViewById(R.id.fab).setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE));
 
@@ -213,7 +212,7 @@ public class MainActivity extends AppCompatActivity
         if (vault.hasManager() || vault.loadManager()) {
             if (entryAdapter == null) {
                 entryAdapter = new EntryAdapter(this, vault.getManager());
-                entryAdapter.setSortOrder(userPreferences.getSortOrder());
+                entryAdapter.setSortOrder(userPrefs.getSortOrder());
                 entryAdapter.setOnClickListener(this);
                 entryAdapter.setOnEntryExpandedListener(this);
                 entryRecyclerView.setAdapter(entryAdapter);

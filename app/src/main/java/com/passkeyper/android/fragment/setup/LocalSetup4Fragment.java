@@ -24,7 +24,7 @@ import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
 import com.passkeyper.android.auth.VerifyFingerprintDialog;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
-import com.passkeyper.android.prefs.UserPreferences;
+import com.passkeyper.android.UserPrefs;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.LocalVaultManager;
 
@@ -109,7 +109,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
                 char[] securityAnswer = null;
                 try {
                     AuthData authData = new AuthData(getContext());
-                    UserPreferences userPreferences = UserPreferences.get(getContext());
+                    UserPrefs userPrefs = new UserPrefs(getContext());
                     //setup the data needed outside of the database
                     String securityQuestion = loginFragmentActivity.getSetup3Fragment().getQuestion();
                     securityAnswer = loginFragmentActivity.getSetup3Fragment().getAnswer();
@@ -117,9 +117,9 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
                     authData.setEncryptedPassword(pass, securityQuestion, securityAnswer);
                     authData.setSecurityQuestion(securityQuestion);
                     //save this fragments user preferences
-                    userPreferences.setAppClosedAuthTimeout(Long.valueOf(timeout.getText().toString()) * 1000);
-                    userPreferences.setFingerprintEnabled(fingerprintEnabled.isChecked());
-                    userPreferences.setBackupToGoogleEnabled(backupEnabled.isChecked());
+                    userPrefs.setAppClosedAuthTimeout(Long.valueOf(timeout.getText().toString()) * 1000);
+                    userPrefs.setFingerprintEnabled(fingerprintEnabled.isChecked());
+                    userPrefs.setBackupToGoogleEnabled(backupEnabled.isChecked());
                     //setup and log into database
                     Vault vault = Vault.get();
                     LocalVaultManager.setupLocalDb(getContext(), pass, securityQuestion, securityAnswer);

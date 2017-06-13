@@ -7,7 +7,7 @@ import com.passkeyper.android.fragment.auth.FingerprintSignInFragment;
 import com.passkeyper.android.fragment.auth.ForgotNewPassFragment;
 import com.passkeyper.android.fragment.auth.ForgotSecurityFragment;
 import com.passkeyper.android.fragment.auth.LocalSignInFragment;
-import com.passkeyper.android.prefs.UserPreferences;
+import com.passkeyper.android.UserPrefs;
 
 public class LocalLoginActivity extends AbstractLoginActivity {
 
@@ -30,7 +30,7 @@ public class LocalLoginActivity extends AbstractLoginActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (UserPreferences.get(this).isFingerprintEnabled())
+        if (new UserPrefs(this).isFingerprintEnabled())
             //don't save FingerprintSignIn as a field because it requires API 23+
             setInitialFragment(new FingerprintSignInFragment());
         else
