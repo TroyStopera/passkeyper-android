@@ -1,4 +1,4 @@
-package com.passkeyper.android.fragment;
+package com.passkeyper.android.fragment.auth;
 
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -16,6 +16,7 @@ import com.passkeyper.android.R;
 import com.passkeyper.android.activity.LocalLoginActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
+import com.passkeyper.android.fragment.AbstractLoginFragment;
 
 import javax.crypto.Cipher;
 
@@ -43,7 +44,7 @@ public class FingerprintSignInFragment extends AbstractLoginFragment<LocalLoginA
     }
 
     @Override
-    View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
+    protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.fingerprint_login_fragment, container, false);
         view.findViewById(R.id.use_password_btn).setOnClickListener(v -> cancelFingerprint());
 

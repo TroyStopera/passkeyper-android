@@ -21,8 +21,8 @@ public class Vault {
     public static final String ACTIVITY_AFTER_SIGN_IN_EXTRA = "afterSignIn";
     private static final String TAG = "Vault";
 
-    private static Vault mInstance;
-    private VaultManager mVaultManager;
+    private static Vault vault;
+    private VaultManager vaultManager;
 
     private Vault() {
         /* uses singleton pattern */
@@ -54,9 +54,9 @@ public class Vault {
      * Signs the user out and closes the VaultManger. Does not show the sign in Activity.
      */
     public void signOut() {
-        if (mVaultManager != null && !mVaultManager.isClosed())
-            mVaultManager.close();
-        mVaultManager = null;
+        if (vaultManager != null && !vaultManager.isClosed())
+            vaultManager.close();
+        vaultManager = null;
     }
 
     /**
@@ -67,11 +67,11 @@ public class Vault {
      * @return true if the authentication was successful.
      */
     public boolean signInToLocalVault(Context context, char[] password) {
-        if (mVaultManager != null && !mVaultManager.isClosed())
-            mVaultManager.close();
+        if (vaultManager != null && !vaultManager.isClosed())
+            vaultManager.close();
 
         try {
-            mVaultManager = new LocalVaultManager(context, password);
+            vaultManager = new LocalVaultManager(context, password);
             return true;
         } catch (DatabaseAuthException e) {
             Log.w(TAG, "Unable to login", e);
@@ -93,23 +93,23 @@ public class Vault {
      * @return true if there is a usable VaultManager.
      */
     public boolean hasManager() {
-        return mVaultManager != null && !mVaultManager.isClosed();
+        return vaultManager != null && !vaultManager.isClosed();
     }
 
     /**
      * @return an instance of a usable (i.e. not closed) VaultManager.
      */
     public VaultManager getManager() {
-        return mVaultManager;
+        return vaultManager;
     }
 
     /**
      * @return the instance of the singleton object.
      */
     public static Vault get() {
-        if (mInstance == null)
-            mInstance = new Vault();
-        return mInstance;
+        if (vault == null)
+            vault = new Vault();
+        return vault;
     }
 
     private Class<? extends AbstractLoginActivity> getLoginClass(Context context) {

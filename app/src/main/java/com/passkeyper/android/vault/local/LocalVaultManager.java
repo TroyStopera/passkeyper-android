@@ -42,6 +42,7 @@ public class LocalVaultManager extends VaultManager {
             throw new DatabaseAuthException("Invalid password provided");
     }
 
+    @Override
     public void changePassword(char[] newPassword) {
         dbHelper.updateKey(password, newPassword);
 

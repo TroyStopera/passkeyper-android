@@ -1,4 +1,4 @@
-package com.passkeyper.android.fragment;
+package com.passkeyper.android.fragment.auth;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -6,11 +6,10 @@ import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.passkeyper.android.R;
 import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.fragment.AbstractLoginFragment;
 
 import java.util.Arrays;
 
@@ -23,7 +22,7 @@ public class LocalSignInFragment extends AbstractLoginFragment<LocalLoginActivit
     private TextInputEditText passwordInput;
 
     @Override
-    View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
+    protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_login_fragment, container, false);
 
         passwordInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_password);
@@ -55,14 +54,12 @@ public class LocalSignInFragment extends AbstractLoginFragment<LocalLoginActivit
             Arrays.fill(password, '\0');
             passwordInputLayout.setErrorEnabled(true);
             passwordInputLayout.setError(getString(R.string.error_incorrect_password));
-
-            Animation shake = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
             window.startAnimation(shake);
         }
     }
 
     private void forgotPassword() {
-        //TODO: implement forgot password
+        loginFragmentActivity.replaceFragment(loginFragmentActivity.getForgotSecurityFragment(), true);
     }
 
 }

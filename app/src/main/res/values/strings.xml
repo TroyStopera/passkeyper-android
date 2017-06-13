@@ -18,6 +18,7 @@
 
     <string name="action_begin">Begin</string>
     <string name="action_delete">Delete</string>
+    <string name="action_next">Next</string>
     <string name="action_finish">Finish</string>
     <string name="action_save">Save</string>
     <string name="action_search">Search</string>
@@ -41,7 +42,9 @@
     <string name="fingerprint_success">Fingerprint recognized</string>
     <string name="fingerprint_setup_title">Setup Fingerprint Authentication</string>
     <string name="fingerprint_setup_cancelled">You must provide your fingerprint to enable fingerprint login.</string>
-    <string name="fingerprint_setup_failed">Unable to enable fingerprint authentication. Try again.</string>
+    <string name="fingerprint_verify_title">Verify Fingerprint</string>
+    <string name="fingerprint_verify_cancelled">You must verify your fingerprint to change your password</string>
+    <string name="fingerprint_failed">Unable to enable fingerprint authentication. Try again.</string>
 
     <string name="setup_title">First Time Setup</string>
     <string name="setup_title_password">Master Password</string>
@@ -57,12 +60,13 @@
         Welcome to Passkeyper, it looks like this is your first time using the app.
         Please complete this brief one time setup process.
     </string>
-    <string name="setup_local_password_msg">
-        It must be at least 6 characters.
-    </string>
-    <string name="setup_local_security_msg">
-        Make it secure, if anybody can guess it they can access your passwords!
-    </string>
+    <string name="setup_local_password_msg">It must be at least 6 characters.</string>
+    <string name="setup_local_security_msg">Make it secure, if anybody can guess it they can access your passwords!</string>
+
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_security_msg">Please answer your security question</string>
+    <string name="forgot_password_password_msg">Provide a new password of at least 6 characters</string>
+    <string name="forgot_password_wrong_answer">Wrong answer</string>
 
     <string name="main_entry_deleted">entry deleted</string>
     <string name="main_entries_deleted">entries deleted</string>

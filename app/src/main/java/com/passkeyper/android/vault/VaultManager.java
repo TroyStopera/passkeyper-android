@@ -126,6 +126,13 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
     public abstract void updateRecoveryData(RecoveryData recoveryData);
 
     /**
+     * Changes the password for the vault this VaultManager manages.
+     *
+     * @param password teh new password.
+     */
+    public abstract void changePassword(char[] password);
+
+    /**
      * Interface used to handle data that is needed to recover the Vault if the password is forgotten.
      */
     public interface RecoveryData {

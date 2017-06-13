@@ -1,4 +1,4 @@
-package com.passkeyper.android.fragment;
+package com.passkeyper.android.fragment.setup;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
 import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
 
 /**
@@ -18,7 +19,7 @@ public class LocalSetup3Fragment extends AbstractLoginFragment<InitialSetupActiv
     private TextInputEditText question, answer;
 
     @Override
-    View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
+    protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_3_fragment, container, false);
 
         question = (TextInputEditText) view.findViewById(R.id.input_question);

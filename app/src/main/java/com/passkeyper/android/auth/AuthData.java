@@ -10,10 +10,12 @@ import android.util.Base64;
 
 import com.passkeyper.android.util.ArrayConverter;
 
+import java.security.Key;
 import java.security.spec.KeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -27,6 +29,7 @@ public class AuthData {
     private static final String PREF_ENCRYPTED_PASSWORD_SQ = "SecurityAnswerPasswd";
     private static final String PREF_ENCRYPTED_PASSWORD_FP = "FingerprintPasswd";
     private static final String PREF_FINGERPRINT_IV = "FingerprintIV";
+    private static final String PREF_SECURITY_IV = "SecurityIV";
 
     private final SharedPreferences prefs;
 
@@ -60,6 +63,24 @@ public class AuthData {
     public void setEncryptedPassword(char[] password, FingerprintManager.CryptoObject cryptoObject) throws Exception {
         byte[] encryptedPass = cryptoObject.getCipher().doFinal(ArrayConverter.charsToBytes(password));
         prefs.edit().putString(PREF_ENCRYPTED_PASSWORD_FP, Base64.encodeToString(encryptedPass, Base64.DEFAULT)).apply();
+    }
+
+    /**
+     * Returns the raw password encrypted by the fingerprint CryptoObject as an encrypted string.
+     *
+     * @return teh encrypted password.
+     */
+    public String getEncryptedFingerprintPass() {
+        return prefs.getString(PREF_ENCRYPTED_PASSWORD_FP, null);
+    }
+
+    /**
+     * Sets the password encrypted by the fingerprint CryptoObject. used when undoing a change.
+     *
+     * @param pass the password.
+     */
+    public void setEncryptedFingerprintPass(String pass) {
+        prefs.edit().putString(PREF_ENCRYPTED_PASSWORD_FP, pass).apply();
     }
 
     /**
@@ -135,7 +156,7 @@ public class AuthData {
     /*
         This method returns the proper cipher for use in getting and setting the encrypted password.
      */
-    private static Cipher getCipher(int mode, char[] securityAnswer, String securityQuestion) throws Exception {
+    private Cipher getCipher(int mode, char[] securityAnswer, String securityQuestion) throws Exception {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2withHmacSHA1");
         KeySpec spec = new PBEKeySpec(
                 securityAnswer,
@@ -144,9 +165,24 @@ public class AuthData {
                 128
         );
 
+        Key key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(mode, new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES"));
+        if (mode == Cipher.ENCRYPT_MODE) {
+            cipher.init(mode, key);
+            setSecurityIv(cipher.getIV());
+        } else if (mode == Cipher.DECRYPT_MODE) {
+            cipher.init(mode, key, new IvParameterSpec(getSecurityIv()));
+        }
+
         return cipher;
+    }
+
+    private void setSecurityIv(byte[] iv) {
+        prefs.edit().putString(PREF_SECURITY_IV, Base64.encodeToString(iv, Base64.DEFAULT)).apply();
+    }
+
+    private byte[] getSecurityIv() {
+        return Base64.decode(prefs.getString(PREF_SECURITY_IV, null), Base64.DEFAULT);
     }
 
 }

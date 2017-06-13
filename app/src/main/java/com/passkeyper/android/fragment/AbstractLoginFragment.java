@@ -20,13 +20,13 @@ import com.passkeyper.android.activity.AbstractLoginActivity;
  */
 public abstract class AbstractLoginFragment<T extends AbstractLoginActivity> extends Fragment {
 
-    final Vault vault = Vault.get();
-    LinearLayout window;
-    Animation shake;
+    protected final Vault vault = Vault.get();
+    protected LinearLayout window;
+    protected Animation shake;
 
-    T loginFragmentActivity;
+    protected T loginFragmentActivity;
 
-    abstract View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container);
+    protected abstract View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container);
 
     @Override
     public void onAttach(Context context) {

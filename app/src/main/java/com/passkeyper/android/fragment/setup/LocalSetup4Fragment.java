@@ -1,4 +1,4 @@
-package com.passkeyper.android.fragment;
+package com.passkeyper.android.fragment.setup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -22,7 +22,8 @@ import com.passkeyper.android.Vault;
 import com.passkeyper.android.activity.InitialSetupActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
-import com.passkeyper.android.auth.FingerprintSetupDialog;
+import com.passkeyper.android.auth.VerifyFingerprintDialog;
+import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.prefs.UserPreferences;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.LocalVaultManager;
@@ -32,17 +33,17 @@ import java.util.Arrays;
 /**
  * LoginFragment for finishing the setup of the local vault.
  */
-public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActivity> implements FingerprintSetupDialog.FingerprintSetupListener {
+public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActivity> implements VerifyFingerprintDialog.FingerprintSetupListener {
 
     private static final String TAG = "Setup Step 4";
 
     private TextInputEditText timeout;
     private Switch fingerprintEnabled, backupEnabled;
     private ImageView icon;
-    private ProgressBar progressBar;
+    private ProgressBar loading;
 
     @Override
-    View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
+    protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_4_fragment, container, false);
 
         view.findViewById(R.id.back_btn).setOnClickListener(v -> loginFragmentActivity.pop());
@@ -58,7 +59,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
         fingerprintEnabled = (Switch) view.findViewById(R.id.fingerprint_enabled_switch);
         backupEnabled = (Switch) view.findViewById(R.id.backup_enabled_switch);
         icon = (ImageView) view.findViewById(R.id.setup_icon);
-        progressBar = (ProgressBar) view.findViewById(R.id.setup_final_loading);
+        loading = (ProgressBar) view.findViewById(R.id.loading);
 
         timeout.setOnEditorActionListener((v, i, e) -> {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -87,7 +88,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
 
     @Override
     public void onFailure() {
-        Toast.makeText(getContext(), R.string.fingerprint_setup_failed, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.fingerprint_failed, Toast.LENGTH_LONG).show();
     }
 
     //TODO: determine if this is a potential bug or not
@@ -100,7 +101,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
             protected void onPreExecute() {
                 super.onPreExecute();
                 icon.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -142,7 +143,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
             @Override
             protected void onPostExecute(Boolean success) {
                 super.onPostExecute(success);
-                progressBar.setVisibility(View.GONE);
+                loading.setVisibility(View.GONE);
                 icon.setVisibility(View.VISIBLE);
 
                 if (success)
@@ -158,7 +159,8 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupFingerprint(char[] pass) {
-        FingerprintSetupDialog setupDialog = new FingerprintSetupDialog();
+        VerifyFingerprintDialog setupDialog = new VerifyFingerprintDialog();
+        setupDialog.setTitle(getString(R.string.fingerprint_setup_title));
         setupDialog.setCancelable(false);
         setupDialog.setListener(this);
         setupDialog.setPassword(pass);

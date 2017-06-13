@@ -1,4 +1,4 @@
-package com.passkeyper.android.fragment;
+package com.passkeyper.android.fragment.setup;
 
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
 import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
 
 import java.util.Arrays;
@@ -20,7 +21,7 @@ public class LocalSetup2Fragment extends AbstractLoginFragment<InitialSetupActiv
     private TextInputEditText password, confirm;
 
     @Override
-    View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
+    protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_2_fragment, container, false);
 
         password = (TextInputEditText) view.findViewById(R.id.input_password);
@@ -60,6 +61,9 @@ public class LocalSetup2Fragment extends AbstractLoginFragment<InitialSetupActiv
             confirm.setError(null);
             loginFragmentActivity.replaceFragment(loginFragmentActivity.getSetup3Fragment(), true);
         }
+
+        Arrays.fill(passwordText, '\0');
+        Arrays.fill(confirmText, '\0');
     }
 
 }

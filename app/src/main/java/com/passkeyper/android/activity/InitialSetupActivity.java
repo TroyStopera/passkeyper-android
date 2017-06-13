@@ -3,10 +3,10 @@ package com.passkeyper.android.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.passkeyper.android.fragment.LocalSetup1Fragment;
-import com.passkeyper.android.fragment.LocalSetup2Fragment;
-import com.passkeyper.android.fragment.LocalSetup3Fragment;
-import com.passkeyper.android.fragment.LocalSetup4Fragment;
+import com.passkeyper.android.fragment.setup.LocalSetup1Fragment;
+import com.passkeyper.android.fragment.setup.LocalSetup2Fragment;
+import com.passkeyper.android.fragment.setup.LocalSetup3Fragment;
+import com.passkeyper.android.fragment.setup.LocalSetup4Fragment;
 
 public class InitialSetupActivity extends AbstractLoginActivity {
 
