@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 /**
  * Fragment used to very a user's security question/answer when they have forgotten their password.
  */
-public class ForgotSecurityFragment extends AbstractLoginFragment<LocalLoginActivity> {
+public class ForgotSecurityFragment extends AbstractLoginFragment<LocalSignInActivity> {
 
     private TextInputEditText answer;
     private ImageView icon;
@@ -75,7 +75,7 @@ public class ForgotSecurityFragment extends AbstractLoginFragment<LocalLoginActi
                 answerText = EditTextUtils.getText(answer);
                 pass = authData.getDecryptedPassword(answerText);
 
-                if (vault.signInToLocalVault(getContext(), pass)) {
+                if (vault.signIn(getContext(), pass)) {
                     vault.signOut();
                     return true;
                 } else return false;

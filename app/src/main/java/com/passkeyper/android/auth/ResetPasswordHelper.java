@@ -10,8 +10,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
+import com.passkeyper.android.UserPrefs;
 import com.passkeyper.android.Vault;
-import com.passkeyper.android.prefs.UserPreferences;
 
 import java.util.Arrays;
 
@@ -45,7 +45,7 @@ public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintS
         this.newPass = Arrays.copyOf(newPass, newPass.length);
         this.oldPass = Arrays.copyOf(oldPass, oldPass.length);
         this.answer = Arrays.copyOf(answer, answer.length);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && UserPreferences.get(context).isFingerprintEnabled()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && new UserPrefs(context).isFingerprintEnabled()) {
             updateFingerprint(newPass);
         } else new AsyncReset().execute();
     }
@@ -101,7 +101,7 @@ public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintS
             AuthData authData = new AuthData(context);
             try {
                 Vault vault = Vault.get();
-                if (vault.signInToLocalVault(context, oldPass)) {
+                if (vault.signIn(context, oldPass)) {
                     //re-encrypt the security password
                     authData.setEncryptedPassword(newPass, authData.getSecurityQuestion(), answer);
                     //update the password

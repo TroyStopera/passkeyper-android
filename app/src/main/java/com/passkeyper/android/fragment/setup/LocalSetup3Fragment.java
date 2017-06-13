@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.activity.LocalSetupActivity;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
 
 /**
  * LoginFragment for setting the security question and answer for the local vault.
  */
-public class LocalSetup3Fragment extends AbstractLoginFragment<InitialSetupActivity> {
+public class LocalSetup3Fragment extends AbstractLoginFragment<LocalSetupActivity> {
 
     private TextInputEditText question, answer;
 

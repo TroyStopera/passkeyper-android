@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.activity.LocalSetupActivity;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 
 /**
  * LoginFragment for the starting screen for setting up the local vault.
  */
-public class LocalSetup1Fragment extends AbstractLoginFragment<InitialSetupActivity> {
+public class LocalSetup1Fragment extends AbstractLoginFragment<LocalSetupActivity> {
 
     @Override
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {

@@ -15,11 +15,30 @@ public class UserPrefs {
     private static final String PREF_FINGERPRINT_ENABLED = "FingerPrintEnabled";
     private static final String PREF_SORT_ORDER = "PrefSortOrder";
     private static final String PREF_BACKUP_TO_GOOGLE = "BackupToGoogle";
+    private static final String PREF_VAULT_MANAGER_TYPE = "VaultManager";
 
     private final SharedPreferences sharedPreferences;
 
     public UserPrefs(Context context) {
         sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+    }
+
+    /**
+     * Returns the int that represents which VaultManager the user uses.
+     *
+     * @return the vault manager type as an int.
+     */
+    public int getVaultManagerType() {
+        return sharedPreferences.getInt(PREF_VAULT_MANAGER_TYPE, Vault.LOCAL_VAULT);
+    }
+
+    /**
+     * Set the int that represents which VaultManager the user uses.
+     *
+     * @param type the vault manager type as an int.
+     */
+    public void setVaultManagerType(int type) {
+        sharedPreferences.edit().putInt(PREF_VAULT_MANAGER_TYPE, type).apply();
     }
 
     /**

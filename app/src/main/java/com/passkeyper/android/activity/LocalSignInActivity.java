@@ -9,7 +9,7 @@ import com.passkeyper.android.fragment.auth.ForgotSecurityFragment;
 import com.passkeyper.android.fragment.auth.LocalSignInFragment;
 import com.passkeyper.android.UserPrefs;
 
-public class LocalLoginActivity extends AbstractLoginActivity {
+public class LocalSignInActivity extends AbstractLoginActivity {
 
     private final LocalSignInFragment localSignInFragment = new LocalSignInFragment();
     private final ForgotNewPassFragment forgotNewPassFragment = new ForgotNewPassFragment();

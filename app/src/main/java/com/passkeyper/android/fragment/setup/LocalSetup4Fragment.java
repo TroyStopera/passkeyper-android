@@ -18,13 +18,13 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
+import com.passkeyper.android.UserPrefs;
 import com.passkeyper.android.Vault;
-import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.activity.LocalSetupActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
 import com.passkeyper.android.auth.VerifyFingerprintDialog;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
-import com.passkeyper.android.UserPrefs;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.LocalVaultManager;
 
@@ -33,7 +33,7 @@ import java.util.Arrays;
 /**
  * LoginFragment for finishing the setup of the local vault.
  */
-public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActivity> implements VerifyFingerprintDialog.FingerprintSetupListener {
+public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivity> implements VerifyFingerprintDialog.FingerprintSetupListener {
 
     private static final String TAG = "Setup Step 4";
 
@@ -123,7 +123,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<InitialSetupActiv
                     //setup and log into database
                     Vault vault = Vault.get();
                     LocalVaultManager.setupLocalDb(getContext(), pass, securityQuestion, securityAnswer);
-                    vault.signInToLocalVault(getContext(), pass);
+                    vault.signIn(getContext(), pass);
                     //update the recovery data in the database
                     VaultManager.RecoveryData recoveryData = vault.getManager().getRecoveryData();
                     recoveryData.setSecurityQuestion(securityQuestion);

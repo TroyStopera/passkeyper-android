@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.passkeyper.android.activity.AbstractLoginActivity;
-import com.passkeyper.android.activity.InitialSetupActivity;
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSetupActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.DatabaseAuthException;
 import com.passkeyper.android.vault.local.LocalVaultManager;
@@ -17,6 +17,8 @@ import com.passkeyper.android.vault.local.LocalVaultManager;
  * Singleton class that handles variables that are needed globally.
  */
 public class Vault {
+
+    public static final int LOCAL_VAULT = 1;
 
     public static final String ACTIVITY_AFTER_SIGN_IN_EXTRA = "afterSignIn";
     private static final String TAG = "Vault";
@@ -60,18 +62,22 @@ public class Vault {
     }
 
     /**
-     * Attempts to authenticate the user in order to access the local vault.
+     * Attempts to authenticate the user in order to access the vault.
      *
      * @param context  an instance of Context used to load the vault.
      * @param password the password for the local vault.
      * @return true if the authentication was successful.
      */
-    public boolean signInToLocalVault(Context context, char[] password) {
+    public boolean signIn(Context context, char[] password) {
         if (vaultManager != null && !vaultManager.isClosed())
             vaultManager.close();
 
         try {
-            vaultManager = new LocalVaultManager(context, password);
+            switch (new UserPrefs(context).getVaultManagerType()) {
+                case LOCAL_VAULT:
+                default:
+                    vaultManager = new LocalVaultManager(context, password);
+            }
             return true;
         } catch (DatabaseAuthException e) {
             Log.w(TAG, "Unable to login", e);
@@ -114,8 +120,14 @@ public class Vault {
 
     private Class<? extends AbstractLoginActivity> getLoginClass(Context context) {
         if (LocalVaultManager.isLocalDbSetup(context)) {
-            return LocalLoginActivity.class;
-        } else return InitialSetupActivity.class;
+            return LocalSignInActivity.class;
+        } else {
+            switch (new UserPrefs(context).getVaultManagerType()) {
+                case LOCAL_VAULT:
+                default:
+                    return LocalSetupActivity.class;
+            }
+        }
     }
 
 }

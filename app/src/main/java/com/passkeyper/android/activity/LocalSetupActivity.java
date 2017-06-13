@@ -8,7 +8,7 @@ import com.passkeyper.android.fragment.setup.LocalSetup2Fragment;
 import com.passkeyper.android.fragment.setup.LocalSetup3Fragment;
 import com.passkeyper.android.fragment.setup.LocalSetup4Fragment;
 
-public class InitialSetupActivity extends AbstractLoginActivity {
+public class LocalSetupActivity extends AbstractLoginActivity {
 
     private final LocalSetup1Fragment setup1Fragment = new LocalSetup1Fragment();
     private final LocalSetup2Fragment setup2Fragment = new LocalSetup2Fragment();

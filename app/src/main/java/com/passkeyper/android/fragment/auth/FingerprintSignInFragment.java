@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
@@ -24,7 +24,7 @@ import javax.crypto.Cipher;
  * LoginFragment for signing in with a fingerprint.
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class FingerprintSignInFragment extends AbstractLoginFragment<LocalLoginActivity> implements FingerprintAuthHelper.OnAuthenticatedListener {
+public class FingerprintSignInFragment extends AbstractLoginFragment<LocalSignInActivity> implements FingerprintAuthHelper.OnAuthenticatedListener {
 
     private static final String TAG = "Fingerprint Sign in";
 
@@ -34,7 +34,7 @@ public class FingerprintSignInFragment extends AbstractLoginFragment<LocalLoginA
     public void onAuthenticated(FingerprintManager.CryptoObject cryptoObject) {
         try {
             AuthData authData = new AuthData(getContext());
-            if (vault.signInToLocalVault(getContext(), authData.getDecryptedPassword(cryptoObject)))
+            if (vault.signIn(getContext(), authData.getDecryptedPassword(cryptoObject)))
                 loginFragmentActivity.redirectAndFinish();
         } catch (Exception e) {
             Log.e(TAG, "Unable to decrypt fingerprint password", e);

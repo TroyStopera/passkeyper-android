@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * LoginFragment for signing into the local vault.
  */
-public class LocalSignInFragment extends AbstractLoginFragment<LocalLoginActivity> {
+public class LocalSignInFragment extends AbstractLoginFragment<LocalSignInActivity> {
 
     private TextInputLayout passwordInputLayout;
     private TextInputEditText passwordInput;
@@ -47,7 +47,7 @@ public class LocalSignInFragment extends AbstractLoginFragment<LocalLoginActivit
         passwordInput.getText().getChars(0, len, password, 0);
         passwordInput.getText().clear();
 
-        if (vault.signInToLocalVault(getContext(), password)) {
+        if (vault.signIn(getContext(), password)) {
             Arrays.fill(password, '\0');
             loginFragmentActivity.redirectAndFinish();
         } else {

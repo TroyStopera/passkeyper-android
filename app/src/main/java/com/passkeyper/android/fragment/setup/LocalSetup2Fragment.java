@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.InitialSetupActivity;
+import com.passkeyper.android.activity.LocalSetupActivity;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
 /**
  * LoginFragment for setting the password for the local vault.
  */
-public class LocalSetup2Fragment extends AbstractLoginFragment<InitialSetupActivity> {
+public class LocalSetup2Fragment extends AbstractLoginFragment<LocalSetupActivity> {
 
     private TextInputEditText password, confirm;
 

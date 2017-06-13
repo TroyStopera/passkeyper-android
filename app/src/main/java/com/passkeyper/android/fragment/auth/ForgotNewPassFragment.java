@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.activity.LocalLoginActivity;
+import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.ResetPasswordHelper;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 /**
  * Fragment used to set a new password after the user has forgotten theirs.
  */
-public class ForgotNewPassFragment extends AbstractLoginFragment<LocalLoginActivity> implements ResetPasswordHelper.ResetPasswordListener {
+public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActivity>  implements ResetPasswordHelper.ResetPasswordListener {
 
     private TextInputEditText password, confirm;
     private ImageView icon;
