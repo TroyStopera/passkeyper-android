@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import com.passkeyper.android.R;
 import com.passkeyper.android.activity.LocalSignInActivity;
 import com.passkeyper.android.auth.AuthData;
-import com.passkeyper.android.auth.ResetPasswordHelper;
+import com.passkeyper.android.auth.PasswordResetHelper;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.util.EditTextUtils;
 
@@ -20,12 +20,12 @@ import java.util.Arrays;
 /**
  * Fragment used to set a new password after the user has forgotten theirs.
  */
-public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActivity>  implements ResetPasswordHelper.ResetPasswordListener {
+public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActivity>  implements PasswordResetHelper.ResetPasswordListener {
 
     private TextInputEditText password, confirm;
     private ImageView icon;
     private ProgressBar loading;
-    private ResetPasswordHelper resetPasswordHelper;
+    private PasswordResetHelper passwordResetHelper;
 
     @Override
     public void onResetFinish(boolean success) {
@@ -49,8 +49,8 @@ public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActi
         icon = (ImageView) view.findViewById(R.id.icon);
         loading = (ProgressBar) view.findViewById(R.id.loading);
 
-        resetPasswordHelper = new ResetPasswordHelper(getContext(), getFragmentManager());
-        resetPasswordHelper.setResetPasswordListener(this);
+        passwordResetHelper = new PasswordResetHelper(getContext(), getFragmentManager());
+        passwordResetHelper.setResetPasswordListener(this);
 
         view.findViewById(R.id.finish_btn).setOnClickListener((v) -> resetPassword());
         confirm.setOnEditorActionListener((v, actionId, event) -> {
@@ -89,7 +89,7 @@ public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActi
 
                 icon.setVisibility(View.GONE);
                 loading.setVisibility(View.VISIBLE);
-                resetPasswordHelper.reset(newPass, oldPass, answer);
+                passwordResetHelper.reset(newPass, oldPass, answer);
             } catch (Exception e) {
                 loginFragmentActivity.pop();
                 loginFragmentActivity.getForgotSecurityFragment().showWrongAnswer();

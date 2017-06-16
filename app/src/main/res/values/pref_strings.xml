@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- no need for translation -->
+
+<resources>
+
+    <string-array name="sort_entries">
+        <item>@string/action_sort_alpha_asc</item>
+        <item>@string/action_sort_alpha_desc</item>
+        <item>@string/action_sort_chron_asc</item>
+        <item>@string/action_sort_chron_desc</item>
+    </string-array>
+
+    <integer-array name="sort_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+
+    <!-- MAKE SURE THESE MATCH THE STRINGS IN UserPreferences.java -->
+    <string name="prefKey_timeout">pref_authTimeout</string>
+    <string name="prefKey_fingerprint">pref_fingerprintEnabled</string>
+    <string name="prefKey_backup_google">pref_backupToGoogle</string>
+
+</resources>

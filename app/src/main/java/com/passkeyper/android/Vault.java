@@ -73,7 +73,7 @@ public class Vault {
             vaultManager.close();
 
         try {
-            switch (new UserPrefs(context).getVaultManagerType()) {
+            switch (new UserPreferences(context).getVaultManagerType()) {
                 case LOCAL_VAULT:
                 default:
                     vaultManager = new LocalVaultManager(context, password);
@@ -122,7 +122,7 @@ public class Vault {
         if (LocalVaultManager.isLocalDbSetup(context)) {
             return LocalSignInActivity.class;
         } else {
-            switch (new UserPrefs(context).getVaultManagerType()) {
+            switch (new UserPreferences(context).getVaultManagerType()) {
                 case LOCAL_VAULT:
                 default:
                     return LocalSetupActivity.class;

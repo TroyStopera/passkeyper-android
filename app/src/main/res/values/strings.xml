@@ -40,7 +40,6 @@
     <string name="fingerprint_error">Error with fingerprint login</string>
     <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
     <string name="fingerprint_success">Fingerprint recognized</string>
-    <string name="fingerprint_setup_title">Setup Fingerprint Authentication</string>
     <string name="fingerprint_setup_cancelled">You must provide your fingerprint to enable fingerprint login.</string>
     <string name="fingerprint_verify_title">Verify Fingerprint</string>
     <string name="fingerprint_verify_cancelled">You must verify your fingerprint to change your password</string>
@@ -102,5 +101,10 @@
     <string name="security_edit_answer">Answer</string>
     <string name="security_edit_question">Question</string>
     <string name="security_edit_new_hint">Security Question &amp; Answer</string>
+
+    <string name="pref_fingerprint_title">Fingerprint</string>
+    <string name="pref_fingerprint_summary">Sign in with an authorized fingerprint</string>
+    <string name="pref_backup_title">Backup to Google</string>
+    <string name="pref_backup_summary">Automatically send backups to Google servers</string>
 
 </resources>

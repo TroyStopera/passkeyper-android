@@ -1,29 +1,26 @@
 package com.passkeyper.android.fragment.setup;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.UserPrefs;
+import com.passkeyper.android.UserPreferences;
 import com.passkeyper.android.Vault;
 import com.passkeyper.android.activity.LocalSetupActivity;
 import com.passkeyper.android.auth.AuthData;
 import com.passkeyper.android.auth.FingerprintAuthHelper;
-import com.passkeyper.android.auth.VerifyFingerprintDialog;
+import com.passkeyper.android.auth.SetupFingerprintDialog;
 import com.passkeyper.android.fragment.AbstractLoginFragment;
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vault.local.LocalVaultManager;
@@ -33,11 +30,10 @@ import java.util.Arrays;
 /**
  * LoginFragment for finishing the setup of the local vault.
  */
-public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivity> implements VerifyFingerprintDialog.FingerprintSetupListener {
+public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivity> implements SetupFingerprintDialog.FingerprintSetupListener {
 
     private static final String TAG = "Setup Step 4";
 
-    private TextInputEditText timeout;
     private Switch fingerprintEnabled, backupEnabled;
     private ImageView icon;
     private ProgressBar loading;
@@ -55,17 +51,10 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                 setupVault(pass);
         });
 
-        timeout = (TextInputEditText) view.findViewById(R.id.timeout_minutes);
         fingerprintEnabled = (Switch) view.findViewById(R.id.fingerprint_enabled_switch);
         backupEnabled = (Switch) view.findViewById(R.id.backup_enabled_switch);
         icon = (ImageView) view.findViewById(R.id.setup_icon);
         loading = (ProgressBar) view.findViewById(R.id.loading);
-
-        timeout.setOnEditorActionListener((v, i, e) -> {
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            return true;
-        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintAuthHelper.isAvailable(getContext()))
             fingerprintEnabled.setVisibility(View.VISIBLE);
@@ -109,7 +98,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                 char[] securityAnswer = null;
                 try {
                     AuthData authData = new AuthData(getContext());
-                    UserPrefs userPrefs = new UserPrefs(getContext());
+                    UserPreferences userPreferences = new UserPreferences(getContext());
                     //setup the data needed outside of the database
                     String securityQuestion = loginFragmentActivity.getSetup3Fragment().getQuestion();
                     securityAnswer = loginFragmentActivity.getSetup3Fragment().getAnswer();
@@ -117,9 +106,8 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                     authData.setEncryptedPassword(pass, securityQuestion, securityAnswer);
                     authData.setSecurityQuestion(securityQuestion);
                     //save this fragments user preferences
-                    userPrefs.setAppClosedAuthTimeout(Long.valueOf(timeout.getText().toString()) * 1000);
-                    userPrefs.setFingerprintEnabled(fingerprintEnabled.isChecked());
-                    userPrefs.setBackupToGoogleEnabled(backupEnabled.isChecked());
+                    userPreferences.setFingerprintEnabled(fingerprintEnabled.isChecked());
+                    userPreferences.setBackupToGoogleEnabled(backupEnabled.isChecked());
                     //setup and log into database
                     Vault vault = Vault.get();
                     LocalVaultManager.setupLocalDb(getContext(), pass, securityQuestion, securityAnswer);
@@ -159,8 +147,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupFingerprint(char[] pass) {
-        VerifyFingerprintDialog setupDialog = new VerifyFingerprintDialog();
-        setupDialog.setTitle(getString(R.string.fingerprint_setup_title));
+        SetupFingerprintDialog setupDialog = new SetupFingerprintDialog();
         setupDialog.setCancelable(false);
         setupDialog.setListener(this);
         setupDialog.setPassword(pass);

@@ -2,25 +2,26 @@ package com.passkeyper.android;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.passkeyper.android.adapter.EntryAdapter;
 
 /**
  * Class used to access user settings related to basic preferences.
  */
-public class UserPrefs {
+public class UserPreferences {
 
-    /* variable names */
-    private static final String PREF_APP_CLOSED_AUTH_TIMEOUT = "ClosedAuthTimeout";
-    private static final String PREF_FINGERPRINT_ENABLED = "FingerPrintEnabled";
-    private static final String PREF_SORT_ORDER = "PrefSortOrder";
-    private static final String PREF_BACKUP_TO_GOOGLE = "BackupToGoogle";
-    private static final String PREF_VAULT_MANAGER_TYPE = "VaultManager";
+    /* prefs shown in preference activity */
+    public static final String PREF_FINGERPRINT_ENABLED = "pref_fingerprintEnabled";
+    public static final String PREF_BACKUP_TO_GOOGLE = "pref_backupToGoogle";
+    /* other prefs  */
+    private static final String PREF_SORT_ORDER = "pref_sortOrder";
+    private static final String PREF_VAULT_MANAGER_TYPE = "pref_vaultManager";
 
     private final SharedPreferences sharedPreferences;
 
-    public UserPrefs(Context context) {
-        sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+    public UserPreferences(Context context) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /**
@@ -42,26 +43,6 @@ public class UserPrefs {
     }
 
     /**
-     * Returns the number of milliseconds after the app closes that the user is signed out.
-     *
-     * @return the time in milliseconds.
-     */
-    public long getAppClosedAuthTimeout() {
-        return sharedPreferences.getLong(PREF_APP_CLOSED_AUTH_TIMEOUT, 30000);
-    }
-
-    /**
-     * Sets the number of milliseconds after the app closes that the user is signed out.
-     *
-     * @param timeout the time in milliseconds.
-     */
-    public void setAppClosedAuthTimeout(long timeout) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(PREF_APP_CLOSED_AUTH_TIMEOUT, timeout);
-        editor.apply();
-    }
-
-    /**
      * Returns whether the fingerprint login is enabled.
      *
      * @return true if fingerprint authentication is enabled
@@ -80,6 +61,8 @@ public class UserPrefs {
     }
 
     /**
+     * Returns the user's preferred sort order.
+     *
      * @return the SortOrder the user has chosen.
      */
     public EntryAdapter.SortOrder getSortOrder() {

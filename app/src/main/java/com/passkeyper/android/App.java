@@ -10,16 +10,14 @@ import android.os.Handler;
  */
 public class App extends Application implements Application.ActivityLifecycleCallbacks {
 
+    private static final long AUTH_TIMEOUT = 60000;
+
     private final Handler handler = new Handler();
-
     private final Runnable signOutRunnable = () -> Vault.get().signOut();
-
-    private UserPrefs userPrefs;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        userPrefs = new UserPrefs(this);
         registerActivityLifecycleCallbacks(this);
     }
 
@@ -42,16 +40,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
     public void onActivityPaused(Activity activity) {
         //only start sign out timer if there is a VaultManager
         if (Vault.get().hasManager()) {
-            long timeout = userPrefs.getAppClosedAuthTimeout();
-            /*
-                To ensure that users are not signed out when simply switching activities within this
-                app there must be at least a 1000ms delay before signing out.
-                If a user had this preference set to 0 then when 'onPause' was called from MainActivity
-                when clicking the edit button they may be signed out before 'onCreate' was called
-                for EditEntryActivity.
-            */
-            if (timeout < 1000) timeout = 1000;
-            handler.postDelayed(signOutRunnable, timeout);
+            handler.postDelayed(signOutRunnable, AUTH_TIMEOUT);
         }
     }
 

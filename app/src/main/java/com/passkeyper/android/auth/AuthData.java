@@ -38,6 +38,13 @@ public class AuthData {
     }
 
     /**
+     * Removes the fingerprint encrypted password. Used when fingerprint sign in is disabled.
+     */
+    public void clearFingerprintPassword() {
+        prefs.edit().remove(PREF_ENCRYPTED_PASSWORD_FP).apply();
+    }
+
+    /**
      * Returns the fingerprint decrypted password as a char array.
      *
      * @param cryptoObject the fingerprint CryptoObject used to decrypt.

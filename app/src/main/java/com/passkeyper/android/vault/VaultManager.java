@@ -53,6 +53,13 @@ public abstract class VaultManager extends AbstractVaultModel.Manager {
     }
 
     /**
+     * Returns the password being used by this VaultManager.
+     *
+     * @return the password.
+     */
+    public abstract char[] getPassword();
+
+    /**
      * @return all EntryRecords from the vault.
      */
     public abstract List<EntryRecord> getAllEntryRecords();

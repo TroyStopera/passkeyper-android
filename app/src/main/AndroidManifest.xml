@@ -40,6 +40,11 @@
             android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustPan"/>
 
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/nav_bar_settings"
+            android:parentActivityName=".activity.MainActivity"/>
+
     </application>
 
 </manifest>

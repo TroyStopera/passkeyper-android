@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
-import com.passkeyper.android.UserPrefs;
+import com.passkeyper.android.UserPreferences;
 import com.passkeyper.android.Vault;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * Class that encapsulates all logic for updating a user's password.
  */
-public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintSetupListener {
+public class PasswordResetHelper implements SetupFingerprintDialog.FingerprintSetupListener {
 
     private static final String TAG = "Reset Password";
 
@@ -30,7 +30,7 @@ public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintS
     private ResetPasswordListener resetPasswordListener;
     private boolean wasFingerprintUpdated = false;
 
-    public ResetPasswordHelper(Context context, FragmentManager fragmentManager) {
+    public PasswordResetHelper(Context context, FragmentManager fragmentManager) {
         this.context = context;
         this.fragmentManager = fragmentManager;
         oldEncryptedPass = new AuthData(context).getEncryptedFingerprintPass();
@@ -45,7 +45,7 @@ public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintS
         this.newPass = Arrays.copyOf(newPass, newPass.length);
         this.oldPass = Arrays.copyOf(oldPass, oldPass.length);
         this.answer = Arrays.copyOf(answer, answer.length);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && new UserPrefs(context).isFingerprintEnabled()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && new UserPreferences(context).isFingerprintEnabled()) {
             updateFingerprint(newPass);
         } else new AsyncReset().execute();
     }
@@ -70,8 +70,7 @@ public class ResetPasswordHelper implements VerifyFingerprintDialog.FingerprintS
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void updateFingerprint(char[] pass) {
-        VerifyFingerprintDialog setupDialog = new VerifyFingerprintDialog();
-        setupDialog.setTitle(context.getString(R.string.fingerprint_verify_title));
+        SetupFingerprintDialog setupDialog = new SetupFingerprintDialog();
         setupDialog.setCancelable(false);
         setupDialog.setListener(this);
         setupDialog.setPassword(pass);

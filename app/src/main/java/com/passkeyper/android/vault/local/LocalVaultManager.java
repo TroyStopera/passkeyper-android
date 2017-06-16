@@ -58,6 +58,11 @@ public class LocalVaultManager extends VaultManager {
     }
 
     @Override
+    public char[] getPassword() {
+        return password;
+    }
+
+    @Override
     public List<EntryRecord> getAllEntryRecords() {
         List<EntryRecord> records = new LinkedList<>();
         //query db

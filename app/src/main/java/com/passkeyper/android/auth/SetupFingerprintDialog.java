@@ -26,24 +26,14 @@ import javax.crypto.Cipher;
  * Dialog used to setup fingerprint authentication.
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class VerifyFingerprintDialog extends DialogFragment implements FingerprintAuthHelper.OnAuthenticatedListener {
+public class SetupFingerprintDialog extends DialogFragment implements FingerprintAuthHelper.OnAuthenticatedListener {
 
-    private static final String TAG = "VerifyFingerprintDialog";
+    private static final String TAG = "SetupFingerprintDialog";
 
     private FingerprintAuthHelper fingerprintAuthHelper;
     private FingerprintSetupListener listener;
-    private String title;
     private char[] password;
     private boolean wasAuthenticated = false;
-
-    /**
-     * Sets the title of the dialog.
-     *
-     * @param title the title.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     /**
      * Set the object that should receive updates about the setup process.
@@ -84,7 +74,7 @@ public class VerifyFingerprintDialog extends DialogFragment implements Fingerpri
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle(title)
+                .setTitle(R.string.fingerprint_verify_title)
                 .setNegativeButton(android.R.string.cancel, (d, i) -> dismiss())
                 .create();
     }
@@ -119,7 +109,7 @@ public class VerifyFingerprintDialog extends DialogFragment implements Fingerpri
         }
         //no password means the setup cannot be finished
         else {
-            Log.e(TAG, "Cannot show VerifyFingerprintDialog before setting the password");
+            Log.e(TAG, "Cannot show SetupFingerprintDialog before setting the password");
             if (listener != null)
                 listener.onFailure();
             dismiss();

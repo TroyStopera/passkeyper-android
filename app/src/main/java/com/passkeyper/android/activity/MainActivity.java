@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.passkeyper.android.R;
 import com.passkeyper.android.Vault;
 import com.passkeyper.android.adapter.EntryAdapter;
-import com.passkeyper.android.UserPrefs;
+import com.passkeyper.android.UserPreferences;
 import com.passkeyper.android.util.SnackbarUndoDelete;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity
 
     private static final int EDIT_REQUEST_CODE = 24;
 
-    private UserPrefs userPrefs;
+    private UserPreferences userPreferences;
+
+    private DrawerLayout drawer;
     private RecyclerView entryRecyclerView;
     private EntryAdapter entryAdapter;
     private SearchView searchView;
@@ -44,7 +46,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         //first try to close the drawer
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -95,19 +96,19 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 return true;
             case R.id.action_sort_alpha_asc:
-                userPrefs.setSortOrder(EntryAdapter.SortOrder.AtoZ);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.AtoZ);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.AtoZ);
                 return true;
             case R.id.action_sort_alpha_desc:
-                userPrefs.setSortOrder(EntryAdapter.SortOrder.ZtoA);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.ZtoA);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.ZtoA);
                 return true;
             case R.id.action_sort_chron_asc:
-                userPrefs.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
                 return true;
             case R.id.action_sort_chron_desc:
-                userPrefs.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
+                userPreferences.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
                 entryAdapter.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
                 return true;
         }
@@ -116,7 +117,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        switch (item.getItemId()) {
+            case R.id.nav_settings: {
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            }
+        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -167,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userPrefs = new UserPrefs(this);
+        userPreferences = new UserPreferences(this);
         snackbarUndoDelete = new SnackbarUndoDelete<>(
                 findViewById(R.id.main_activity_root),
                 getString(R.string.main_entry_deleted),
@@ -175,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                 this
         );
 
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         entryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
         entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
@@ -184,7 +191,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -212,7 +218,7 @@ public class MainActivity extends AppCompatActivity
         if (vault.hasManager() || vault.loadManager()) {
             if (entryAdapter == null) {
                 entryAdapter = new EntryAdapter(this, vault.getManager());
-                entryAdapter.setSortOrder(userPrefs.getSortOrder());
+                entryAdapter.setSortOrder(userPreferences.getSortOrder());
                 entryAdapter.setOnClickListener(this);
                 entryAdapter.setOnEntryExpandedListener(this);
                 entryRecyclerView.setAdapter(entryAdapter);

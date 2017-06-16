@@ -1,30 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:enabled="false"
-            android:icon="@drawable/ic_account"
-            android:title="@string/nav_bar_account"/>
-        <item
-            android:enabled="false"
-            android:icon="@drawable/ic_alert"
-            android:title="@string/nav_bar_alerts"/>
-    </group>
-
     <item
         android:enabled="false"
-        android:title="@string/nav_bar_server">
-        <menu>
-            <item
-                android:enabled="false"
-                android:icon="@drawable/ic_manage"
-                android:title="@string/nav_bar_settings"/>
-            <item
-                android:enabled="false"
-                android:icon="@drawable/ic_security"
-                android:title="@string/nav_drawer_security"/>
-        </menu>
-    </item>
+        android:icon="@drawable/ic_account"
+        android:title="@string/nav_bar_account"/>
+
+    <item
+        android:id="@+id/nav_settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/nav_bar_settings"/>
 
 </menu>
