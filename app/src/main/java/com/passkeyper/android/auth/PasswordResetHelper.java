@@ -54,6 +54,7 @@ public class PasswordResetHelper implements SetupFingerprintDialog.FingerprintSe
     public void onCancelled() {
         Toast.makeText(context, R.string.fingerprint_verify_cancelled, Toast.LENGTH_LONG).show();
         clearSensitiveData();
+        resetPasswordListener.onResetFinish(false);
     }
 
     @Override
@@ -66,6 +67,7 @@ public class PasswordResetHelper implements SetupFingerprintDialog.FingerprintSe
     public void onFailure() {
         Toast.makeText(context, R.string.fingerprint_failed, Toast.LENGTH_LONG).show();
         clearSensitiveData();
+        resetPasswordListener.onResetFinish(false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -109,10 +111,10 @@ public class PasswordResetHelper implements SetupFingerprintDialog.FingerprintSe
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Unable to reset password", e);
+                //rollback fingerprint change
+                if (wasFingerprintUpdated)
+                    authData.setEncryptedFingerprintPass(oldEncryptedPass);
             }
-            //rollback fingerprint change
-            if (wasFingerprintUpdated)
-                authData.setEncryptedFingerprintPass(oldEncryptedPass);
             return false;
         }
 

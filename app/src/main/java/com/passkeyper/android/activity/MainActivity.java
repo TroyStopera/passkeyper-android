@@ -120,6 +120,9 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             }
+            case R.id.nav_sign_in:
+                startActivity(new Intent(this, ManageLoginActivity.class));
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

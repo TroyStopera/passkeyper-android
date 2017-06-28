@@ -45,6 +45,10 @@
             android:label="@string/nav_bar_settings"
             android:parentActivityName=".activity.MainActivity"/>
 
+        <activity
+            android:name=".activity.ManageLoginActivity"
+            android:label="@string/nav_bar_sign_in"/>
+
     </application>
 
 </manifest>

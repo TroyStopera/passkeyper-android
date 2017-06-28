@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Passkeyper</string>
 
-    <string name="nav_bar_account">Profile</string>
+    <string name="nav_bar_sign_in">Manage sign in</string>
     <string name="nav_bar_alerts">Alerts</string>
     <string name="nav_bar_server">Server</string>
     <string name="nav_drawer_security">Security</string>
@@ -82,6 +82,12 @@
     <string name="edit_entry_add_security">To add Security Questions</string>
     <string name="edit_entry_popup_title">Confirm Delete</string>
     <string name="edit_entry_popup_msg">This will delete the entire entry and cannot be undone.</string>
+
+    <string name="manage_login_password">Change password</string>
+    <string name="manage_login_security">Change security question</string>
+    <string name="manage_login_saving">Saving</string>
+    <string name="manage_login_saved">Saved</string>
+    <string name="manage_login_error">Error saving</string>
 
     <string name="time_seconds">Seconds</string>
 

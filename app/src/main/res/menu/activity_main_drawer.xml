@@ -2,13 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:enabled="false"
+        android:id="@+id/nav_sign_in"
         android:icon="@drawable/ic_account"
-        android:title="@string/nav_bar_account"/>
+        android:title="@string/nav_bar_sign_in"/>
 
     <item
         android:id="@+id/nav_settings"
-        android:enabled="true"
         android:icon="@drawable/ic_settings"
         android:title="@string/nav_bar_settings"/>
 

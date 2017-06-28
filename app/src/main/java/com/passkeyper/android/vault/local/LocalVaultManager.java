@@ -374,7 +374,7 @@ public class LocalVaultManager extends VaultManager {
         @Override
         public void setSecurityAnswer(char[] securityAnswer) {
             checkFreed();
-            Arrays.fill(securityAnswer, '\0');
+            Arrays.fill(this.securityAnswer, '\0');
             this.securityAnswer = securityAnswer;
         }
 
