@@ -25,8 +25,8 @@ public class LocalSignInFragment extends AbstractLoginFragment<LocalSignInActivi
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_login_fragment, container, false);
 
-        passwordInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_password);
-        passwordInput = (TextInputEditText) view.findViewById(R.id.input_password);
+        passwordInputLayout = view.findViewById(R.id.input_layout_password);
+        passwordInput = view.findViewById(R.id.input_password);
         passwordInput.setOnEditorActionListener((v, actionId, event) -> {
             signIn();
             return true;

@@ -44,7 +44,7 @@ public abstract class AbstractLoginFragment<T extends AbstractLoginActivity> ext
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment_container, container, false);
 
-        window = (LinearLayout) view.findViewById(R.id.login_window);
+        window = view.findViewById(R.id.login_window);
         window.addView(onCreateWindowView(inflater, window));
 
         return view;

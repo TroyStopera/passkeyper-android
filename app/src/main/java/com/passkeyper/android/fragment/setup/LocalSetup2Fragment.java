@@ -24,8 +24,8 @@ public class LocalSetup2Fragment extends AbstractLoginFragment<LocalSetupActivit
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_2_fragment, container, false);
 
-        password = (TextInputEditText) view.findViewById(R.id.input_password);
-        confirm = (TextInputEditText) view.findViewById(R.id.input_confirm);
+        password = view.findViewById(R.id.input_password);
+        confirm = view.findViewById(R.id.input_confirm);
 
         confirm.setOnEditorActionListener((v, actionId, event) -> {
             next();

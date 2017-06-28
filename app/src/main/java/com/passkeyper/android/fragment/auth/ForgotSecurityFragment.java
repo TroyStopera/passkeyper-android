@@ -32,9 +32,9 @@ public class ForgotSecurityFragment extends AbstractLoginFragment<LocalSignInAct
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.forgot_password_security_fragment, container, false);
 
-        answer = (TextInputEditText) view.findViewById(R.id.input_answer);
-        icon = (ImageView) view.findViewById(R.id.icon);
-        loading = (ProgressBar) view.findViewById(R.id.loading);
+        answer = view.findViewById(R.id.input_answer);
+        icon = view.findViewById(R.id.icon);
+        loading = view.findViewById(R.id.loading);
 
         AuthData authData = new AuthData(getContext());
         ((TextView) view.findViewById(R.id.security_question)).setText(authData.getSecurityQuestion());

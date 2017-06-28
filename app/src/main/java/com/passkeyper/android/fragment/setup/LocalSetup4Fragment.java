@@ -51,10 +51,10 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                 setupVault(pass);
         });
 
-        fingerprintEnabled = (Switch) view.findViewById(R.id.fingerprint_enabled_switch);
-        backupEnabled = (Switch) view.findViewById(R.id.backup_enabled_switch);
-        icon = (ImageView) view.findViewById(R.id.setup_icon);
-        loading = (ProgressBar) view.findViewById(R.id.loading);
+        fingerprintEnabled = view.findViewById(R.id.fingerprint_enabled_switch);
+        backupEnabled = view.findViewById(R.id.backup_enabled_switch);
+        icon = view.findViewById(R.id.setup_icon);
+        loading = view.findViewById(R.id.loading);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintAuthHelper.isAvailable(getContext()))
             fingerprintEnabled.setVisibility(View.VISIBLE);

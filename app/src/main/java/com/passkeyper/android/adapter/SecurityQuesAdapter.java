@@ -34,14 +34,14 @@ public class SecurityQuesAdapter extends PrivateVaultModelAdapter<SecurityQuesEn
         if (i >= getCount() - 1) editView.setImeDone();
 
         TextInputLayout
-                question = (TextInputLayout) editView.findViewById(R.id.edit_security_ques_input),
-                answer = (TextInputLayout) editView.findViewById(R.id.edit_security_answer_input);
+                question = editView.findViewById(R.id.edit_security_ques_input),
+                answer = editView.findViewById(R.id.edit_security_answer_input);
 
         //verify if enabled
         if (verifyModeEnabled) {
             TextInputEditText
-                    questionText = (TextInputEditText) editView.findViewById(R.id.edit_security_ques_edit_text),
-                    answerText = (TextInputEditText) editView.findViewById(R.id.edit_security_answer_edit_text);
+                    questionText = editView.findViewById(R.id.edit_security_ques_edit_text),
+                    answerText = editView.findViewById(R.id.edit_security_answer_edit_text);
 
             if (questionText.length() <= 0) {
                 answer.setError(context.getString(R.string.error_missing_details));

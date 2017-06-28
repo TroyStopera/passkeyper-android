@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
@@ -49,8 +47,8 @@ public class FingerprintSignInFragment extends AbstractLoginFragment<LocalSignIn
         view.findViewById(R.id.use_password_btn).setOnClickListener(v -> cancelFingerprint());
 
         fingerprintAuthHelper = new FingerprintAuthHelper(getContext(),
-                (ImageView) view.findViewById(R.id.fingerprint_icon),
-                (TextView) view.findViewById(R.id.touch_hint_tv),
+                view.findViewById(R.id.fingerprint_icon),
+                view.findViewById(R.id.touch_hint_tv),
                 this);
 
         if (!fingerprintAuthHelper.init(Cipher.DECRYPT_MODE)) {

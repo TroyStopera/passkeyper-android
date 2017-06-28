@@ -66,9 +66,9 @@ public class SensitiveEntryEditView extends PrivateVaultModelEditView<SensitiveE
 
     @Override
     protected void onInitUiFields() {
-        nameSpinner = (Spinner) findViewById(R.id.edit_sensitive_name);
-        inputLayout = (TextInputLayout) findViewById(R.id.edit_sensitive_input);
-        valueEditText = (TextInputEditText) findViewById(R.id.edit_sensitive_edit_text);
+        nameSpinner = findViewById(R.id.edit_sensitive_name);
+        inputLayout = findViewById(R.id.edit_sensitive_input);
+        valueEditText = findViewById(R.id.edit_sensitive_edit_text);
 
         nameSpinner.setOnItemSelectedListener(this);
         inputLayout.setHint((String) nameSpinner.getSelectedItem());

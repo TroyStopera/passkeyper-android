@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,9 +19,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
+import com.passkeyper.android.UserPreferences;
 import com.passkeyper.android.Vault;
 import com.passkeyper.android.adapter.EntryAdapter;
-import com.passkeyper.android.UserPreferences;
 import com.passkeyper.android.util.SnackbarUndoDelete;
 import com.passkeyper.android.vaultmodel.EntryRecord;
 
@@ -80,8 +79,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setOnQueryTextListener(entryAdapter);
         return true;
     }
@@ -181,14 +179,14 @@ public class MainActivity extends AppCompatActivity
                 this
         );
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        entryRecyclerView = (RecyclerView) findViewById(R.id.vault_recycler_view);
+        drawer = findViewById(R.id.drawer_layout);
+        entryRecyclerView = findViewById(R.id.vault_recycler_view);
         entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
 
         findViewById(R.id.fab).setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);

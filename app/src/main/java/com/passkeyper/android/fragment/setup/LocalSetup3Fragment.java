@@ -22,8 +22,8 @@ public class LocalSetup3Fragment extends AbstractLoginFragment<LocalSetupActivit
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.local_setup_3_fragment, container, false);
 
-        question = (TextInputEditText) view.findViewById(R.id.input_question);
-        answer = (TextInputEditText) view.findViewById(R.id.input_answer);
+        question = view.findViewById(R.id.input_question);
+        answer = view.findViewById(R.id.input_answer);
 
         answer.setOnEditorActionListener((v, actionId, event) -> {
             next();

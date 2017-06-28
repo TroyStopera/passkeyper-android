@@ -13,8 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.passkeyper.android.R;
 
@@ -64,8 +62,8 @@ public class SetupFingerprintDialog extends DialogFragment implements Fingerprin
         View view = inflater.inflate(R.layout.fingerprint_setup_dialog, null);
 
         fingerprintAuthHelper = new FingerprintAuthHelper(getContext(),
-                (ImageView) view.findViewById(R.id.fingerprint_icon),
-                (TextView) view.findViewById(R.id.touch_hint_tv),
+                view.findViewById(R.id.fingerprint_icon),
+                view.findViewById(R.id.touch_hint_tv),
                 this);
         if (fingerprintAuthHelper.init(Cipher.ENCRYPT_MODE))
             fingerprintAuthHelper.startListening();

@@ -148,21 +148,21 @@ public class EditEntryActivity extends AppCompatActivity implements PrivateVault
             record = getIntent().getParcelableExtra(ENTRY_RECORD_EXTRA_KEY);
         else record = new EntryRecord();
 
-        accountInputLayout = (TextInputLayout) findViewById(R.id.input_layout_account);
-        accountInput = (TextInputEditText) findViewById(R.id.input_account);
+        accountInputLayout = findViewById(R.id.input_layout_account);
+        accountInput = findViewById(R.id.input_account);
         if (!record.getAccount().isEmpty()) accountInput.setText(record.getAccount());
-        usernameInput = (TextInputEditText) findViewById(R.id.input_username);
+        usernameInput = findViewById(R.id.input_username);
         if (!record.getUsername().isEmpty()) usernameInput.setText(record.getUsername());
 
         //setup the sensitiveList entry list
-        sensitiveList = (ListView) findViewById(R.id.edit_sensitive_list);
+        sensitiveList = findViewById(R.id.edit_sensitive_list);
         sensitiveEntryAdapter = new SensitiveEntryAdapter(this);
         sensitiveEntryAdapter.setOnDeletePressedListener(this);
         sensitiveList.setEmptyView(findViewById(R.id.edit_empty_list_sensitive));
         sensitiveList.setAdapter(sensitiveEntryAdapter);
 
         //setup the securityList question list
-        securityList = (ListView) findViewById(R.id.edit_security_list);
+        securityList = findViewById(R.id.edit_security_list);
         securityQuesAdapter = new SecurityQuesAdapter(this);
         securityQuesAdapter.setOnDeletePressedListener(this);
         securityList.setEmptyView(findViewById(R.id.edit_empty_list_security));

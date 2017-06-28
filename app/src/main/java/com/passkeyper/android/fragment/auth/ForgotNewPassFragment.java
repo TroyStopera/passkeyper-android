@@ -44,10 +44,10 @@ public class ForgotNewPassFragment extends AbstractLoginFragment<LocalSignInActi
     protected View onCreateWindowView(LayoutInflater inflater, @Nullable ViewGroup container) {
         View view = inflater.inflate(R.layout.forgot_password_update_fragment, container, false);
 
-        password = (TextInputEditText) view.findViewById(R.id.input_password);
-        confirm = (TextInputEditText) view.findViewById(R.id.input_confirm);
-        icon = (ImageView) view.findViewById(R.id.icon);
-        loading = (ProgressBar) view.findViewById(R.id.loading);
+        password = view.findViewById(R.id.input_password);
+        confirm = view.findViewById(R.id.input_confirm);
+        icon = view.findViewById(R.id.icon);
+        loading = view.findViewById(R.id.loading);
 
         passwordResetHelper = new PasswordResetHelper(getContext(), getFragmentManager());
         passwordResetHelper.setResetPasswordListener(this);

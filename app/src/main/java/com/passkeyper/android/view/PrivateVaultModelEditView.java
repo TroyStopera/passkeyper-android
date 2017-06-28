@@ -109,9 +109,9 @@ public abstract class PrivateVaultModelEditView<T extends PrivateModel> extends 
     }
 
     private void setUiFields() {
-        visibilityButton = (ImageButton) findViewById(R.id.edit_visible);
-        deleteButton = (ImageButton) findViewById(R.id.edit_delete);
-        doneButton = (ImageButton) findViewById(R.id.edit_done);
+        visibilityButton = findViewById(R.id.edit_visible);
+        deleteButton = findViewById(R.id.edit_delete);
+        doneButton = findViewById(R.id.edit_done);
 
         visibilityButton.setOnClickListener(this);
         deleteButton.setOnClickListener(this);

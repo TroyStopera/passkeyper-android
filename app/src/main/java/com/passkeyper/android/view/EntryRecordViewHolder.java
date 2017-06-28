@@ -37,13 +37,13 @@ public class EntryRecordViewHolder extends RecyclerView.ViewHolder {
         this.context = context;
         this.vaultManager = vaultManager;
 
-        detailLayout = (LinearLayout) itemView.findViewById(R.id.entry_details);
-        accountView = (TextView) itemView.findViewById(R.id.record_account);
-        usernameView = (TextView) itemView.findViewById(R.id.record_username);
-        sensitiveDataList = (ListView) itemView.findViewById(R.id.record_sensitive_data_list);
-        securityQuestionsList = (ListView) itemView.findViewById(R.id.record_security_question_list);
-        editButton = (ImageButton) itemView.findViewById(R.id.record_edit);
-        deleteButton = (ImageButton) itemView.findViewById(R.id.record_delete);
+        detailLayout = itemView.findViewById(R.id.entry_details);
+        accountView = itemView.findViewById(R.id.record_account);
+        usernameView = itemView.findViewById(R.id.record_username);
+        sensitiveDataList = itemView.findViewById(R.id.record_sensitive_data_list);
+        securityQuestionsList = itemView.findViewById(R.id.record_security_question_list);
+        editButton = itemView.findViewById(R.id.record_edit);
+        deleteButton = itemView.findViewById(R.id.record_delete);
 
         detailLayout.setVisibility(View.GONE);
     }

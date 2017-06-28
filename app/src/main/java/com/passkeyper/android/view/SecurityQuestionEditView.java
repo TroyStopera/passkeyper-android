@@ -68,10 +68,10 @@ public class SecurityQuestionEditView extends PrivateVaultModelEditView<Security
 
     @Override
     protected void onInitUiFields() {
-        questionInputLayout = (TextInputLayout) findViewById(R.id.edit_security_ques_input);
-        questionEditText = (TextInputEditText) findViewById(R.id.edit_security_ques_edit_text);
-        answerInputLayout = (TextInputLayout) findViewById(R.id.edit_security_answer_input);
-        answerEditText = (TextInputEditText) findViewById(R.id.edit_security_answer_edit_text);
+        questionInputLayout = findViewById(R.id.edit_security_ques_input);
+        questionEditText = findViewById(R.id.edit_security_ques_edit_text);
+        answerInputLayout = findViewById(R.id.edit_security_answer_input);
+        answerEditText = findViewById(R.id.edit_security_answer_edit_text);
 
         answerEditText.setOnFocusChangeListener(this);
         questionEditText.setOnFocusChangeListener(this);

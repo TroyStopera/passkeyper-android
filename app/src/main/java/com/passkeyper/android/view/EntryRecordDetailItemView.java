@@ -24,8 +24,8 @@ public class EntryRecordDetailItemView extends FrameLayout {
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.view_entry_record_detail_item, this);
 
-        title = (TextView) findViewById(R.id.record_detail_item_title);
-        value = (TextView) findViewById(R.id.record_detail_item_value);
+        title = findViewById(R.id.record_detail_item_title);
+        value = findViewById(R.id.record_detail_item_value);
     }
 
     public void setModel(PrivateModel model) {
