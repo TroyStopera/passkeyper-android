@@ -91,7 +91,7 @@
     </string-array>
 
     <string name="password">Password</string>
-    <string name="pin">PIN</string>
+    <string name="pin">Pin</string>
     <string name="other">Other</string>
 
     <string name="security_question">Security Question</string>
