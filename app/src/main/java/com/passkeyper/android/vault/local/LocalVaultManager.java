@@ -158,14 +158,14 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.RecordTable.COLUMN_NAME_USERNAME, record.getUsername());
 
         if (record.isSaved())
-            setModelID(record, dbHelper.save(
+            dbHelper.save(
                     password,
                     DbContract.RecordTable.TABLE_NAME,
                     values,
                     android.provider.BaseColumns._ID + " = ?",
                     new String[]{String.valueOf(record.getId())},
                     true
-            ));
+            );
         else
             setModelID(record, dbHelper.save(
                     password,
@@ -185,14 +185,14 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SensitiveEntryTable.COLUMN_NAME_RECORD_ID, sensitiveEntry.getRecord().getId());
 
         if (sensitiveEntry.isSaved())
-            setModelID(sensitiveEntry, dbHelper.save(
+            dbHelper.save(
                     password,
                     DbContract.SensitiveEntryTable.TABLE_NAME,
                     values,
                     android.provider.BaseColumns._ID + " = ?",
                     new String[]{String.valueOf(sensitiveEntry.getId())},
                     true
-            ));
+            );
         else
             setModelID(sensitiveEntry, dbHelper.save(
                     password,
@@ -212,14 +212,14 @@ public class LocalVaultManager extends VaultManager {
         values.put(DbContract.SecurityQuestionTable.COLUMN_NAME_RECORD_ID, securityQuesEntry.getRecord().getId());
 
         if (securityQuesEntry.isSaved())
-            setModelID(securityQuesEntry, dbHelper.save(
+            dbHelper.save(
                     password,
                     DbContract.SecurityQuestionTable.TABLE_NAME,
                     values,
                     android.provider.BaseColumns._ID + " = ?",
                     new String[]{String.valueOf(securityQuesEntry.getId())},
                     true
-            ));
+            );
         else
             setModelID(securityQuesEntry, dbHelper.save(
                     password,

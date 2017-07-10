@@ -56,6 +56,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
     public void reload() {
         list.clear();
         list.addAll(vaultManager.getAllEntryRecords());
+        notifyDataSetChanged();
     }
 
     public boolean hasExpandedEntry() {
