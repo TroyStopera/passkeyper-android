@@ -251,7 +251,7 @@ public class LocalVaultManager extends VaultManager {
     public void delete(SensitiveEntry sensitiveEntry) {
         dbHelper.delete(
                 password,
-                DbContract.RecordTable.TABLE_NAME,
+                DbContract.SensitiveEntryTable.TABLE_NAME,
                 BaseColumns._ID + " = ?",
                 new String[]{String.valueOf(sensitiveEntry.getId())}
         );
@@ -261,7 +261,7 @@ public class LocalVaultManager extends VaultManager {
     public void delete(SecurityQuesEntry securityQuesEntry) {
         dbHelper.delete(
                 password,
-                DbContract.RecordTable.TABLE_NAME,
+                DbContract.SecurityQuestionTable.TABLE_NAME,
                 BaseColumns._ID + " = ?",
                 new String[]{String.valueOf(securityQuesEntry.getId())}
         );
