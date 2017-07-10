@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
@@ -28,7 +29,7 @@ import com.passkeyper.android.vaultmodel.EntryRecord;
 import java.util.Collection;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, EntryAdapter.OnActionListener, SnackbarUndoDelete.SnackBarDeleteListener<EntryRecord>, EntryAdapter.OnEntryExpandedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, EntryAdapter.OnActionListener, SnackbarUndoDelete.SnackBarDeleteListener<EntryRecord>, EntryAdapter.OnEntryExpandedListener, SearchView.OnQueryTextListener {
 
     private static final int EDIT_REQUEST_CODE = 24;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity
             searchView.setQuery("", false);
             searchView.clearFocus();
             searchView.setIconified(true);
+            entryAdapter.showAll();
         }
         //then try to collapse selected entry
         else if (entryAdapter != null && entryAdapter.hasExpandedEntry()) {
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setOnQueryTextListener(entryAdapter);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -155,6 +157,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onEntryExpanded(int pos) {
         entryRecyclerView.getLayoutManager().scrollToPosition(pos);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        entryAdapter.filter(query);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        entryAdapter.filter(newText);
+        return true;
     }
 
     @Override

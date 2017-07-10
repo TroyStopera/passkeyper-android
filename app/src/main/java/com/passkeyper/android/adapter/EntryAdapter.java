@@ -3,9 +3,7 @@ package com.passkeyper.android.adapter;
 import android.app.Activity;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import com.passkeyper.android.vault.VaultManager;
 import com.passkeyper.android.vaultmodel.EntryRecord;
@@ -15,12 +13,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 /**
  * Class used to adapt EntryRecord data for use in the main activity's RecyclerView.
  */
-public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> implements SearchView.OnQueryTextListener {
+public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
 
     /**
      * The order by which to sort entries in an EntryAdapter.
@@ -129,34 +125,25 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
         return list.size();
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        //hide keyboard on search clicked
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.findViewById(android.R.id.content).getWindowToken(), 0);
-        return true;
+    public void showAll() {
+        list.addAll(filteredOut);
+        filteredOut.clear();
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        newText = newText.toLowerCase();
+    public void filter(String filterText) {
+        filterText = filterText.toLowerCase();
 
-        if (newText.isEmpty()) {
-            list.clear();
-            list.addAll(filteredOut);
-            filteredOut.clear();
-            return true;
+        if (filterText.isEmpty()) {
+            showAll();
+        } else {
+            list.beginBatchedUpdates();
+            for (int i = list.size() - 1; i >= 0; i--) {
+                EntryRecord record = list.get(i);
+                if (!record.getAccount().toLowerCase().contains(filterText))
+                    filteredOut.add(list.removeItemAt(i));
+            }
+            list.endBatchedUpdates();
         }
-
-        list.beginBatchedUpdates();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            EntryRecord record = list.get(i);
-            if (!record.getAccount().toLowerCase().contains(newText))
-                filteredOut.add(list.removeItemAt(i));
-        }
-        list.endBatchedUpdates();
-
-        return true;
     }
 
     /**
