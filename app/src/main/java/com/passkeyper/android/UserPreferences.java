@@ -13,7 +13,6 @@ public class UserPreferences {
 
     /* prefs shown in preference activity */
     public static final String PREF_FINGERPRINT_ENABLED = "pref_fingerprintEnabled";
-    public static final String PREF_BACKUP_TO_GOOGLE = "pref_backupToGoogle";
     /* other prefs  */
     private static final String PREF_SORT_ORDER = "pref_sortOrder";
     private static final String PREF_VAULT_MANAGER_TYPE = "pref_vaultManager";
@@ -102,26 +101,6 @@ public class UserPreferences {
                 editor.putInt(PREF_SORT_ORDER, 3);
                 break;
         }
-        editor.apply();
-    }
-
-    /**
-     * Returns whether the user wants app data backed up to Google.
-     *
-     * @return true if backup is enabled.
-     */
-    public boolean isBackupToGoogleEnabled() {
-        return sharedPreferences.getBoolean(PREF_BACKUP_TO_GOOGLE, false);
-    }
-
-    /**
-     * Set whether the app data should be backed up to Google.
-     *
-     * @param enabled true if the app data should be backed up.
-     */
-    public void setBackupToGoogleEnabled(boolean enabled) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(PREF_BACKUP_TO_GOOGLE, enabled);
         editor.apply();
     }
 

@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEntryExpanded(EntryRecord record, int pos) {
+    public void onEntryExpanded(int pos) {
         entryRecyclerView.getLayoutManager().scrollToPosition(pos);
     }
 

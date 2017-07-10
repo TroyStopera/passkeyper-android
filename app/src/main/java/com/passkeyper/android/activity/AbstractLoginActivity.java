@@ -69,7 +69,7 @@ public abstract class AbstractLoginActivity extends FragmentActivity {
             nextActivityName = getIntent().getStringExtra(Vault.ACTIVITY_AFTER_SIGN_IN_EXTRA);
     }
 
-    protected final void setInitialFragment(Fragment fragment) {
+    final void setInitialFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(0, 0, R.anim.in_from_left, R.anim.out_to_right);
         transaction.add(R.id.login_fragment_container, fragment);

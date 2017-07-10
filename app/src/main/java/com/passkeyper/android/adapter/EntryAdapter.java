@@ -118,7 +118,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
         holder.setOnClickListener(view -> {
             expandedId = isExpanded ? -1 : record.getId();
             if (!isExpanded && onEntryExpandedListener != null)
-                onEntryExpandedListener.onEntryExpanded(record, holder.getAdapterPosition());
+                onEntryExpandedListener.onEntryExpanded(holder.getAdapterPosition());
             notifyDataSetChanged();
         });
     }
@@ -163,7 +163,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> im
      */
     public interface OnEntryExpandedListener {
 
-        void onEntryExpanded(EntryRecord record, int pos);
+        void onEntryExpanded(int pos);
 
     }
 

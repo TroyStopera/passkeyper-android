@@ -34,7 +34,7 @@ public class LocalSetupActivity extends AbstractLoginActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setInitialFragment(setup1Fragment);
+        setInitialFragment(getSetup1Fragment());
     }
 
 }

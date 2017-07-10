@@ -53,7 +53,6 @@
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -94,7 +93,6 @@
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -127,7 +125,6 @@
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_answer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
