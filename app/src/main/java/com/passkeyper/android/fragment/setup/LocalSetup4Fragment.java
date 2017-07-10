@@ -34,7 +34,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
 
     private static final String TAG = "Setup Step 4";
 
-    private Switch fingerprintEnabled, backupEnabled;
+    private Switch fingerprintEnabled;
     private ImageView icon;
     private ProgressBar loading;
 
@@ -52,14 +52,16 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
         });
 
         fingerprintEnabled = view.findViewById(R.id.fingerprint_enabled_switch);
-        backupEnabled = view.findViewById(R.id.backup_enabled_switch);
         icon = view.findViewById(R.id.setup_icon);
         loading = view.findViewById(R.id.loading);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintAuthHelper.isAvailable(getContext()))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintAuthHelper.isAvailable(getContext())) {
             fingerprintEnabled.setVisibility(View.VISIBLE);
-        else
+            view.findViewById(R.id.no_settings_avail).setVisibility(View.GONE);
+        } else {
             fingerprintEnabled.setVisibility(View.GONE);
+            view.findViewById(R.id.no_settings_avail).setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -107,7 +109,6 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                     authData.setSecurityQuestion(securityQuestion);
                     //save this fragments user preferences
                     userPreferences.setFingerprintEnabled(fingerprintEnabled.isChecked());
-                    userPreferences.setBackupToGoogleEnabled(backupEnabled.isChecked());
                     //setup and log into database
                     Vault vault = Vault.get();
                     LocalVaultManager.setupLocalDb(getContext(), pass, securityQuestion, securityAnswer);

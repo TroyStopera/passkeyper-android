@@ -29,19 +29,21 @@
         android:text="@string/setup_title_settings"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
-    <Switch
-        android:id="@+id/backup_enabled_switch"
-        style="@style/TextAppearance.AppCompat.Small"
+    <TextView
+        android:id="@+id/no_settings_avail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setup_backup_enabled"/>
+        android:gravity="center"
+        android:text="@string/setup_no_settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:visibility="gone"/>
 
     <Switch
         android:id="@+id/fingerprint_enabled_switch"
         style="@style/TextAppearance.AppCompat.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setup_fingerprint_enabled"
+        android:text="@string/pref_fingerprint_title"
         android:visibility="gone"/>
 
     <RelativeLayout

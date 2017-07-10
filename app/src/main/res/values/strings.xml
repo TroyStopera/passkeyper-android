@@ -50,9 +50,7 @@
     <string name="setup_title_security">Security Question</string>
     <string name="setup_title_settings">Settings</string>
     <string name="setup_confirm_password">Confirm Password</string>
-    <string name="setup_fingerprint_enabled">Enable fingerprint login</string>
-    <string name="setup_backup_enabled">Enable automatic backups to Google servers</string>
-    <string name="setup_auth_timeout">Amount of time before app signs out due to inactivity</string>
+    <string name="setup_no_settings">There are currently no extra settings applicable on this device</string>
     <string name="setup_fatal_error">Fatal error during setup. Try again.</string>
 
     <string name="setup_local_msg">
@@ -108,9 +106,7 @@
     <string name="security_edit_question">Question</string>
     <string name="security_edit_new_hint">Security Question &amp; Answer</string>
 
-    <string name="pref_fingerprint_title">Fingerprint</string>
+    <string name="pref_fingerprint_title">Fingerprint sign in</string>
     <string name="pref_fingerprint_summary">Sign in with an authorized fingerprint</string>
-    <string name="pref_backup_title">Backup to Google</string>
-    <string name="pref_backup_summary">Automatically send backups to Google servers</string>
 
 </resources>

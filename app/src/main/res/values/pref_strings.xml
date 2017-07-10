@@ -19,8 +19,6 @@
     </integer-array>
 
     <!-- MAKE SURE THESE MATCH THE STRINGS IN UserPreferences.java -->
-    <string name="prefKey_timeout">pref_authTimeout</string>
     <string name="prefKey_fingerprint">pref_fingerprintEnabled</string>
-    <string name="prefKey_backup_google">pref_backupToGoogle</string>
 
 </resources>
