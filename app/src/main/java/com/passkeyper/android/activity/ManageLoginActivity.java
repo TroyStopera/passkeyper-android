@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.passkeyper.android.R;
 import com.passkeyper.android.Vault;
@@ -28,7 +29,6 @@ public class ManageLoginActivity extends AppCompatActivity {
     private final Vault vault = Vault.get();
 
     private Button save;
-    private VaultManager.RecoveryData recoveryData;
     private TextInputEditText password, confirm, question, answer;
     private boolean passShown = false, confirmShown = false, quesShown = false, ansShown = false;
 
@@ -63,8 +63,6 @@ public class ManageLoginActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        recoveryData.free();
-
         password.setText(null);
         confirm.setText(null);
         question.setText(null);
@@ -74,12 +72,14 @@ public class ManageLoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        recoveryData = vault.getManager().getRecoveryData();
+        VaultManager.RecoveryData recoveryData = vault.getManager().getRecoveryData();
 
         question.setText(recoveryData.getSecurityQuestion());
         char[] answerText = recoveryData.getSecurityAnswer();
         answer.setText(answerText, 0, answerText.length);
         Arrays.fill(answerText, '\0');
+
+        recoveryData.free();
     }
 
     @Override
@@ -95,50 +95,13 @@ public class ManageLoginActivity extends AppCompatActivity {
 
     private void save() {
         //ensure input meets requirements
-        if (validateInput()) {
-            //update button, it will be reset after security is updated
-            save.setText(R.string.manage_login_saving);
-            save.setClickable(false);
-            //if changing password
-            if (password.getText().length() >= 6) {
-                PasswordResetHelper resetHelper = new PasswordResetHelper(this, getSupportFragmentManager());
-                resetHelper.setResetPasswordListener((success) -> {
-                    if (success) saveSecurityQues();
-                    else {
-                        save.setText(R.string.action_save);
-                        save.setClickable(true);
-                    }
-                });
-                resetHelper.reset(EditTextUtils.getText(password), vault.getManager().getPassword(), EditTextUtils.getText(answer));
-            }
-            //if only changing security question
-            else {
-                saveSecurityQues();
-            }
-        }
-    }
-
-    private void saveSecurityQues() {
-        new Handler().post(() -> {
-            try {
-                AuthData authData = new AuthData(this);
-                authData.setEncryptedPassword(vault.getManager().getPassword(), question.getText().toString(), EditTextUtils.getText(answer));
-                authData.setSecurityQuestion(question.getText().toString());
-
-                recoveryData.setSecurityQuestion(question.getText().toString());
-                recoveryData.setSecurityAnswer(EditTextUtils.getText(answer));
-                vault.getManager().updateRecoveryData(recoveryData);
-                save.setText(R.string.manage_login_saved);
-            } catch (Exception e) {
-                Log.e("Manage Sign in", "Unable to update security question/answer", e);
-                save.setText(R.string.manage_login_error);
-            } finally {
-                new Handler(getMainLooper()).postDelayed(() -> {
-                    save.setText(R.string.action_save);
-                    save.setClickable(true);
-                }, 3000);
-            }
-        });
+        if (validateInput())
+            new SaveHelper(
+                    vault.getManager().getPassword(),
+                    EditTextUtils.getText(password),
+                    question.getText().toString(),
+                    EditTextUtils.getText(answer)
+            ).save();
     }
 
     private boolean validateInput() {
@@ -190,6 +153,75 @@ public class ManageLoginActivity extends AppCompatActivity {
             icon.setImageResource(R.drawable.ic_visibility_on);
         }
         return !hide;
+    }
+
+    /*
+        This class is a helper class for updating sign in info.
+        It has its own reference to all needed data, so if the user
+        backs out of the activity before the app is done saving, the save will still succeed.
+     */
+    private class SaveHelper {
+
+        private final char[] oldPass, password, answer;
+        private final String question;
+
+        private SaveHelper(char[] oldPass, char[] password, String question, char[] answer) {
+            this.oldPass = oldPass;
+            this.password = password;
+            this.question = question;
+            this.answer = answer;
+        }
+
+        private void save() {
+            //update button, it will be reset after security is updated
+            save.setText(R.string.manage_login_saving);
+            save.setClickable(false);
+            //if changing password
+            if (password.length >= 6) {
+                PasswordResetHelper resetHelper = new PasswordResetHelper(ManageLoginActivity.this, getSupportFragmentManager());
+                resetHelper.setResetPasswordListener((success) -> {
+                    if (success) saveSecurityQues();
+                    else {
+                        save.setText(R.string.action_save);
+                        save.setClickable(true);
+                    }
+                });
+                resetHelper.reset(password, oldPass, answer);
+            }
+            //if only changing security question
+            else {
+                saveSecurityQues();
+            }
+        }
+
+        private void saveSecurityQues() {
+            try {
+                AuthData authData = new AuthData(ManageLoginActivity.this);
+                authData.setEncryptedPassword(password, question, answer);
+                authData.setSecurityQuestion(question);
+
+                VaultManager.RecoveryData recoveryData = Vault.get().getManager().getRecoveryData();
+                recoveryData.setSecurityQuestion(question);
+                recoveryData.setSecurityAnswer(answer);
+                Vault.get().getManager().updateRecoveryData(recoveryData);
+                recoveryData.free();
+
+                save.setText(R.string.manage_login_saved);
+            } catch (Exception e) {
+                Log.e("Manage Sign in", "Unable to update security question/answer", e);
+                save.setText(R.string.manage_login_error);
+                Toast.makeText(ManageLoginActivity.this, R.string.manage_login_error, Toast.LENGTH_SHORT).show();
+            } finally {
+                Arrays.fill(oldPass, '\0');
+                Arrays.fill(password, '\0');
+                Arrays.fill(answer, '\0');
+                new Handler(getMainLooper()).postDelayed(() -> {
+                    save.setText(R.string.action_save);
+                    save.setClickable(true);
+                }, 3000);
+            }
+        }
+
     }
 
 }
