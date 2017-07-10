@@ -42,17 +42,10 @@ public class ManageLoginActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        recoveryData = vault.getManager().getRecoveryData();
-
         password = findViewById(R.id.input_password);
         confirm = findViewById(R.id.input_confirm);
         question = findViewById(R.id.input_question);
         answer = findViewById(R.id.input_answer);
-
-        question.setText(recoveryData.getSecurityQuestion());
-        char[] answerText = recoveryData.getSecurityAnswer();
-        answer.setText(answerText, 0, answerText.length);
-        Arrays.fill(answerText, '\0');
 
         save = findViewById(R.id.btn_save);
         save.setOnClickListener((v) -> save());
@@ -65,6 +58,28 @@ public class ManageLoginActivity extends AppCompatActivity {
                 (v) -> quesShown = toggleHide(question, (ImageView) v, quesShown));
         findViewById(R.id.answer_visible).setOnClickListener(
                 (v) -> ansShown = toggleHide(answer, (ImageView) v, ansShown));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        recoveryData.free();
+
+        password.setText(null);
+        confirm.setText(null);
+        question.setText(null);
+        answer.setText(null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recoveryData = vault.getManager().getRecoveryData();
+
+        question.setText(recoveryData.getSecurityQuestion());
+        char[] answerText = recoveryData.getSecurityAnswer();
+        answer.setText(answerText, 0, answerText.length);
+        Arrays.fill(answerText, '\0');
     }
 
     @Override

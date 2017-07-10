@@ -118,6 +118,7 @@ public class LocalSetup4Fragment extends AbstractLoginFragment<LocalSetupActivit
                     recoveryData.setSecurityQuestion(securityQuestion);
                     recoveryData.setSecurityAnswer(securityAnswer);
                     vault.getManager().updateRecoveryData(recoveryData);
+                    recoveryData.free();
                     return true;
                 } catch (Exception e) {
                     Log.e(TAG, "Unable to setup vault", e);
