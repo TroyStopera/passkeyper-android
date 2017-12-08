@@ -36,10 +36,11 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
     private OnActionListener listener;
 
     private long expandedId = -1;
-    private SortOrder sortOrder = SortOrder.OldestFirst;
+    private final SortOrder sortOrder;
 
-    public EntryAdapter(Activity activity, VaultManager vaultManager) {
+    public EntryAdapter(Activity activity, VaultManager vaultManager, SortOrder sortOrder) {
         this.activity = activity;
+        this.sortOrder = sortOrder;
 
         setVaultManager(vaultManager);
         reload();
@@ -87,19 +88,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryRecordViewHolder> {
     @Override
     public EntryRecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new EntryRecordViewHolder(activity, parent, vaultManager);
-    }
-
-    public void setSortOrder(SortOrder sortOrder) {
-        this.sortOrder = sortOrder;
-        //TODO: improve resorting?
-
-        //make a copy of the items
-        Collection<EntryRecord> entryRecords = new LinkedList<>();
-        for (int i = 0; i < list.size(); i++)
-            entryRecords.add(list.removeItemAt(i));
-
-        //re-add them to force a re-sort
-        addAll(entryRecords);
     }
 
     @Override

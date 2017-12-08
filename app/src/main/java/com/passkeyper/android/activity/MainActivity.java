@@ -97,19 +97,27 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.action_sort_alpha_asc:
                 userPreferences.setSortOrder(EntryAdapter.SortOrder.AtoZ);
-                entryAdapter.setSortOrder(EntryAdapter.SortOrder.AtoZ);
+                entryAdapter = new EntryAdapter(this, Vault.get().getManager(), EntryAdapter.SortOrder.AtoZ);
+                entryRecyclerView.swapAdapter(entryAdapter, false);
+                entryRecyclerView.smoothScrollToPosition(0);
                 return true;
             case R.id.action_sort_alpha_desc:
                 userPreferences.setSortOrder(EntryAdapter.SortOrder.ZtoA);
-                entryAdapter.setSortOrder(EntryAdapter.SortOrder.ZtoA);
+                entryAdapter = new EntryAdapter(this, Vault.get().getManager(), EntryAdapter.SortOrder.ZtoA);
+                entryRecyclerView.swapAdapter(entryAdapter, false);
+                entryRecyclerView.smoothScrollToPosition(0);
                 return true;
             case R.id.action_sort_chron_asc:
                 userPreferences.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
-                entryAdapter.setSortOrder(EntryAdapter.SortOrder.OldestFirst);
+                entryAdapter = new EntryAdapter(this, Vault.get().getManager(), EntryAdapter.SortOrder.OldestFirst);
+                entryRecyclerView.swapAdapter(entryAdapter, false);
+                entryRecyclerView.smoothScrollToPosition(0);
                 return true;
             case R.id.action_sort_chron_desc:
                 userPreferences.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
-                entryAdapter.setSortOrder(EntryAdapter.SortOrder.NewestFirst);
+                entryAdapter = new EntryAdapter(this, Vault.get().getManager(), EntryAdapter.SortOrder.NewestFirst);
+                entryRecyclerView.swapAdapter(entryAdapter, false);
+                entryRecyclerView.smoothScrollToPosition(0);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -234,8 +242,7 @@ public class MainActivity extends AppCompatActivity
 
         if (vault.hasManager() || vault.loadManager()) {
             if (entryAdapter == null) {
-                entryAdapter = new EntryAdapter(this, vault.getManager());
-                entryAdapter.setSortOrder(userPreferences.getSortOrder());
+                entryAdapter = new EntryAdapter(this, vault.getManager(), userPreferences.getSortOrder());
                 entryAdapter.setOnClickListener(this);
                 entryAdapter.setOnEntryExpandedListener(this);
                 entryRecyclerView.setAdapter(entryAdapter);
