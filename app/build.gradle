@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.passkeyper.android"
         minSdkVersion 19
@@ -33,10 +33,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "com.android.support:appcompat-v7:$support_version"
-    compile "com.android.support:preference-v7:$support_version"
-    compile "com.android.support:design:$support_version"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
-    testCompile 'junit:junit:4.12'
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:preference-v7:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
+    testImplementation 'junit:junit:4.12'
 }
