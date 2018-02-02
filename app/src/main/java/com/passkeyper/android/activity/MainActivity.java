@@ -1,6 +1,7 @@
 package com.passkeyper.android.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.passkeyper.android.R;
@@ -207,9 +209,12 @@ public class MainActivity extends AppCompatActivity
         );
 
         drawer = findViewById(R.id.drawer_layout);
+
+        int orientation = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                LinearLayout.HORIZONTAL : LinearLayout.VERTICAL;
         entryRecyclerView = findViewById(R.id.vault_recycler_view);
         entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), getResources().getConfiguration().orientation));
+        entryRecyclerView.addItemDecoration(new DividerItemDecoration(entryRecyclerView.getContext(), orientation));
 
         findViewById(R.id.fab).setOnClickListener(view -> startActivityForResult(new Intent(MainActivity.this, EditEntryActivity.class), EDIT_REQUEST_CODE));
 
